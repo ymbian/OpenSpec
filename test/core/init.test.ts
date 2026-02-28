@@ -234,6 +234,12 @@ describe('InitCommand', () => {
 
       const devagentSkill = path.join(testDir, '.devagent', 'skills', 'openspec-explore', 'SKILL.md');
       expect(await fileExists(devagentSkill)).toBe(true);
+
+      const devagentCmd = path.join(testDir, '.devagentrules', 'workflows', 'opsx-explore.md');
+      expect(await fileExists(devagentCmd)).toBe(true);
+      const cmdContent = await fs.readFile(devagentCmd, 'utf-8');
+      expect(cmdContent).toMatch(/^# /m);
+      expect(cmdContent).toContain('Explore');
     });
     it('should reject combining reserved keywords with explicit tool ids', async () => {
       const initCommand = new InitCommand({ tools: 'all,claude', force: true });

@@ -21,6 +21,12 @@ describe('command-generation/registry', () => {
       expect(adapter?.toolId).toBe('windsurf');
     });
 
+    it('should return DevAgent adapter for "devagent"', () => {
+      const adapter = CommandAdapterRegistry.get('devagent');
+      expect(adapter).toBeDefined();
+      expect(adapter?.toolId).toBe('devagent');
+    });
+
     it('should return undefined for unregistered tool', () => {
       const adapter = CommandAdapterRegistry.get('unknown-tool');
       expect(adapter).toBeUndefined();
@@ -45,6 +51,7 @@ describe('command-generation/registry', () => {
 
       expect(toolIds).toContain('claude');
       expect(toolIds).toContain('cursor');
+      expect(toolIds).toContain('devagent');
       expect(toolIds).toContain('windsurf');
     });
   });
@@ -84,7 +91,7 @@ describe('command-generation/registry', () => {
       };
 
       // Tools that don't use YAML frontmatter (markdown headers or TOML or plain)
-      const noYamlFrontmatter = ['cline', 'kilocode', 'roocode', 'gemini', 'qwen'];
+      const noYamlFrontmatter = ['cline', 'devagent', 'kilocode', 'roocode', 'gemini', 'qwen'];
 
       const adapters = CommandAdapterRegistry.getAll();
       for (const adapter of adapters) {

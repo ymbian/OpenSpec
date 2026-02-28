@@ -12,6 +12,7 @@ import { continueAdapter } from '../../../src/core/command-generation/adapters/c
 import { costrictAdapter } from '../../../src/core/command-generation/adapters/costrict.js';
 import { crushAdapter } from '../../../src/core/command-generation/adapters/crush.js';
 import { cursorAdapter } from '../../../src/core/command-generation/adapters/cursor.js';
+import { devagentAdapter } from '../../../src/core/command-generation/adapters/devagent.js';
 import { factoryAdapter } from '../../../src/core/command-generation/adapters/factory.js';
 import { geminiAdapter } from '../../../src/core/command-generation/adapters/gemini.js';
 import { githubCopilotAdapter } from '../../../src/core/command-generation/adapters/github-copilot.js';
@@ -195,6 +196,25 @@ describe('command-generation/adapters', () => {
 
     it('should format file with markdown header (no YAML frontmatter)', () => {
       const output = clineAdapter.formatFile(sampleContent);
+      expect(output).toContain('# OpenSpec Explore');
+      expect(output).toContain('Enter explore mode for thinking');
+      expect(output).toContain('This is the command body.');
+      expect(output).not.toContain('---');
+    });
+  });
+
+  describe('devagentAdapter', () => {
+    it('should have correct toolId', () => {
+      expect(devagentAdapter.toolId).toBe('devagent');
+    });
+
+    it('should generate correct file path', () => {
+      const filePath = devagentAdapter.getFilePath('explore');
+      expect(filePath).toBe(path.join('.devagentrules', 'workflows', 'opsx-explore.md'));
+    });
+
+    it('should format file with markdown header (same structure as Cline)', () => {
+      const output = devagentAdapter.formatFile(sampleContent);
       expect(output).toContain('# OpenSpec Explore');
       expect(output).toContain('Enter explore mode for thinking');
       expect(output).toContain('This is the command body.');

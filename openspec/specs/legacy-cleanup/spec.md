@@ -30,7 +30,14 @@ The system SHALL detect legacy OpenSpec artifacts from previous init versions.
   - `.claude/commands/openspec/`
   - `.cursor/commands/openspec/` (note: old format used `openspec-*.md` in commands root)
   - `.windsurf/workflows/openspec-*.md`
+  - `.devagentrules/workflows/openspec-*.md`
   - And equivalent directories for all tools in the legacy SlashCommandRegistry
+
+#### Scenario: Detecting legacy DevAgent workflow files
+
+- **WHEN** running `openspec init` or legacy cleanup on an existing project
+- **THEN** the system SHALL check for legacy workflow files matching `.devagentrules/workflows/openspec-*.md`
+- **AND** SHALL include such files in legacy slash-command detection and cleanup (same behavior as Cline's `.clinerules/workflows/openspec-*.md`)
 
 #### Scenario: Detecting legacy OpenSpec structure files
 
