@@ -1,5 +1,11 @@
 # @fission-ai/openspec
 
+## 2.0.0
+
+### Major Changes
+
+- Version bump to 2.0.0. DevAgent support (Cline parity: `.devagentrules/workflows/`, command adapter and legacy cleanup).
+
 ## 1.2.0
 
 ### Minor Changes
