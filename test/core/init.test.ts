@@ -227,6 +227,14 @@ describe('InitCommand', () => {
       expect(await fileExists(cursorSkill)).toBe(true);
     });
 
+    it('should configure DevAgent when --tools devagent', async () => {
+      const initCommand = new InitCommand({ tools: 'devagent', force: true });
+
+      await initCommand.execute(testDir);
+
+      const devagentSkill = path.join(testDir, '.devagent', 'skills', 'openspec-explore', 'SKILL.md');
+      expect(await fileExists(devagentSkill)).toBe(true);
+    });
     it('should reject combining reserved keywords with explicit tool ids', async () => {
       const initCommand = new InitCommand({ tools: 'all,claude', force: true });
 

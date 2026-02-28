@@ -78,6 +78,18 @@ describe('available-tools', () => {
       });
     });
 
+    it('should detect DevAgent when .devagent directory exists', async () => {
+      await fs.mkdir(path.join(testDir, '.devagent'), { recursive: true });
+
+      const tools = getAvailableTools(testDir);
+      expect(tools).toHaveLength(1);
+      expect(tools[0]).toMatchObject({
+        name: 'DevAgent',
+        value: 'devagent',
+        skillsDir: '.devagent',
+      });
+    });
+
     it('should handle paths with spaces', async () => {
       const spacedDir = path.join(testDir, 'path with spaces');
       await fs.mkdir(spacedDir, { recursive: true });

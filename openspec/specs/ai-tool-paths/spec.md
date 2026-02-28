@@ -33,6 +33,11 @@ The `AI_TOOLS` array SHALL include `skillsDir` for tools that support the Agent 
 - **WHEN** looking up the `cursor` tool
 - **THEN** `skillsDir` SHALL be `.cursor`
 
+#### Scenario: DevAgent paths defined
+
+- **WHEN** looking up the `devagent` tool
+- **THEN** `skillsDir` SHALL be `.devagent`
+
 #### Scenario: Windsurf paths defined
 
 - **WHEN** looking up the `windsurf` tool
