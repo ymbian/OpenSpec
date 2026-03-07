@@ -61,17 +61,17 @@ const PROGRESS_SPINNER = {
 };
 
 const WORKFLOW_TO_SKILL_DIR: Record<string, string> = {
-  'explore': 'openspec-explore',
-  'new': 'openspec-new-change',
-  'continue': 'openspec-continue-change',
-  'apply': 'openspec-apply-change',
-  'ff': 'openspec-ff-change',
-  'sync': 'openspec-sync-specs',
-  'archive': 'openspec-archive-change',
-  'bulk-archive': 'openspec-bulk-archive-change',
-  'verify': 'openspec-verify-change',
-  'onboard': 'openspec-onboard',
-  'propose': 'openspec-propose',
+  'explore': 'infra-explore',
+  'new': 'infra-new-change',
+  'continue': 'infra-continue-change',
+  'apply': 'infra-apply-change',
+  'ff': 'infra-ff-change',
+  'sync': 'infra-sync-specs',
+  'archive': 'infra-archive-change',
+  'bulk-archive': 'infra-bulk-archive-change',
+  'verify': 'infra-verify-change',
+  'onboard': 'infra-onboard',
+  'propose': 'infra-propose',
 };
 
 // -----------------------------------------------------------------------------

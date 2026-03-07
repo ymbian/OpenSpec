@@ -65,16 +65,16 @@ For each tool, OpenSpec generates 10 skill files that power the OPSX workflow:
 
 | Skill | Purpose |
 |-------|---------|
-| `openspec-explore` | Thinking partner for exploring ideas |
-| `openspec-new-change` | Start a new change |
-| `openspec-continue-change` | Create the next artifact |
-| `openspec-ff-change` | Fast-forward through all planning artifacts |
-| `openspec-apply-change` | Implement tasks |
-| `openspec-verify-change` | Verify implementation completeness |
-| `openspec-sync-specs` | Sync delta specs to main (optional—archive prompts if needed) |
-| `openspec-archive-change` | Archive a completed change |
-| `openspec-bulk-archive-change` | Archive multiple changes at once |
-| `openspec-onboard` | Guided onboarding through a complete workflow cycle |
+| `infra-explore` | Thinking partner for exploring ideas |
+| `infra-new-change` | Start a new change |
+| `infra-continue-change` | Create the next artifact |
+| `infra-ff-change` | Fast-forward through all planning artifacts |
+| `infra-apply-change` | Implement tasks |
+| `infra-verify-change` | Verify implementation completeness |
+| `infra-sync-specs` | Sync delta specs to main (optional—archive prompts if needed) |
+| `infra-archive-change` | Archive a completed change |
+| `infra-bulk-archive-change` | Archive multiple changes at once |
+| `infra-onboard` | Guided onboarding through a complete workflow cycle |
 
 These skills are invoked via slash commands like `/infra:new`, `/infra:apply`, etc. See [Commands](commands.md) for the full list.
 

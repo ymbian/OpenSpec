@@ -569,7 +569,7 @@ Different AI tools use slightly different command syntax. Use the format that ma
 | Cursor | `/infra-new`, `/infra-apply` |
 | Windsurf | `/infra-new`, `/infra-apply` |
 | Copilot (IDE) | `/infra-new`, `/infra-apply` |
-| Trae | `/openspec-new-change`, `/openspec-apply-change` |
+| Trae | `/infra-new-change`, `/infra-apply-change` |
 
 The functionality is identical regardless of syntax.
 

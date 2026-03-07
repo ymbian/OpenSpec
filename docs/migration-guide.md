@@ -382,10 +382,10 @@ OPSX uses the emerging **skills** standard:
 
 ```
 .claude/skills/
-├── openspec-explore/SKILL.md
-├── openspec-new-change/SKILL.md
-├── openspec-continue-change/SKILL.md
-├── openspec-apply-change/SKILL.md
+├── infra-explore/SKILL.md
+├── infra-new-change/SKILL.md
+├── infra-continue-change/SKILL.md
+├── infra-apply-change/SKILL.md
 └── ...
 ```
 
@@ -542,8 +542,8 @@ project/
 │   └── config.yaml               # NEW: Project configuration
 ├── .claude/
 │   └── skills/                   # NEW: OPSX skills
-│       ├── openspec-explore/
-│       ├── openspec-new-change/
+│       ├── infra-explore/
+│       ├── infra-new-change/
 │       └── ...
 ├── CLAUDE.md                     # OpenSpec markers removed, your content preserved
 └── AGENTS.md                     # OpenSpec markers removed, your content preserved
