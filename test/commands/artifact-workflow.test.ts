@@ -10,7 +10,7 @@ describe('artifact-workflow CLI commands', () => {
 
   beforeEach(async () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'openspec-artifact-workflow-'));
-    changesDir = path.join(tempDir, 'openspec', 'changes');
+    changesDir = path.join(tempDir, 'infraspec', 'changes');
     await fs.mkdir(changesDir, { recursive: true });
   });
 
@@ -659,9 +659,9 @@ artifacts:
     describe('new change uses config schema', () => {
       it('creates change with schema from project config', async () => {
         // Create project config with spec-driven schema
-        // Note: changesDir is already at tempDir/openspec/changes (created in beforeEach)
+        // Note: changesDir is already at tempDir/infraspec/changes (created in beforeEach)
         await fs.writeFile(
-          path.join(tempDir, 'openspec', 'config.yaml'),
+          path.join(tempDir, 'infraspec', 'config.yaml'),
           'schema: spec-driven\n'
         );
 
@@ -670,16 +670,16 @@ artifacts:
         expect(result.exitCode).toBe(0);
 
         // Verify the change was created with spec-driven schema
-        const metadataPath = path.join(changesDir, 'test-change', '.openspec.yaml');
+        const metadataPath = path.join(changesDir, 'test-change', '.infraspec.yaml');
         const metadata = await fs.readFile(metadataPath, 'utf-8');
         expect(metadata).toContain('schema: spec-driven');
       }, 60000);
 
       it('CLI schema overrides config schema', async () => {
         // Create project config with spec-driven schema
-        // Note: openspec directory already exists (from changesDir creation in beforeEach)
+        // Note: infraspec directory already exists (from changesDir creation in beforeEach)
         await fs.writeFile(
-          path.join(tempDir, 'openspec', 'config.yaml'),
+          path.join(tempDir, 'infraspec', 'config.yaml'),
           'schema: spec-driven\n'
         );
 
@@ -691,7 +691,7 @@ artifacts:
         expect(result.exitCode).toBe(0);
 
         // Verify the change uses the CLI-specified schema
-        const metadataPath = path.join(changesDir, 'override-test', '.openspec.yaml');
+        const metadataPath = path.join(changesDir, 'override-test', '.infraspec.yaml');
         const metadata = await fs.readFile(metadataPath, 'utf-8');
         expect(metadata).toContain('schema: spec-driven');
       }, 60000);
@@ -700,9 +700,9 @@ artifacts:
     describe('instructions command with config', () => {
       it('injects context and rules from config into instructions', async () => {
         // Create project config with context and rules
-        // Note: openspec directory already exists (from changesDir creation in beforeEach)
+        // Note: infraspec directory already exists (from changesDir creation in beforeEach)
         await fs.writeFile(
-          path.join(tempDir, 'openspec', 'config.yaml'),
+          path.join(tempDir, 'infraspec', 'config.yaml'),
           `schema: spec-driven
 context: |
   Tech stack: TypeScript, React
@@ -735,9 +735,9 @@ rules:
 
       it('does not inject rules for non-matching artifact', async () => {
         // Create project config with rules only for proposal
-        // Note: openspec directory already exists (from changesDir creation in beforeEach)
+        // Note: infraspec directory already exists (from changesDir creation in beforeEach)
         await fs.writeFile(
-          path.join(tempDir, 'openspec', 'config.yaml'),
+          path.join(tempDir, 'infraspec', 'config.yaml'),
           `schema: spec-driven
 rules:
   proposal:
@@ -787,7 +787,7 @@ rules:
         // Create change with explicit schema in metadata
         const changeDir = await createTestChange('metadata-only-change');
         await fs.writeFile(
-          path.join(changeDir, '.openspec.yaml'),
+          path.join(changeDir, '.infraspec.yaml'),
           'schema: spec-driven\ncreated: "2025-01-05"\n'
         );
 
@@ -804,9 +804,9 @@ rules:
     describe('config changes reflected immediately', () => {
       it('config changes are reflected without restart', async () => {
         // Create initial config
-        // Note: openspec directory already exists (from changesDir creation in beforeEach)
+        // Note: infraspec directory already exists (from changesDir creation in beforeEach)
         await fs.writeFile(
-          path.join(tempDir, 'openspec', 'config.yaml'),
+          path.join(tempDir, 'infraspec', 'config.yaml'),
           `schema: spec-driven
 context: Initial context
 `
@@ -825,7 +825,7 @@ context: Initial context
 
         // Update config
         await fs.writeFile(
-          path.join(tempDir, 'openspec', 'config.yaml'),
+          path.join(tempDir, 'infraspec', 'config.yaml'),
           `schema: spec-driven
 context: Updated context
 `

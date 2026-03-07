@@ -107,7 +107,7 @@ rules:
 
 **Schema precedence** (highest to lowest):
 1. CLI flag (`--schema <name>`)
-2. Change metadata (`.openspec.yaml` in change directory)
+2. Change metadata (`.infraspec.yaml` in change directory)
 3. Project config (`infraspec/config.yaml`)
 4. Default (`spec-driven`)
 

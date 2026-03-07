@@ -91,7 +91,7 @@ describe('writeChangeMetadata', () => {
       created: '2025-01-05',
     });
 
-    const metaPath = path.join(changeDir, '.openspec.yaml');
+    const metaPath = path.join(changeDir, '.infraspec.yaml');
     const content = await fs.readFile(metaPath, 'utf-8');
 
     expect(content).toContain('schema: spec-driven');
@@ -128,7 +128,7 @@ describe('readChangeMetadata', () => {
   });
 
   it('should read valid metadata', async () => {
-    const metaPath = path.join(changeDir, '.openspec.yaml');
+    const metaPath = path.join(changeDir, '.infraspec.yaml');
     await fs.writeFile(
       metaPath,
       'schema: spec-driven\ncreated: "2025-01-05"\n',
@@ -143,21 +143,21 @@ describe('readChangeMetadata', () => {
   });
 
   it('should throw ChangeMetadataError for invalid YAML', async () => {
-    const metaPath = path.join(changeDir, '.openspec.yaml');
+    const metaPath = path.join(changeDir, '.infraspec.yaml');
     await fs.writeFile(metaPath, '{ invalid yaml', 'utf-8');
 
     expect(() => readChangeMetadata(changeDir)).toThrow(ChangeMetadataError);
   });
 
   it('should throw ChangeMetadataError for missing schema field', async () => {
-    const metaPath = path.join(changeDir, '.openspec.yaml');
+    const metaPath = path.join(changeDir, '.infraspec.yaml');
     await fs.writeFile(metaPath, 'created: "2025-01-05"\n', 'utf-8');
 
     expect(() => readChangeMetadata(changeDir)).toThrow(ChangeMetadataError);
   });
 
   it('should throw ChangeMetadataError for unknown schema', async () => {
-    const metaPath = path.join(changeDir, '.openspec.yaml');
+    const metaPath = path.join(changeDir, '.infraspec.yaml');
     await fs.writeFile(metaPath, 'schema: unknown-schema\n', 'utf-8');
 
     expect(() => readChangeMetadata(changeDir)).toThrow(/Unknown schema/);
@@ -180,7 +180,7 @@ describe('resolveSchemaForChange', () => {
 
   it('should return explicit schema when provided', async () => {
     // Even with metadata file, explicit schema wins
-    const metaPath = path.join(changeDir, '.openspec.yaml');
+    const metaPath = path.join(changeDir, '.infraspec.yaml');
     await fs.writeFile(metaPath, 'schema: spec-driven\n', 'utf-8');
 
     const result = resolveSchemaForChange(changeDir, 'custom-schema');
@@ -188,7 +188,7 @@ describe('resolveSchemaForChange', () => {
   });
 
   it('should return schema from metadata when no explicit schema', async () => {
-    const metaPath = path.join(changeDir, '.openspec.yaml');
+    const metaPath = path.join(changeDir, '.infraspec.yaml');
     await fs.writeFile(metaPath, 'schema: spec-driven\n', 'utf-8');
 
     const result = resolveSchemaForChange(changeDir);
@@ -202,7 +202,7 @@ describe('resolveSchemaForChange', () => {
 
   it('should return default when metadata read fails', async () => {
     // Create an invalid metadata file
-    const metaPath = path.join(changeDir, '.openspec.yaml');
+    const metaPath = path.join(changeDir, '.infraspec.yaml');
     await fs.writeFile(metaPath, '{ invalid yaml', 'utf-8');
 
     // Should fall back to default, not throw
@@ -235,7 +235,7 @@ describe('resolveSchemaForChange', () => {
     );
 
     // Create change metadata with different schema
-    const metaPath = path.join(changeDir, '.openspec.yaml');
+    const metaPath = path.join(changeDir, '.infraspec.yaml');
     await fs.writeFile(metaPath, 'schema: spec-driven\n', 'utf-8');
 
     const result = resolveSchemaForChange(changeDir);
@@ -253,7 +253,7 @@ describe('resolveSchemaForChange', () => {
     );
 
     // Create change metadata
-    const metaPath = path.join(changeDir, '.openspec.yaml');
+    const metaPath = path.join(changeDir, '.infraspec.yaml');
     await fs.writeFile(metaPath, 'schema: spec-driven\n', 'utf-8');
 
     // Explicit schema should win
@@ -271,7 +271,7 @@ describe('resolveSchemaForChange', () => {
       'utf-8'
     );
 
-    const metaPath = path.join(changeDir, '.openspec.yaml');
+    const metaPath = path.join(changeDir, '.infraspec.yaml');
     await fs.writeFile(metaPath, 'schema: spec-driven\n', 'utf-8');
 
     // Test each level

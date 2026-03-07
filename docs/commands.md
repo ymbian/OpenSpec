@@ -94,14 +94,14 @@ Start a new change. Creates the change folder structure and scaffolds it with th
 
 **What it does:**
 - Creates `infraspec/changes/<change-name>/` directory
-- Creates `.openspec.yaml` metadata file in the change folder
+- Creates `.infraspec.yaml` metadata file in the change folder
 - Shows the first artifact template ready for creation
 - Prompts for change name and schema if not provided
 
 **What it creates:**
 ```
 infraspec/changes/<change-name>/
-└── .openspec.yaml    # Change metadata (schema, created date)
+└── .infraspec.yaml   # Change metadata (schema, created date)
 ```
 
 **Example:**

@@ -116,7 +116,7 @@ The system SHALL resolve the schema for a change using the following precedence 
 - **THEN** system uses "custom" regardless of change metadata or config
 
 #### Scenario: Change metadata specifies schema
-- **WHEN** change has `.openspec.yaml` with `schema: bound` and config has `schema: tdd`
+- **WHEN** change has `.infraspec.yaml` with `schema: bound` and config has `schema: tdd`
 - **THEN** system uses "bound" from change metadata
 
 #### Scenario: Only project config specifies schema
@@ -169,4 +169,4 @@ The system SHALL continue to work with existing changes that do not have project
 
 #### Scenario: Existing change with config added later
 - **WHEN** config file is added to project with existing changes
-- **THEN** existing changes continue to use their bound schema from `.openspec.yaml`
+- **THEN** existing changes continue to use their bound schema from `.infraspec.yaml`

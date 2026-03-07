@@ -40,7 +40,7 @@
 
 - [x] 5.1 Create `src/core/templates/workflows/propose.ts`
 - [x] 5.2 Implement skill template that combines new + ff behavior
-- [x] 5.3 Ensure propose creates `.openspec.yaml` via `openspec new change` before generating artifacts
+- [x] 5.3 Ensure propose creates `.infraspec.yaml` via `openspec new change` before generating artifacts
 - [x] 5.4 Add onboarding-style explanatory output to template
 - [x] 5.5 Implement command template for propose
 - [x] 5.6 Export templates from `src/core/templates/skill-templates.ts`
@@ -99,10 +99,10 @@
 
 ## 10. Scaffolding Verification
 
-- [x] 10.1 Verify `openspec new change` creates `.openspec.yaml` with schema and created fields
+- [x] 10.1 Verify `openspec new change` creates `.infraspec.yaml` with schema and created fields
 
 <!-- Note: 10.2 and 10.3 below are potential follow-up work, not core to this change -->
-<!-- - [ ] 10.2 Update ff skill to verify `.openspec.yaml` exists after `openspec new change` -->
+<!-- - [ ] 10.2 Update ff skill to verify `.infraspec.yaml` exists after `openspec new change` -->
 <!-- - [ ] 10.3 Add guardrail to skills: "Never manually create files in infraspec/changes/ - use openspec new change" -->
 
 ## 11. Template Next-Step Guidance

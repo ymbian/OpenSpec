@@ -4,9 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="help and init opimize">
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="INFRA optimize">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/ascii-patterns.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/ascii-patterns.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/commands.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/commands.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/concepts.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/concepts.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/customization.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/customization.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/migration-guide.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/migration-guide.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/opsx.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/opsx.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openspec/changes/simplify-skill-installation/specs/propose-workflow/spec.md" beforeDir="false" afterPath="$PROJECT_DIR$/openspec/changes/simplify-skill-installation/specs/propose-workflow/spec.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openspec/changes/simplify-skill-installation/tasks.md" beforeDir="false" afterPath="$PROJECT_DIR$/openspec/changes/simplify-skill-installation/tasks.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openspec/specs/opsx-archive-skill/spec.md" beforeDir="false" afterPath="$PROJECT_DIR$/openspec/specs/opsx-archive-skill/spec.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openspec/specs/schema-resolution/spec.md" beforeDir="false" afterPath="$PROJECT_DIR$/openspec/specs/schema-resolution/spec.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/artifact-graph/instruction-loader.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/artifact-graph/instruction-loader.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/archive-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/archive-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/bulk-archive-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/bulk-archive-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/propose.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/propose.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/change-metadata.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/change-metadata.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/commands/artifact-workflow.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/commands/artifact-workflow.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/artifact-graph/instruction-loader.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/artifact-graph/instruction-loader.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utils/change-metadata.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/utils/change-metadata.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utils/change-utils.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/utils/change-utils.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,7 +130,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772903662746</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="INFRA optimize">
+      <option name="closed" value="true" />
+      <created>1772906033460</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1772906033460</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -137,6 +162,7 @@
     <MESSAGE value="delete openspec.js add infraspec.js to route '.infraspec init' to index.js" />
     <MESSAGE value="change openspec fold to infraspec" />
     <MESSAGE value="help and init opimize" />
-    <option name="LAST_COMMIT_MESSAGE" value="help and init opimize" />
+    <MESSAGE value="INFRA optimize" />
+    <option name="LAST_COMMIT_MESSAGE" value="INFRA optimize" />
   </component>
 </project>

@@ -87,11 +87,11 @@ describe('instruction-loader', () => {
       expect(context.completed.size).toBe(0);
     });
 
-    it('should auto-detect schema from .openspec.yaml metadata', () => {
+    it('should auto-detect schema from .infraspec.yaml metadata', () => {
       // Create change directory with metadata file
       const changeDir = path.join(tempDir, 'infraspec', 'changes', 'my-change');
       fs.mkdirSync(changeDir, { recursive: true });
-      fs.writeFileSync(path.join(changeDir, '.openspec.yaml'), 'schema: spec-driven\ncreated: "2025-01-05"\n');
+      fs.writeFileSync(path.join(changeDir, '.infraspec.yaml'), 'schema: spec-driven\ncreated: "2025-01-05"\n');
 
       // Load without explicit schema - should detect from metadata
       const context = loadChangeContext(tempDir, 'my-change');
@@ -104,7 +104,7 @@ describe('instruction-loader', () => {
       // Create change directory with metadata file using spec-driven
       const changeDir = path.join(tempDir, 'infraspec', 'changes', 'my-change');
       fs.mkdirSync(changeDir, { recursive: true });
-      fs.writeFileSync(path.join(changeDir, '.openspec.yaml'), 'schema: spec-driven\n');
+      fs.writeFileSync(path.join(changeDir, '.infraspec.yaml'), 'schema: spec-driven\n');
 
       // Load with explicit schema - should override metadata
       const context = loadChangeContext(tempDir, 'my-change', 'spec-driven');

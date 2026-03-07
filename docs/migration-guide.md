@@ -453,7 +453,7 @@ rules:
 When determining which schema to use, OPSX checks in order:
 
 1. **CLI flag**: `--schema <name>` (highest priority)
-2. **Change metadata**: `.openspec.yaml` in the change directory
+2. **Change metadata**: `.infraspec.yaml` in the change directory
 3. **Project config**: `infraspec/config.yaml`
 4. **Default**: `spec-driven`
 
