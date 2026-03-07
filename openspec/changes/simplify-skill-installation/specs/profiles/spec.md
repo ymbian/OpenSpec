@@ -88,7 +88,7 @@ The system SHALL provide an interactive picker for configuring profiles.
 - **THEN** the system SHALL exit with code 1
 
 ### Requirement: Profile settings stored in global config
-Profile and delivery settings SHALL be stored in the existing global config file (`~/.config/openspec/config.json`) alongside telemetry and feature flags.
+Profile and delivery settings SHALL be stored in the existing global config file (`~/.config/infraspec/config.json`) alongside telemetry and feature flags.
 
 #### Scenario: Config schema
 - **WHEN** reading profile configuration
@@ -109,7 +109,7 @@ Config changes SHALL NOT automatically propagate to projects.
 
 #### Scenario: Config update does not modify projects
 - **WHEN** user updates config via `openspec config profile`
-- **THEN** the system SHALL only update global config (`~/.config/openspec/config.json`)
+- **THEN** the system SHALL only update global config (`~/.config/infraspec/config.json`)
 - **THEN** the system SHALL NOT modify any project skill/command files
 - **THEN** existing projects retain their current workflow files until user runs `openspec update`
 

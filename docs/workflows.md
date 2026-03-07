@@ -43,7 +43,7 @@ When you know what you want to build and just need to execute:
 ```text
 You: /infra:new add-logout-button
 
-AI:  Created openspec/changes/add-logout-button/
+AI:  Created infraspec/changes/add-logout-button/
      Ready to create: proposal
 
 You: /infra:ff
@@ -140,7 +140,7 @@ You: I'm working on add-dark-mode but got pulled into a bug fix
 
 You: /infra:new fix-login-redirect
 
-AI:  Created openspec/changes/fix-login-redirect/
+AI:  Created infraspec/changes/fix-login-redirect/
 
 You: /infra:ff
 
@@ -270,8 +270,8 @@ AI:  Archiving add-auth...
 
 You: Yes
 
-AI:  ✓ Synced specs to openspec/specs/auth/spec.md
-     ✓ Moved to openspec/changes/archive/2025-01-24-add-auth/
+AI:  ✓ Synced specs to infraspec/specs/auth/spec.md
+     ✓ Moved to infraspec/changes/archive/2025-01-24-add-auth/
 
      Change archived successfully.
 ```

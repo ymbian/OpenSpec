@@ -53,7 +53,7 @@ The command SHALL configure AI coding assistants with skills and slash commands 
 - **WHEN** user selects tools and confirms
 - **THEN** generate skills in `.<tool>/skills/` directory for each selected tool
 - **AND** generate slash commands in `.<tool>/commands/opsx/` directory for each selected tool
-- **AND** create `openspec/config.yaml` with default schema setting
+- **AND** create `infraspec/config.yaml` with default schema setting
 
 ### Requirement: Interactive Mode
 The command SHALL provide an interactive menu for AI tool selection with clear navigation instructions.
@@ -226,13 +226,13 @@ The command SHALL create an OpenSpec config file with schema settings.
 
 - **WHEN** initialization completes
 - **AND** config.yaml does not exist
-- **THEN** create `openspec/config.yaml` with default schema setting
+- **THEN** create `infraspec/config.yaml` with default schema setting
 - **AND** display config location in output
 
 #### Scenario: Preserving existing config.yaml
 
 - **WHEN** initialization runs in extend mode
-- **AND** `openspec/config.yaml` already exists
+- **AND** `infraspec/config.yaml` already exists
 - **THEN** preserve the existing config file
 - **AND** display "(exists)" indicator in output
 

@@ -95,7 +95,7 @@ Delivery controls how workflows are installed:
 - **skills**: Skills only
 - **commands**: Commands only
 
-Stored in existing global config (`~/.config/openspec/config.json`). Not prompted during init.
+Stored in existing global config (`~/.config/infraspec/config.json`). Not prompted during init.
 
 ### 7. New CLI Commands
 
@@ -184,7 +184,7 @@ After migration, subsequent `init` and `update` commands respect the migrated co
 
 ### Global Config Schema Extension
 ```json
-// ~/.config/openspec/config.json (extends existing)
+// ~/.config/infraspec/config.json (extends existing)
 {
   "telemetry": { ... },          // existing
   "featureFlags": { ... },       // existing

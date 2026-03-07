@@ -40,7 +40,7 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
    infraspec new change "<name>"
    \`\`\`
    Add \`--schema <name>\` only if the user requested a specific workflow.
-   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\` with the selected schema.
+   This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\` with the selected schema.
 
 4. **Show the artifact status**
    \`\`\`bash
@@ -115,7 +115,7 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
    infraspec new change "<name>"
    \`\`\`
    Add \`--schema <name>\` only if the user requested a specific workflow.
-   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\` with the selected schema.
+   This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\` with the selected schema.
 
 4. **Show the artifact status**
    \`\`\`bash

@@ -16,7 +16,7 @@ Currently, explore references `/opsx:new` and `/opsx:ff` which are being replace
 
 2. **Where should exploration files live?**
    - `openspec/explorations/<name>.md`?
-   - `openspec/changes/<change>/explorations/`?
+   - `infraspec/changes/<change>/explorations/`?
    - Somewhere else?
 
 3. **What should the format be?**
@@ -99,5 +99,5 @@ Currently, explore references `/opsx:new` and `/opsx:ff` which are being replace
 
 ## Related
 
-- `openspec/changes/simplify-skill-installation/` - current change updating core workflows
+- `infraspec/changes/simplify-skill-installation/` - current change updating core workflows
 - `src/core/templates/workflows/explore.ts` - explore workflow template

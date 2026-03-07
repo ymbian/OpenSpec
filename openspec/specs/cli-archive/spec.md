@@ -134,7 +134,7 @@ The command SHALL handle various error conditions gracefully.
 
 - **WHEN** errors occur
 - **THEN** handle the following conditions:
-  - Missing openspec/changes/ directory
+  - Missing infraspec/changes/ directory
   - Change not found
   - Archive target already exists
   - File system permissions issues

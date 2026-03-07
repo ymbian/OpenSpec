@@ -4,7 +4,7 @@ Configure OpenSpec to generate artifacts in languages other than English.
 
 ## Quick Setup
 
-Add a language instruction to your `openspec/config.yaml`:
+Add a language instruction to your `infraspec/config.yaml`:
 
 ```yaml
 schema: spec-driven

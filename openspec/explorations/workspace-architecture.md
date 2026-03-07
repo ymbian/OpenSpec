@@ -291,14 +291,14 @@ requirements:
 monorepo/
 ├── services/
 │   └── billing/
-│       └── openspec/specs/billing/spec.md
+│       └── infraspec/specs/billing/spec.md
 ├── clients/
 │   ├── web/
-│   │   └── openspec/specs/checkout/spec.md
+│   │   └── infraspec/specs/checkout/spec.md
 │   ├── ios/
-│   │   └── openspec/specs/checkout/spec.md
+│   │   └── infraspec/specs/checkout/spec.md
 │   └── android/
-│       └── openspec/specs/checkout/spec.md
+│       └── infraspec/specs/checkout/spec.md
 └── openspec/           # Root-level for cross-cutting
     ├── specs/
     │   └── checkout-contract/spec.md   # Shared contract
@@ -398,13 +398,13 @@ For multi-repo setups, Model C (or the coordination half of Model D) is almost f
 ```
 ~/work/
 ├── billing-service/
-│   └── openspec/specs/billing/
+│   └── infraspec/specs/billing/
 ├── web-client/
-│   └── openspec/specs/checkout/
+│   └── infraspec/specs/checkout/
 ├── ios-client/
-│   └── openspec/specs/checkout/
+│   └── infraspec/specs/checkout/
 └── contracts/                    # Dedicated repo for shared specs?
-    └── openspec/specs/
+    └── infraspec/specs/
         └── checkout-contract/
 ```
 
@@ -488,12 +488,12 @@ requirements:
 ### 2. Where does the "shared kernel" live?
 
 **Option A: Root level (Model B)**
-- `openspec/specs/checkout/spec.md` is the shared kernel
+- `infraspec/specs/checkout/spec.md` is the shared kernel
 - Platform specs nest under it
 
 **Option B: Dedicated area**
-- `openspec/specs/_shared/checkout-contract/spec.md`
-- Or `openspec/specs/_contracts/checkout/spec.md`
+- `infraspec/specs/_shared/checkout-contract/spec.md`
+- Or `infraspec/specs/_contracts/checkout/spec.md`
 - Explicit "shared" namespace
 
 **Option C: Separate repo (Model C for multi-repo)**
@@ -640,8 +640,8 @@ In short: humans shape intent; agents produce consistent, verifiable contracts.
 
 To avoid losing this in exploration notes, codify it in:
 1. `docs/concepts.md` for human-facing framing
-2. `openspec/specs/openspec-conventions/spec.md` for normative spec conventions
-3. `openspec/specs/docs-agent-instructions/spec.md` for agent-instruction authoring rules
+2. `infraspec/specs/openspec-conventions/spec.md` for normative spec conventions
+3. `infraspec/specs/docs-agent-instructions/spec.md` for agent-instruction authoring rules
 
 ---
 

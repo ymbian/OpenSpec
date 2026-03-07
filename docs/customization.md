@@ -12,7 +12,7 @@ OpenSpec provides three levels of customization:
 
 ## Project Configuration
 
-The `openspec/config.yaml` file is the easiest way to customize OpenSpec for your team. It lets you:
+The `infraspec/config.yaml` file is the easiest way to customize OpenSpec for your team. It lets you:
 
 - **Set a default schema** - Skip `--schema` on every command
 - **Inject project context** - AI sees your tech stack, conventions, etc.
@@ -27,7 +27,7 @@ openspec init
 This walks you through creating a config interactively. Or create one manually:
 
 ```yaml
-# openspec/config.yaml
+# infraspec/config.yaml
 schema: spec-driven
 
 context: |
@@ -86,7 +86,7 @@ When OpenSpec needs a schema, it checks in this order:
 
 1. CLI flag: `--schema <name>`
 2. Change metadata (`.openspec.yaml` in the change folder)
-3. Project config (`openspec/config.yaml`)
+3. Project config (`infraspec/config.yaml`)
 4. Default (`spec-driven`)
 
 ---

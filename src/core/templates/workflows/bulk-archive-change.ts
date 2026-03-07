@@ -41,11 +41,11 @@ This skill allows you to batch-archive changes, handling spec conflicts intellig
       - Parse \`schemaName\` and \`artifacts\` list
       - Note which artifacts are \`done\` vs other states
 
-   b. **Task completion** - Read \`openspec/changes/<name>/tasks.md\`
+   b. **Task completion** - Read \`infraspec/changes/<name>/tasks.md\`
       - Count \`- [ ]\` (incomplete) vs \`- [x]\` (complete)
       - If no tasks file exists, note as "No tasks"
 
-   c. **Delta specs** - Check \`openspec/changes/<name>/specs/\` directory
+   c. **Delta specs** - Check \`infraspec/changes/<name>/specs/\` directory
       - List which capability specs exist
       - For each, extract requirement names (lines matching \`### Requirement: <name>\`)
 
@@ -128,8 +128,8 @@ This skill allows you to batch-archive changes, handling spec conflicts intellig
 
    b. **Perform the archive**:
       \`\`\`bash
-      mkdir -p openspec/changes/archive
-      mv openspec/changes/<name> openspec/changes/archive/YYYY-MM-DD-<name>
+      mkdir -p infraspec/changes/archive
+      mv infraspec/changes/<name> infraspec/changes/archive/YYYY-MM-DD-<name>
       \`\`\`
 
    c. **Track outcome** for each change:
@@ -288,11 +288,11 @@ This skill allows you to batch-archive changes, handling spec conflicts intellig
       - Parse \`schemaName\` and \`artifacts\` list
       - Note which artifacts are \`done\` vs other states
 
-   b. **Task completion** - Read \`openspec/changes/<name>/tasks.md\`
+   b. **Task completion** - Read \`infraspec/changes/<name>/tasks.md\`
       - Count \`- [ ]\` (incomplete) vs \`- [x]\` (complete)
       - If no tasks file exists, note as "No tasks"
 
-   c. **Delta specs** - Check \`openspec/changes/<name>/specs/\` directory
+   c. **Delta specs** - Check \`infraspec/changes/<name>/specs/\` directory
       - List which capability specs exist
       - For each, extract requirement names (lines matching \`### Requirement: <name>\`)
 
@@ -375,8 +375,8 @@ This skill allows you to batch-archive changes, handling spec conflicts intellig
 
    b. **Perform the archive**:
       \`\`\`bash
-      mkdir -p openspec/changes/archive
-      mv openspec/changes/<name> openspec/changes/archive/YYYY-MM-DD-<name>
+      mkdir -p infraspec/changes/archive
+      mv infraspec/changes/<name> infraspec/changes/archive/YYYY-MM-DD-<name>
       \`\`\`
 
    c. **Track outcome** for each change:

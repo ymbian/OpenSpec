@@ -9,7 +9,7 @@ Current architecture:
 - `src/core/templates/workflows/*.ts` - Individual workflow templates
 - `src/prompts/searchable-multi-select.ts` - Tool selection UI
 
-Global config exists at `~/.config/openspec/config.json` for telemetry/feature flags. Profile/delivery settings will extend this existing config.
+Global config exists at `~/.config/infraspec/config.json` for telemetry/feature flags. Profile/delivery settings will extend this existing config.
 
 ## Goals / Non-Goals
 
@@ -33,7 +33,7 @@ Global config exists at `~/.config/openspec/config.json` for telemetry/feature f
 
 ### 1. Extend Existing Global Config
 
-Add profile/delivery settings to existing `~/.config/openspec/config.json` (via `src/core/global-config.ts`).
+Add profile/delivery settings to existing `~/.config/infraspec/config.json` (via `src/core/global-config.ts`).
 
 **Rationale:** Global config already exists with XDG/APPDATA cross-platform path handling, schema evolution, and merge-with-defaults behavior. Reusing it avoids a second config file and leverages existing infrastructure.
 
@@ -49,7 +49,7 @@ Add profile/delivery settings to existing `~/.config/openspec/config.json` (via 
 ```
 
 **Alternatives considered:**
-- New `~/.openspec/config.yaml`: Creates second config file, different format, path confusion
+- New `~/.infraspec/config.yaml`: Creates second config file, different format, path confusion
 - Project config: Would require syncing mechanism, users edit it directly
 - Environment variables: Less discoverable, harder to persist
 
@@ -138,7 +138,7 @@ Tool selection (which assistants a project uses) is per-user AND per-project, bu
 
 - *Path-keyed global config* (`projects: { "/path": { tools: [...] } }`): Fragile on directory move/rename/delete, symlink ambiguity, and project behavior depends on invisible external state.
 - *Gitignored local file* (`.openspec.local`): Lost on fresh clone, adds file management overhead.
-- *Checked-in project config* (`openspec/config.yaml` with `tools` field): Forces tool choices on the whole team — Alice uses Claude Code, Bob uses Cursor, neither wants the other's tools mandated.
+- *Checked-in project config* (`infraspec/config.yaml` with `tools` field): Forces tool choices on the whole team — Alice uses Claude Code, Bob uses Cursor, neither wants the other's tools mandated.
 
 The filesystem approach avoids all three problems. For teams, it's actually beneficial: checked-in skill files mean `openspec update` from any team member refreshes skills for all tools the project supports. The generated files serve as both the deliverable and the implicit tool manifest.
 

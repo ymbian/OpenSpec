@@ -1,6 +1,6 @@
 ## Why
 
-We want to rename `spec-driven` to `openspec-default` to better reflect that it's the standard/default workflow. However, renaming directly would break existing projects that have `schema: spec-driven` in their `openspec/config.yaml`. Adding alias support allows both names to work interchangeably, enabling a smooth transition with no breaking changes.
+We want to rename `spec-driven` to `openspec-default` to better reflect that it's the standard/default workflow. However, renaming directly would break existing projects that have `schema: spec-driven` in their `infraspec/config.yaml`. Adding alias support allows both names to work interchangeably, enabling a smooth transition with no breaking changes.
 
 ## What Changes
 

@@ -93,7 +93,7 @@ The `openspec schemas` command SHALL display the source of each schema.
 
 ### Requirement: Use config schema as default for new changes
 
-The system SHALL use the schema field from `openspec/config.yaml` as the default when creating new changes without explicit `--schema` flag.
+The system SHALL use the schema field from `infraspec/config.yaml` as the default when creating new changes without explicit `--schema` flag.
 
 #### Scenario: Create change without --schema flag and config exists
 - **WHEN** user runs `openspec new change foo` and config contains `schema: "tdd"`
@@ -153,7 +153,7 @@ The system SHALL display schema error with fuzzy match suggestions, list of avai
 
 #### Scenario: Error message includes fix instructions
 - **WHEN** config references invalid schema
-- **THEN** error message includes "Fix: Edit openspec/config.yaml and change 'schema: X' to a valid schema name"
+- **THEN** error message includes "Fix: Edit infraspec/config.yaml and change 'schema: X' to a valid schema name"
 
 #### Scenario: Error distinguishes built-in vs project-local schemas
 - **WHEN** error lists available schemas

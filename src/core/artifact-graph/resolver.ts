@@ -42,14 +42,14 @@ export function getUserSchemasDir(): string {
  * @returns The path to the project's schemas directory
  */
 export function getProjectSchemasDir(projectRoot: string): string {
-  return path.join(projectRoot, 'openspec', 'schemas');
+  return path.join(projectRoot, 'infraspec', 'schemas');
 }
 
 /**
  * Resolves a schema name to its directory path.
  *
  * Resolution order (when projectRoot is provided):
- * 1. Project-local: <projectRoot>/openspec/schemas/<name>/schema.yaml
+ * 1. Project-local: <projectRoot>/infraspec/schemas/<name>/schema.yaml
  * 2. User override: ${XDG_DATA_HOME}/openspec/schemas/<name>/schema.yaml
  * 3. Package built-in: <package>/schemas/<name>/schema.yaml
  *
@@ -94,7 +94,7 @@ export function getSchemaDir(
  * Resolves a schema name to a SchemaYaml object.
  *
  * Resolution order (when projectRoot is provided):
- * 1. Project-local: <projectRoot>/openspec/schemas/<name>/schema.yaml
+ * 1. Project-local: <projectRoot>/infraspec/schemas/<name>/schema.yaml
  * 2. User override: ${XDG_DATA_HOME}/openspec/schemas/<name>/schema.yaml
  * 3. Package built-in: <package>/schemas/<name>/schema.yaml
  *

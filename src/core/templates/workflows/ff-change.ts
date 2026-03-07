@@ -29,7 +29,7 @@ export function getFfChangeSkillTemplate(): SkillTemplate {
    \`\`\`bash
    infraspec new change "<name>"
    \`\`\`
-   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\`.
+   This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\`.
 
 3. **Get the artifact build order**
    \`\`\`bash
@@ -131,7 +131,7 @@ export function getOpsxFfCommandTemplate(): CommandTemplate {
    \`\`\`bash
    infraspec new change "<name>"
    \`\`\`
-   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\`.
+   This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\`.
 
 3. **Get the artifact build order**
    \`\`\`bash

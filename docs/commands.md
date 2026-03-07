@@ -93,14 +93,14 @@ Start a new change. Creates the change folder structure and scaffolds it with th
 | `--schema` | No | Workflow schema to use (default: from config or `spec-driven`) |
 
 **What it does:**
-- Creates `openspec/changes/<change-name>/` directory
+- Creates `infraspec/changes/<change-name>/` directory
 - Creates `.openspec.yaml` metadata file in the change folder
 - Shows the first artifact template ready for creation
 - Prompts for change name and schema if not provided
 
 **What it creates:**
 ```
-openspec/changes/<change-name>/
+infraspec/changes/<change-name>/
 └── .openspec.yaml    # Change metadata (schema, created date)
 ```
 
@@ -108,7 +108,7 @@ openspec/changes/<change-name>/
 ```
 You: /infra:new add-dark-mode
 
-AI:  Created openspec/changes/add-dark-mode/
+AI:  Created infraspec/changes/add-dark-mode/
      Schema: spec-driven
 
      Ready to create: proposal
@@ -118,7 +118,7 @@ AI:  Created openspec/changes/add-dark-mode/
 **Tips:**
 - Use descriptive names: `add-feature`, `fix-bug`, `refactor-module`
 - Avoid generic names like `update`, `changes`, `wip`
-- Schema can also be set in project config (`openspec/config.yaml`)
+- Schema can also be set in project config (`infraspec/config.yaml`)
 
 ---
 
@@ -159,7 +159,7 @@ AI:  Change: add-dark-mode
 
      [Reads proposal.md, creates specs based on requirements]
 
-     ✓ Created openspec/changes/add-dark-mode/specs/ui/spec.md
+     ✓ Created infraspec/changes/add-dark-mode/specs/ui/spec.md
 
      Now available: tasks
      Run /infra:continue to create the next artifact.
@@ -351,7 +351,7 @@ AI:  Verifying add-dark-mode...
 **What it does:**
 - Reads delta specs from change folder
 - Parses ADDED/MODIFIED/REMOVED/RENAMED sections
-- Merges changes into main `openspec/specs/` directory
+- Merges changes into main `infraspec/specs/` directory
 - Preserves existing content not mentioned in delta
 - Does not archive the change (remains active)
 
@@ -361,15 +361,15 @@ You: /infra:sync
 
 AI:  Syncing add-dark-mode delta specs...
 
-     Reading: openspec/changes/add-dark-mode/specs/ui/spec.md
-     Target:  openspec/specs/ui/spec.md
+     Reading: infraspec/changes/add-dark-mode/specs/ui/spec.md
+     Target:  infraspec/specs/ui/spec.md
 
      Changes to apply:
      ✓ ADDED: Theme Selection requirement (2 scenarios)
      ✓ ADDED: Accessibility requirement (1 scenario)
 
      Merging...
-     ✓ openspec/specs/ui/spec.md updated
+     ✓ infraspec/specs/ui/spec.md updated
 
      Change remains active. Run /infra:archive when ready to complete.
 ```
@@ -409,7 +409,7 @@ Archive a completed change. Finalizes the change and moves it to the archive fol
 - Checks artifact completion status
 - Checks task completion (warns if incomplete)
 - Offers to sync delta specs if not already synced
-- Moves change folder to `openspec/changes/archive/YYYY-MM-DD-<name>/`
+- Moves change folder to `infraspec/changes/archive/YYYY-MM-DD-<name>/`
 - Preserves all artifacts for audit trail
 
 **Example:**
@@ -429,8 +429,8 @@ AI:  Archiving add-dark-mode...
 
 You: Yes
 
-AI:  ✓ Synced specs to openspec/specs/ui/spec.md
-     ✓ Moved to openspec/changes/archive/2025-01-24-add-dark-mode/
+AI:  ✓ Synced specs to infraspec/specs/ui/spec.md
+     ✓ Moved to infraspec/changes/archive/2025-01-24-add-dark-mode/
 
      Change archived successfully.
 ```
@@ -641,7 +641,7 @@ The AI tool doesn't recognize OpenSpec commands.
 The AI creates incomplete or incorrect artifacts.
 
 **Solutions:**
-- Add project context in `openspec/config.yaml`
+- Add project context in `infraspec/config.yaml`
 - Add per-artifact rules for specific guidance
 - Provide more detail in your change description
 - Use `/infra:continue` instead of `/infra:ff` for more control

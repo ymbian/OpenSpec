@@ -176,7 +176,7 @@ Now let's create a change to hold our work.
 \`\`\`
 ## Creating a Change
 
-A change in InfraSpec is a container for all the thinking and planning around a piece of work. It lives in the InfraSpec workspace at \`openspec/changes/<name>/\` and holds your artifacts—proposal, specs, design, tasks.
+A change in InfraSpec is a container for all the thinking and planning around a piece of work. It lives in the InfraSpec workspace at \`infraspec/changes/<name>/\` and holds your artifacts—proposal, specs, design, tasks.
 
 Let me create one for our task.
 \`\`\`
@@ -188,11 +188,11 @@ infraspec new change "<derived-name>"
 
 **SHOW:**
 \`\`\`
-Created: \`openspec/changes/<name>/\`
+Created: \`infraspec/changes/<name>/\`
 
 The folder structure:
 \`\`\`
-openspec/changes/<name>/
+infraspec/changes/<name>/
 ├── proposal.md    ← Why we're doing this (empty, we'll fill it)
 ├── design.md      ← How we'll build it (empty)
 ├── specs/         ← Detailed requirements (empty)
@@ -254,7 +254,7 @@ After approval, save the proposal:
 \`\`\`bash
 infraspec instructions proposal --change "<name>" --json
 \`\`\`
-Then write the content to \`openspec/changes/<name>/proposal.md\`.
+Then write the content to \`infraspec/changes/<name>/proposal.md\`.
 
 \`\`\`
 Proposal saved. This is your "why" document—you can always come back and refine it as understanding evolves.
@@ -278,9 +278,9 @@ For a small task like this, we might only need one spec file.
 **DO:** Create the spec file:
 \`\`\`bash
 # Unix/macOS
-mkdir -p openspec/changes/<name>/specs/<capability-name>
+mkdir -p infraspec/changes/<name>/specs/<capability-name>
 # Windows (PowerShell)
-# New-Item -ItemType Directory -Force -Path "openspec/changes/<name>/specs/<capability-name>"
+# New-Item -ItemType Directory -Force -Path "infraspec/changes/<name>/specs/<capability-name>"
 \`\`\`
 
 Draft the spec content:
@@ -307,7 +307,7 @@ Here's the spec:
 This format—WHEN/THEN/AND—makes requirements testable. You can literally read them as test cases.
 \`\`\`
 
-Save to \`openspec/changes/<name>/specs/<capability>/spec.md\`.
+Save to \`infraspec/changes/<name>/specs/<capability>/spec.md\`.
 
 ---
 
@@ -352,7 +352,7 @@ Here's the design:
 For a small task, this captures the key decisions without over-engineering.
 \`\`\`
 
-Save to \`openspec/changes/<name>/design.md\`.
+Save to \`infraspec/changes/<name>/design.md\`.
 
 ---
 
@@ -390,7 +390,7 @@ Each checkbox becomes a unit of work in the apply phase. Ready to implement?
 
 **PAUSE** - Wait for user to confirm they're ready to implement.
 
-Save to \`openspec/changes/<name>/tasks.md\`.
+Save to \`infraspec/changes/<name>/tasks.md\`.
 
 ---
 
@@ -434,7 +434,7 @@ The change is implemented! One more step—let's archive it.
 \`\`\`
 ## Archiving
 
-When a change is complete, we archive it. This moves it from \`openspec/changes/\` to \`openspec/changes/archive/YYYY-MM-DD-<name>/\`.
+When a change is complete, we archive it. This moves it from \`infraspec/changes/\` to \`infraspec/changes/archive/YYYY-MM-DD-<name>/\`.
 
 Archived changes become your project's decision history—you can always find them later to understand why something was built a certain way.
 \`\`\`
@@ -446,7 +446,7 @@ infraspec archive "<name>"
 
 **SHOW:**
 \`\`\`
-Archived to: \`openspec/changes/archive/YYYY-MM-DD-<name>/\`
+Archived to: \`infraspec/changes/archive/YYYY-MM-DD-<name>/\`
 
 The change is now part of your project's history. The code is in your codebase, the decision record is preserved.
 \`\`\`
@@ -509,7 +509,7 @@ Try \`/infra:propose\` on something you actually want to build. You've got the r
 If the user says they need to stop, want to pause, or seem disengaged:
 
 \`\`\`
-No problem! Your change is saved at \`openspec/changes/<name>/\`.
+No problem! Your change is saved at \`infraspec/changes/<name>/\`.
 
 To pick up where we left off later:
 - \`/infra:continue <name>\` - Resume artifact creation

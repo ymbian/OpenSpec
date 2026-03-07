@@ -62,7 +62,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
      - Recommendation: "Complete task: <description>" or "Mark as done if already implemented"
 
    **Spec Coverage**:
-   - If delta specs exist in \`openspec/changes/<name>/specs/\`:
+   - If delta specs exist in \`infraspec/changes/<name>/specs/\`:
      - Extract all requirements (marked with "### Requirement:")
      - For each requirement:
        - Search codebase for keywords related to the requirement
@@ -231,7 +231,7 @@ export function getOpsxVerifyCommandTemplate(): CommandTemplate {
      - Recommendation: "Complete task: <description>" or "Mark as done if already implemented"
 
    **Spec Coverage**:
-   - If delta specs exist in \`openspec/changes/<name>/specs/\`:
+   - If delta specs exist in \`infraspec/changes/<name>/specs/\`:
      - Extract all requirements (marked with "### Requirement:")
      - For each requirement:
        - Search codebase for keywords related to the requirement

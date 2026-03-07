@@ -1,27 +1,27 @@
 # config-loading Specification
 
 ## Purpose
-Define how `openspec/config.yaml` is discovered, parsed, validated, and exposed to callers with safe fallbacks.
+Define how `infraspec/config.yaml` is discovered, parsed, validated, and exposed to callers with safe fallbacks.
 
 ## Requirements
-### Requirement: Load project config from openspec/config.yaml
+### Requirement: Load project config from infraspec/config.yaml
 
-The system SHALL read and parse the project configuration file located at `openspec/config.yaml` relative to the project root.
+The system SHALL read and parse the project configuration file located at `infraspec/config.yaml` relative to the project root.
 
 #### Scenario: Valid config file exists
-- **WHEN** `openspec/config.yaml` exists with valid YAML content
+- **WHEN** `infraspec/config.yaml` exists with valid YAML content
 - **THEN** system parses the file and returns a ProjectConfig object
 
 #### Scenario: Config file does not exist
-- **WHEN** `openspec/config.yaml` does not exist
+- **WHEN** `infraspec/config.yaml` does not exist
 - **THEN** system returns null without error
 
 #### Scenario: Config file has invalid YAML syntax
-- **WHEN** `openspec/config.yaml` contains malformed YAML
+- **WHEN** `infraspec/config.yaml` contains malformed YAML
 - **THEN** system logs a warning message and returns null
 
 #### Scenario: Config file has valid YAML but invalid schema
-- **WHEN** `openspec/config.yaml` contains valid YAML that fails Zod schema validation
+- **WHEN** `infraspec/config.yaml` contains valid YAML that fails Zod schema validation
 - **THEN** system logs a warning message with validation details and returns null
 
 ### Requirement: Support .yml file extension alias
@@ -29,12 +29,12 @@ The system SHALL read and parse the project configuration file located at `opens
 The system SHALL accept both `.yaml` and `.yml` file extensions for the config file.
 
 #### Scenario: Config file uses .yml extension
-- **WHEN** `openspec/config.yml` exists and `openspec/config.yaml` does not exist
-- **THEN** system reads from `openspec/config.yml`
+- **WHEN** `infraspec/config.yml` exists and `infraspec/config.yaml` does not exist
+- **THEN** system reads from `infraspec/config.yml`
 
 #### Scenario: Both .yaml and .yml exist
-- **WHEN** both `openspec/config.yaml` and `openspec/config.yml` exist
-- **THEN** system prefers `openspec/config.yaml`
+- **WHEN** both `infraspec/config.yaml` and `infraspec/config.yml` exist
+- **THEN** system prefers `infraspec/config.yaml`
 
 ### Requirement: Use resilient field-by-field parsing
 

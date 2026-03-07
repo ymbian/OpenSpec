@@ -152,7 +152,7 @@ export function readChangeMetadata(
  * Resolution order:
  * 1. Explicit schema (if provided)
  * 2. Schema from .openspec.yaml metadata (if exists)
- * 3. Schema from openspec/config.yaml (if exists)
+ * 3. Schema from infraspec/config.yaml (if exists)
  * 4. Default 'spec-driven'
  *
  * @param changeDir - The path to the change directory
@@ -163,7 +163,7 @@ export function resolveSchemaForChange(
   changeDir: string,
   explicitSchema?: string
 ): string {
-  // Derive project root from changeDir (changeDir is typically projectRoot/openspec/changes/change-name)
+  // Derive project root from changeDir (changeDir is typically projectRoot/infraspec/changes/change-name)
   const projectRoot = path.resolve(changeDir, '../../..');
 
   // 1. Explicit override wins

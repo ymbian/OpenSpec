@@ -94,7 +94,7 @@ export async function validateChangeExists(
   changeName: string | undefined,
   projectRoot: string
 ): Promise<string> {
-  const changesPath = path.join(projectRoot, 'openspec', 'changes');
+  const changesPath = path.join(projectRoot, 'infraspec', 'changes');
 
   // Get all change directories (not just those with proposal.md)
   const getAvailableChanges = async (): Promise<string[]> => {

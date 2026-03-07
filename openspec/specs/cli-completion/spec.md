@@ -140,15 +140,15 @@ The completion system SHALL provide context-aware dynamic completions for projec
 #### Scenario: Completing change IDs
 
 - **WHEN** completing arguments for commands that accept change names (show, validate, archive)
-- **THEN** discover active changes from `openspec/changes/` directory
-- **AND** exclude archived changes in `openspec/changes/archive/`
+- **THEN** discover active changes from `infraspec/changes/` directory
+- **AND** exclude archived changes in `infraspec/changes/archive/`
 - **AND** return change IDs as completion suggestions
 - **AND** only provide suggestions when inside an OpenSpec-enabled project
 
 #### Scenario: Completing spec IDs
 
 - **WHEN** completing arguments for commands that accept spec names (show, validate)
-- **THEN** discover specs from `openspec/specs/` directory
+- **THEN** discover specs from `infraspec/specs/` directory
 - **AND** return spec IDs as completion suggestions
 - **AND** only provide suggestions when inside an OpenSpec-enabled project
 

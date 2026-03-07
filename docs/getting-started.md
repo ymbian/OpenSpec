@@ -125,7 +125,7 @@ When you archive a change:
 2. **MODIFIED** requirements replace the existing version
 3. **REMOVED** requirements are deleted from the main spec
 
-The change folder moves to `openspec/changes/archive/` for audit history.
+The change folder moves to `infraspec/changes/archive/` for audit history.
 
 ## Example: Your First Change
 
@@ -136,7 +136,7 @@ Let's walk through adding dark mode to an application.
 ```
 You: /infra:new add-dark-mode
 
-AI:  Created openspec/changes/add-dark-mode/
+AI:  Created infraspec/changes/add-dark-mode/
      Ready to create: proposal
 ```
 
@@ -240,8 +240,8 @@ During implementation, if you discover the design needs adjustment, just update 
 You: /infra:archive
 
 AI:  Archiving add-dark-mode...
-     ✓ Merged specs into openspec/specs/ui/spec.md
-     ✓ Moved to openspec/changes/archive/2025-01-24-add-dark-mode/
+     ✓ Merged specs into infraspec/specs/ui/spec.md
+     ✓ Moved to infraspec/changes/archive/2025-01-24-add-dark-mode/
      Done! Ready for the next feature.
 ```
 

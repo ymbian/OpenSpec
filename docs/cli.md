@@ -385,8 +385,8 @@ openspec archive update-ci-config --skip-specs
 
 1. Validates the change (unless `--no-validate`)
 2. Prompts for confirmation (unless `--yes`)
-3. Merges delta specs into `openspec/specs/`
-4. Moves change folder to `openspec/changes/archive/YYYY-MM-DD-<name>/`
+3. Merges delta specs into `infraspec/specs/`
+4. Moves change folder to `infraspec/changes/archive/YYYY-MM-DD-<name>/`
 
 ---
 

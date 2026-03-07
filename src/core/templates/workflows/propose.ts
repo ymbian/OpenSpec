@@ -38,7 +38,7 @@ When ready to implement, run /infra:apply
    \`\`\`bash
    infraspec new change "<name>"
    \`\`\`
-   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\` with \`.openspec.yaml\`.
+   This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\` with \`.openspec.yaml\`.
 
 3. **Get the artifact build order**
    \`\`\`bash
@@ -149,7 +149,7 @@ When ready to implement, run /infra:apply
    \`\`\`bash
    infraspec new change "<name>"
    \`\`\`
-   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\` with \`.openspec.yaml\`.
+   This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\` with \`.openspec.yaml\`.
 
 3. **Get the artifact build order**
    \`\`\`bash

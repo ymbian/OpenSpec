@@ -51,15 +51,15 @@ The CLI SHALL offer to set the newly created schema as the project default.
 #### Scenario: Set as default interactively
 - **WHEN** user runs `openspec schema init my-workflow` in interactive mode
 - **AND** user confirms setting as default
-- **THEN** system updates `openspec/config.yaml` with `defaultSchema: my-workflow`
+- **THEN** system updates `infraspec/config.yaml` with `defaultSchema: my-workflow`
 
 #### Scenario: Set as default via flag
 - **WHEN** user runs `openspec schema init my-workflow --default`
-- **THEN** system creates schema and updates `openspec/config.yaml` with `defaultSchema: my-workflow`
+- **THEN** system creates schema and updates `infraspec/config.yaml` with `defaultSchema: my-workflow`
 
 #### Scenario: Skip setting default
 - **WHEN** user runs `openspec schema init my-workflow --no-default`
-- **THEN** system creates schema without modifying `openspec/config.yaml`
+- **THEN** system creates schema without modifying `infraspec/config.yaml`
 
 ### Requirement: Schema init outputs JSON format
 The CLI SHALL support `--json` flag for machine-readable output.

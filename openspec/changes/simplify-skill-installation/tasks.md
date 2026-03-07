@@ -103,7 +103,7 @@
 
 <!-- Note: 10.2 and 10.3 below are potential follow-up work, not core to this change -->
 <!-- - [ ] 10.2 Update ff skill to verify `.openspec.yaml` exists after `openspec new change` -->
-<!-- - [ ] 10.3 Add guardrail to skills: "Never manually create files in openspec/changes/ - use openspec new change" -->
+<!-- - [ ] 10.3 Add guardrail to skills: "Never manually create files in infraspec/changes/ - use openspec new change" -->
 
 ## 11. Template Next-Step Guidance
 

@@ -65,7 +65,7 @@ openspec init
 
 This creates skills in `.claude/skills/` (or equivalent) that AI coding assistants auto-detect.
 
-During setup, you'll be prompted to create a **project config** (`openspec/config.yaml`). This is optional but recommended.
+During setup, you'll be prompted to create a **project config** (`infraspec/config.yaml`). This is optional but recommended.
 
 ## Project Configuration
 
@@ -76,7 +76,7 @@ Project config lets you set defaults and inject project-specific context into al
 Config is created during `openspec init`, or manually:
 
 ```yaml
-# openspec/config.yaml
+# infraspec/config.yaml
 schema: spec-driven
 
 context: |
@@ -108,7 +108,7 @@ rules:
 **Schema precedence** (highest to lowest):
 1. CLI flag (`--schema <name>`)
 2. Change metadata (`.openspec.yaml` in change directory)
-3. Project config (`openspec/config.yaml`)
+3. Project config (`infraspec/config.yaml`)
 4. Default (`spec-driven`)
 
 **Context injection:**
@@ -143,7 +143,7 @@ rules:
 - Run `openspec schemas --json` to see artifact IDs for each schema
 
 **Config not being applied:**
-- Ensure file is at `openspec/config.yaml` (not `.yml`)
+- Ensure file is at `infraspec/config.yaml` (not `.yml`)
 - Check YAML syntax with a validator
 - Config changes take effect immediately (no restart needed)
 
