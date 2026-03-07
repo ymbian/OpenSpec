@@ -12,7 +12,7 @@ export function getOnboardSkillTemplate(): SkillTemplate {
     description: 'Guided onboarding for InfraSpec - walk through a complete workflow cycle with narration and real codebase work.',
     instructions: getOnboardInstructions(),
     license: 'MIT',
-    compatibility: 'Requires InfraSpec CLI (`openspec`).',
+    compatibility: 'Requires InfraSpec CLI (`infraspec`).',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -28,9 +28,9 @@ Before starting, check if the InfraSpec CLI (\`openspec\`) is installed:
 
 \`\`\`bash
 # Unix/macOS
-openspec --version 2>&1 || echo "CLI_NOT_INSTALLED"
+infraspec --version 2>&1 || echo "CLI_NOT_INSTALLED"
 # Windows (PowerShell)
-# if (Get-Command openspec -ErrorAction SilentlyContinue) { openspec --version } else { echo "CLI_NOT_INSTALLED" }
+# if (Get-Command infraspec -ErrorAction SilentlyContinue) { infraspec --version } else { echo "CLI_NOT_INSTALLED" }
 \`\`\`
 
 **If CLI not installed:**
@@ -183,7 +183,7 @@ Let me create one for our task.
 
 **DO:** Create the change with a derived kebab-case name:
 \`\`\`bash
-openspec new change "<derived-name>"
+infraspec new change "<derived-name>"
 \`\`\`
 
 **SHOW:**
@@ -252,7 +252,7 @@ Does this capture the intent? I can adjust before we save it.
 
 After approval, save the proposal:
 \`\`\`bash
-openspec instructions proposal --change "<name>" --json
+infraspec instructions proposal --change "<name>" --json
 \`\`\`
 Then write the content to \`openspec/changes/<name>/proposal.md\`.
 
@@ -441,7 +441,7 @@ Archived changes become your project's decision history—you can always find th
 
 **DO:**
 \`\`\`bash
-openspec archive "<name>"
+infraspec archive "<name>"
 \`\`\`
 
 **SHOW:**

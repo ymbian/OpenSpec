@@ -713,7 +713,7 @@ export class InitCommand {
       console.log(chalk.bold('Getting started:'));
       console.log('  Start your first change: /infra:new "your idea"');
     } else {
-      console.log("Done. Run 'openspec config profile' to configure your workflows.");
+      console.log("Done. Run 'infraspec config profile' to configure your workflows.");
     }
 
     // Links

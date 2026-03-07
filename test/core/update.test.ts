@@ -77,7 +77,7 @@ describe('UpdateCommand', () => {
       });
 
       await expect(updateCommand.execute(testDir)).rejects.toThrow(
-        "No OpenSpec directory found. Run 'openspec init' first."
+        "No OpenSpec directory found. Run 'infraspec init' first."
       );
     });
 
@@ -106,7 +106,7 @@ describe('UpdateCommand', () => {
 name: infra-explore (old)
 description: Old description
 license: MIT
-compatibility: Requires openspec CLI.
+compatibility: Requires infraspec CLI.
 metadata:
   author: openspec
   version: "0.9"
@@ -1629,7 +1629,7 @@ content
         call.map(arg => String(arg)).join(' ')
       );
       const hasNewToolMessage = calls.some(call =>
-        call.includes("Detected new tool: Cursor. Run 'openspec init' to add it.")
+        call.includes("Detected new tool: Cursor. Run 'infraspec init' to add it.")
       );
       expect(hasNewToolMessage).toBe(true);
 
@@ -1660,7 +1660,7 @@ content
       expect(consolidatedCalls).toHaveLength(1);
       expect(consolidatedCalls[0]).toContain('GitHub Copilot');
       expect(consolidatedCalls[0]).toContain('Windsurf');
-      expect(consolidatedCalls[0]).toContain("Run 'openspec init' to add them.");
+      expect(consolidatedCalls[0]).toContain("Run 'infraspec init' to add them.");
 
       const repeatedSingularCalls = calls.filter(call =>
         call.includes('Detected new tool:')

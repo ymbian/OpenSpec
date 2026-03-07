@@ -84,7 +84,7 @@ You have full context of the InfraSpec system. Use it naturally, don't force it.
 
 At the start, quickly check what exists:
 \`\`\`bash
-openspec list --json
+infraspec list --json
 \`\`\`
 
 This tells you:
@@ -288,7 +288,7 @@ But this summary is optional. Sometimes the thinking IS the value.
 - **Do explore the codebase** - Ground discussions in reality
 - **Do question assumptions** - Including the user's and your own`,
     license: 'MIT',
-    compatibility: 'Requires InfraSpec CLI (`openspec`).',
+    compatibility: 'Requires InfraSpec CLI (`infraspec`).',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -380,7 +380,7 @@ You have full context of the InfraSpec system. Use it naturally, don't force it.
 
 At the start, quickly check what exists:
 \`\`\`bash
-openspec list --json
+infraspec list --json
 \`\`\`
 
 This tells you:
