@@ -10,14 +10,14 @@ import type { CommandContent, ToolCommandAdapter } from '../types.js';
 
 /**
  * DevAgent adapter for command generation.
- * File path: .devagentrules/workflows/opsx-<id>.md
+ * File path: .devagentrules/workflows/infra-<id>.md
  * Format: Markdown header with description (same as Cline)
  */
 export const devagentAdapter: ToolCommandAdapter = {
   toolId: 'devagent',
 
   getFilePath(commandId: string): string {
-    return path.join('.devagentrules', 'workflows', `opsx-${commandId}.md`);
+    return path.join('.devagentrules', 'workflows', `infra-${commandId}.md`);
   },
 
   formatFile(content: CommandContent): string {

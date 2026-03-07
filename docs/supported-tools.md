@@ -6,7 +6,7 @@ OpenSpec works with 20+ AI coding assistants. When you run `openspec init`, you'
 
 For each tool you select, OpenSpec installs:
 
-1. **Skills** — Reusable instruction files that power the `/opsx:*` workflow commands
+1. **Skills** — Reusable instruction files that power the `/infra:*` workflow commands
 2. **Commands** — Tool-specific slash command bindings
 
 ## Tool Directory Reference
@@ -16,23 +16,23 @@ For each tool you select, OpenSpec installs:
 | Amazon Q Developer | `.amazonq/skills/` | `.amazonq/prompts/` |
 | Antigravity | `.agent/skills/` | `.agent/workflows/` |
 | Auggie (Augment CLI) | `.augment/skills/` | `.augment/commands/` |
-| Claude Code | `.claude/skills/` | `.claude/commands/opsx/` |
+| Claude Code | `.claude/skills/` | `.claude/commands/infra/` |
 | Cline | `.cline/skills/` | `.clinerules/workflows/` |
-| CodeBuddy | `.codebuddy/skills/` | `.codebuddy/commands/opsx/` |
+| CodeBuddy | `.codebuddy/skills/` | `.codebuddy/commands/infra/` |
 | Codex | `.codex/skills/` | `~/.codex/prompts/`\* |
 | Continue | `.continue/skills/` | `.continue/prompts/` |
 | CoStrict | `.cospec/skills/` | `.cospec/openspec/commands/` |
-| Crush | `.crush/skills/` | `.crush/commands/opsx/` |
+| Crush | `.crush/skills/` | `.crush/commands/infra/` |
 | Cursor | `.cursor/skills/` | `.cursor/commands/` |
 | Factory Droid | `.factory/skills/` | `.factory/commands/` |
-| Gemini CLI | `.gemini/skills/` | `.gemini/commands/opsx/` |
+| Gemini CLI | `.gemini/skills/` | `.gemini/commands/infra/` |
 | GitHub Copilot | `.github/skills/` | `.github/prompts/`\*\* |
 | iFlow | `.iflow/skills/` | `.iflow/commands/` |
 | Kilo Code | `.kilocode/skills/` | `.kilocode/workflows/` |
 | Kiro | `.kiro/skills/` | `.kiro/prompts/` |
 | OpenCode | `.opencode/skills/` | `.opencode/command/` |
 | Pi | `.pi/skills/` | `.pi/prompts/` |
-| Qoder | `.qoder/skills/` | `.qoder/commands/opsx/` |
+| Qoder | `.qoder/skills/` | `.qoder/commands/infra/` |
 | Qwen Code | `.qwen/skills/` | `.qwen/commands/` |
 | RooCode | `.roo/skills/` | `.roo/commands/` |
 | Trae | `.trae/skills/` | `.trae/skills/` (via `/openspec-*`) |
@@ -76,7 +76,7 @@ For each tool, OpenSpec generates 10 skill files that power the OPSX workflow:
 | `openspec-bulk-archive-change` | Archive multiple changes at once |
 | `openspec-onboard` | Guided onboarding through a complete workflow cycle |
 
-These skills are invoked via slash commands like `/opsx:new`, `/opsx:apply`, etc. See [Commands](commands.md) for the full list.
+These skills are invoked via slash commands like `/infra:new`, `/infra:apply`, etc. See [Commands](commands.md) for the full list.
 
 ## Adding a New Tool
 

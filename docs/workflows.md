@@ -35,18 +35,18 @@ OPSX (fluid actions):
 When you know what you want to build and just need to execute:
 
 ```text
-/opsx:new ──► /opsx:ff ──► /opsx:apply ──► /opsx:verify ──► /opsx:archive
+/infra:new ──► /infra:ff ──► /infra:apply ──► /infra:verify ──► /infra:archive
 ```
 
 **Example conversation:**
 
 ```text
-You: /opsx:new add-logout-button
+You: /infra:new add-logout-button
 
 AI:  Created openspec/changes/add-logout-button/
      Ready to create: proposal
 
-You: /opsx:ff
+You: /infra:ff
 
 AI:  Creating all planning artifacts...
      ✓ proposal.md
@@ -55,7 +55,7 @@ AI:  Creating all planning artifacts...
      ✓ tasks.md
      Ready for implementation!
 
-You: /opsx:apply
+You: /infra:apply
 
 AI:  Working through tasks...
      ✓ Added logout button to header
@@ -63,7 +63,7 @@ AI:  Working through tasks...
      ✓ Added confirmation dialog
      All tasks complete!
 
-You: /opsx:archive
+You: /infra:archive
 
 AI:  ✓ Merged specs
      ✓ Archived change
@@ -76,13 +76,13 @@ AI:  ✓ Merged specs
 When requirements are unclear or you need to investigate first:
 
 ```text
-/opsx:explore ──► /opsx:new ──► /opsx:continue ──► ... ──► /opsx:apply
+/infra:explore ──► /infra:new ──► /infra:continue ──► ... ──► /infra:apply
 ```
 
 **Example conversation:**
 
 ```text
-You: /opsx:explore
+You: /infra:explore
 
 AI:  What would you like to explore?
 
@@ -102,11 +102,11 @@ AI:  Let me help investigate...
 
 You: Let's tackle the data fetching issue.
 
-You: /opsx:new optimize-product-list-fetching
+You: /infra:new optimize-product-list-fetching
 
 AI:  Created change. Ready to create: proposal
 
-You: /opsx:continue
+You: /infra:continue
 
 AI:  Creating proposal based on our exploration...
      [Writes proposal incorporating investigation insights]
@@ -114,7 +114,7 @@ AI:  Creating proposal based on our exploration...
      Ready to create: specs, design
      Which would you like next?
 
-You: /opsx:continue
+You: /infra:continue
 
 AI:  Creating specs...
 ```
@@ -126,11 +126,11 @@ AI:  Creating specs...
 Work on multiple changes at once:
 
 ```text
-Change A: /opsx:new ──► /opsx:ff ──► /opsx:apply (in progress)
+Change A: /infra:new ──► /infra:ff ──► /infra:apply (in progress)
                                          │
                                     context switch
                                          │
-Change B: /opsx:new ──► /opsx:ff ──────► /opsx:apply
+Change B: /infra:new ──► /infra:ff ──────► /infra:apply
 ```
 
 **Example conversation:**
@@ -138,27 +138,27 @@ Change B: /opsx:new ──► /opsx:ff ──────► /opsx:apply
 ```text
 You: I'm working on add-dark-mode but got pulled into a bug fix
 
-You: /opsx:new fix-login-redirect
+You: /infra:new fix-login-redirect
 
 AI:  Created openspec/changes/fix-login-redirect/
 
-You: /opsx:ff
+You: /infra:ff
 
 AI:  ✓ Created planning artifacts
 
-You: /opsx:apply
+You: /infra:apply
 
 AI:  Working on fix-login-redirect...
      [Implements the fix]
      All tasks complete!
 
-You: /opsx:archive
+You: /infra:archive
 
 AI:  ✓ Archived fix-login-redirect
 
 You: Let's get back to dark mode
 
-You: /opsx:apply add-dark-mode
+You: /infra:apply add-dark-mode
 
 AI:  Resuming add-dark-mode...
      Picking up at task 2.3: Update Header...
@@ -166,10 +166,10 @@ AI:  Resuming add-dark-mode...
 
 **Best for:** Parallel work streams, urgent interrupts, team collaboration.
 
-When you have multiple completed changes, use `/opsx:bulk-archive`:
+When you have multiple completed changes, use `/infra:bulk-archive`:
 
 ```text
-You: /opsx:bulk-archive
+You: /infra:bulk-archive
 
 AI:  Found 3 completed changes:
      - add-dark-mode (all tasks done)
@@ -199,7 +199,7 @@ Bulk archive detects when multiple changes touch the same specs and resolves con
 The recommended completion flow:
 
 ```text
-/opsx:apply ──► /opsx:verify ──► /opsx:archive
+/infra:apply ──► /infra:verify ──► /infra:archive
                     │                 │
               validates          prompts to sync
               implementation     if needed
@@ -207,10 +207,10 @@ The recommended completion flow:
 
 #### Verify: Check Your Work
 
-`/opsx:verify` validates implementation against your artifacts across three dimensions:
+`/infra:verify` validates implementation against your artifacts across three dimensions:
 
 ```text
-You: /opsx:verify
+You: /infra:verify
 
 AI:  Verifying add-auth...
 
@@ -252,10 +252,10 @@ Verify won't block archive, but it surfaces issues you might want to address fir
 
 #### Archive: Finalize the Change
 
-`/opsx:archive` completes the change and moves it to the archive:
+`/infra:archive` completes the change and moves it to the archive:
 
 ```text
-You: /opsx:archive
+You: /infra:archive
 
 AI:  Archiving add-auth...
 
@@ -280,17 +280,17 @@ Archive will prompt if specs aren't synced. It won't block on incomplete tasks, 
 
 ## When to Use What
 
-### `/opsx:ff` vs `/opsx:continue`
+### `/infra:ff` vs `/infra:continue`
 
 | Situation | Use |
 |-----------|-----|
-| Clear requirements, ready to build | `/opsx:ff` |
-| Exploring, want to review each step | `/opsx:continue` |
-| Want to iterate on proposal before specs | `/opsx:continue` |
-| Time pressure, need to move fast | `/opsx:ff` |
-| Complex change, want control | `/opsx:continue` |
+| Clear requirements, ready to build | `/infra:ff` |
+| Exploring, want to review each step | `/infra:continue` |
+| Want to iterate on proposal before specs | `/infra:continue` |
+| Time pressure, need to move fast | `/infra:ff` |
+| Complex change, want control | `/infra:continue` |
 
-**Rule of thumb:** If you can describe the full scope upfront, use `/opsx:ff`. If you're figuring it out as you go, use `/opsx:continue`.
+**Rule of thumb:** If you can describe the full scope upfront, use `/infra:ff`. If you're figuring it out as you go, use `/infra:continue`.
 
 ### When to Update vs Start Fresh
 
@@ -348,12 +348,12 @@ One logical unit of work per change. If you're doing "add feature X and also ref
 - Can ship independently
 - Simpler rollback if needed
 
-### Use `/opsx:explore` for Unclear Requirements
+### Use `/infra:explore` for Unclear Requirements
 
 Before committing to a change, explore the problem space:
 
 ```text
-You: /opsx:explore
+You: /infra:explore
 
 AI:  What would you like to explore?
 
@@ -374,10 +374,10 @@ Exploration clarifies thinking before you create artifacts.
 
 ### Verify Before Archiving
 
-Use `/opsx:verify` to check implementation matches artifacts:
+Use `/infra:verify` to check implementation matches artifacts:
 
 ```text
-You: /opsx:verify
+You: /infra:verify
 
 AI:  Verifying add-dark-mode...
 
@@ -408,15 +408,15 @@ For full command details and options, see [Commands](commands.md).
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
-| `/opsx:explore` | Think through ideas | Unclear requirements, investigation |
-| `/opsx:new` | Start a change | Beginning any new work |
-| `/opsx:continue` | Create next artifact | Step-by-step artifact creation |
-| `/opsx:ff` | Create all planning artifacts | Clear scope, ready to build |
-| `/opsx:apply` | Implement tasks | Ready to write code |
-| `/opsx:verify` | Validate implementation | Before archiving, catch mismatches |
-| `/opsx:sync` | Merge delta specs | Optional—archive prompts if needed |
-| `/opsx:archive` | Complete the change | All work finished |
-| `/opsx:bulk-archive` | Archive multiple changes | Parallel work, batch completion |
+| `/infra:explore` | Think through ideas | Unclear requirements, investigation |
+| `/infra:new` | Start a change | Beginning any new work |
+| `/infra:continue` | Create next artifact | Step-by-step artifact creation |
+| `/infra:ff` | Create all planning artifacts | Clear scope, ready to build |
+| `/infra:apply` | Implement tasks | Ready to write code |
+| `/infra:verify` | Validate implementation | Before archiving, catch mismatches |
+| `/infra:sync` | Merge delta specs | Optional—archive prompts if needed |
+| `/infra:archive` | Complete the change | All work finished |
+| `/infra:bulk-archive` | Archive multiple changes | Parallel work, batch completion |
 
 ## Next Steps
 

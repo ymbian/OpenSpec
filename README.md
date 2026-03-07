@@ -36,7 +36,7 @@ Our philosophy:
 > [!TIP]
 > **New workflow now available!** We've rebuilt OpenSpec with a new artifact-guided workflow.
 >
-> Run `/opsx:onboard` to get started. → [Learn more here](docs/opsx.md)
+> Run `/infra:onboard` to get started. → [Learn more here](docs/opsx.md)
 
 <p align="center">
   Follow <a href="https://x.com/0xTab">@0xTab on X</a> for updates · Join the <a href="https://discord.gg/YctCnvvshC">OpenSpec Discord</a> for help and questions.
@@ -46,23 +46,23 @@ Our philosophy:
 
 Using OpenSpec in a team? [Email here](mailto:teams@openspec.dev) for access to our Slack channel.
 
-<!-- TODO: Add GIF demo of /opsx:new → /opsx:archive workflow -->
+<!-- TODO: Add GIF demo of /infra:new → /infra:archive workflow -->
 
 ## See it in action
 
 ```text
-You: /opsx:new add-dark-mode
+You: /infra:new add-dark-mode
 AI:  Created openspec/changes/add-dark-mode/
      Ready to create: proposal
 
-You: /opsx:ff   # "fast-forward" - generate all planning docs
+You: /infra:ff   # "fast-forward" - generate all planning docs
 AI:  ✓ proposal.md — why we're doing this, what's changing
      ✓ specs/       — requirements and scenarios
      ✓ design.md    — technical approach
      ✓ tasks.md     — implementation checklist
      Ready for implementation!
 
-You: /opsx:apply
+You: /infra:apply
 AI:  Implementing tasks...
      ✓ 1.1 Add theme context provider
      ✓ 1.2 Create toggle component
@@ -70,7 +70,7 @@ AI:  Implementing tasks...
      ✓ 2.2 Wire up localStorage
      All tasks complete!
 
-You: /opsx:archive
+You: /infra:archive
 AI:  Archived to openspec/changes/archive/2025-01-23-add-dark-mode/
      Specs updated. Ready for the next feature.
 ```
@@ -101,7 +101,7 @@ cd your-project
 openspec init
 ```
 
-Now tell your AI: `/opsx:new <what-you-want-to-build>`
+Now tell your AI: `/infra:new <what-you-want-to-build>`
 
 > [!NOTE]
 > Not sure if your tool is supported? [View the full list](docs/supported-tools.md) – we support 20+ tools and growing.

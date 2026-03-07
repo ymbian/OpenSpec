@@ -25,7 +25,7 @@ The legacy OpenSpec workflow works, but it's **locked down**:
 4. **Iterate quickly** — change a template, test immediately, no rebuild
 
 ```
-Legacy workflow:                      OPSX:
+Legacy workflow:                      INFRA:
 ┌────────────────────────┐           ┌────────────────────────┐
 │  Hardcoded in package  │           │  schema.yaml           │◄── You edit this
 │  (can't change)        │           │  templates/*.md        │◄── Or this
@@ -155,48 +155,48 @@ rules:
 
 | Command | What it does |
 |---------|--------------|
-| `/opsx:explore` | Think through ideas, investigate problems, clarify requirements |
-| `/opsx:new` | Start a new change |
-| `/opsx:continue` | Create the next artifact (based on what's ready) |
-| `/opsx:ff` | Fast-forward — create all planning artifacts at once |
-| `/opsx:apply` | Implement tasks, updating artifacts as needed |
-| `/opsx:sync` | Sync delta specs to main (optional—archive prompts if needed) |
-| `/opsx:archive` | Archive when done |
+| `/infra:explore` | Think through ideas, investigate problems, clarify requirements |
+| `/infra:new` | Start a new change |
+| `/infra:continue` | Create the next artifact (based on what's ready) |
+| `/infra:ff` | Fast-forward — create all planning artifacts at once |
+| `/infra:apply` | Implement tasks, updating artifacts as needed |
+| `/infra:sync` | Sync delta specs to main (optional—archive prompts if needed) |
+| `/infra:archive` | Archive when done |
 
 ## Usage
 
 ### Explore an idea
 ```
-/opsx:explore
+/infra:explore
 ```
-Think through ideas, investigate problems, compare options. No structure required - just a thinking partner. When insights crystallize, transition to `/opsx:new` or `/opsx:ff`.
+Think through ideas, investigate problems, compare options. No structure required - just a thinking partner. When insights crystallize, transition to `/infra:new` or `/infra:ff`.
 
 ### Start a new change
 ```
-/opsx:new
+/infra:new
 ```
 You'll be asked what you want to build and which workflow schema to use.
 
 ### Create artifacts
 ```
-/opsx:continue
+/infra:continue
 ```
 Shows what's ready to create based on dependencies, then creates one artifact. Use repeatedly to build up your change incrementally.
 
 ```
-/opsx:ff add-dark-mode
+/infra:ff add-dark-mode
 ```
 Creates all planning artifacts at once. Use when you have a clear picture of what you're building.
 
 ### Implement (the fluid part)
 ```
-/opsx:apply
+/infra:apply
 ```
-Works through tasks, checking them off as you go. If you're juggling multiple changes, you can run `/opsx:apply <name>`; otherwise it should infer from the conversation and prompt you to choose if it can't tell.
+Works through tasks, checking them off as you go. If you're juggling multiple changes, you can run `/infra:apply <name>`; otherwise it should infer from the conversation and prompt you to choose if it can't tell.
 
 ### Finish up
 ```
-/opsx:archive   # Move to archive when done (prompts to sync specs if needed)
+/infra:archive   # Move to archive when done (prompts to sync specs if needed)
 ```
 
 ## When to Update vs. Start Fresh
@@ -287,7 +287,7 @@ Think of it like git branches:
 
 ## What's Different?
 
-| | Legacy (`/openspec:proposal`) | OPSX (`/opsx:*`) |
+| | Legacy (`/openspec:proposal`) | OPSX (`/infra:*`) |
 |---|---|---|
 | **Structure** | One big proposal document | Discrete artifacts with dependencies |
 | **Workflow** | Linear phases: plan → implement → archive | Fluid actions — do anything anytime |
@@ -469,7 +469,7 @@ Artifacts form a directed acyclic graph (DAG). Dependencies are **enablers**, no
 **OPSX** — agent queries for rich context:
 
 ```
-  User: "/opsx:continue"
+  User: "/infra:continue"
            │
            ▼
   ┌──────────────────────────────────────────────────────────────────────────┐
@@ -526,7 +526,7 @@ Artifacts form a directed acyclic graph (DAG). Dependencies are **enablers**, no
 **OPSX** — natural iteration:
 
 ```
-  /opsx:new ───► /opsx:continue ───► /opsx:apply ───► /opsx:archive
+  /infra:new ───► /infra:continue ───► /infra:apply ───► /infra:archive
       │                │                  │
       │                │                  ├── "The design is wrong"
       │                │                  │
@@ -535,7 +535,7 @@ Artifacts form a directed acyclic graph (DAG). Dependencies are **enablers**, no
       │                │            and continue!
       │                │                  │
       │                │                  ▼
-      │                │         /opsx:apply picks up
+      │                │         /infra:apply picks up
       │                │         where you left off
       │                │
       │                └── Creates ONE artifact, shows what's unlocked
@@ -631,9 +631,9 @@ openspec schema validate my-workflow
 
 ## Tips
 
-- Use `/opsx:explore` to think through an idea before committing to a change
-- `/opsx:ff` when you know what you want, `/opsx:continue` when exploring
-- During `/opsx:apply`, if something's wrong — fix the artifact, then continue
+- Use `/infra:explore` to think through an idea before committing to a change
+- `/infra:ff` when you know what you want, `/infra:continue` when exploring
+- During `/infra:apply`, if something's wrong — fix the artifact, then continue
 - Tasks track progress via checkboxes in `tasks.md`
 - Check status anytime: `openspec status --change "name"`
 

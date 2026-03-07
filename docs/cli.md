@@ -1,6 +1,6 @@
 # CLI Reference
 
-The OpenSpec CLI (`openspec`) provides terminal commands for project setup, validation, status inspection, and management. These commands complement the AI slash commands (like `/opsx:new`) documented in [Commands](commands.md).
+The OpenSpec CLI (`openspec`) provides terminal commands for project setup, validation, status inspection, and management. These commands complement the AI slash commands (like `/infra:new`) documented in [Commands](commands.md).
 
 ## Summary
 
@@ -435,7 +435,7 @@ Artifacts:
   ◆ design       ready (requires: specs)
   ○ tasks        blocked (requires: design)
 
-Next: Create design using /opsx:continue
+Next: Create design using /infra:continue
 ```
 
 **Output (JSON):**
@@ -920,7 +920,7 @@ openspec completion uninstall
 
 ## Related Documentation
 
-- [Commands](commands.md) - AI slash commands (`/opsx:new`, `/opsx:apply`, etc.)
+- [Commands](commands.md) - AI slash commands (`/infra:new`, `/infra:apply`, etc.)
 - [Workflows](workflows.md) - Common patterns and when to use each command
 - [Customization](customization.md) - Create custom schemas and templates
 - [Getting Started](getting-started.md) - First-time setup guide
