@@ -25,9 +25,8 @@ function getWelcomeText(): string[] {
     chalk.dim('  • /infra:* slash commands'),
     '',
     chalk.white('Quick start after setup:'),
-    `  ${chalk.yellow('/infra:new')}      ${chalk.dim('Create a change')}`,
-    `  ${chalk.yellow('/infra:continue')} ${chalk.dim('Next artifact')}`,
-    `  ${chalk.yellow('/infra:apply')}    ${chalk.dim('Implement tasks')}`,
+    `  ${chalk.yellow('/infra:propose'.padEnd(16))}${chalk.dim('Propose a change (proposal, specs, design, tasks)')}`,
+    `  ${chalk.yellow('/infra:apply'.padEnd(16))}${chalk.dim('Implement tasks')}`,
     '',
     chalk.cyan('Press Enter to select tools...'),
   ];
