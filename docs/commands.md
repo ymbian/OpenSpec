@@ -533,7 +533,7 @@ Guided onboarding through the complete OpenSpec workflow. An interactive tutoria
 ```
 You: /infra:onboard
 
-AI:  Welcome to OpenSpec!
+AI:  Welcome to InfraSpec!
 
      I'll walk you through the complete workflow using your actual codebase.
      We'll find something small to improve, create a proper change for it,

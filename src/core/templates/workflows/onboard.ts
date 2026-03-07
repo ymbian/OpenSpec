@@ -45,7 +45,7 @@ Stop here if not installed.
 Display:
 
 \`\`\`
-## Welcome to OpenSpec!
+## Welcome to InfraSpec!
 
 I'll walk you through a complete change cycle—from idea to implementation—using a real task in your codebase. Along the way, you'll learn the workflow by doing it.
 
