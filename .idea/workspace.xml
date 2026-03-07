@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="change openspec fold to infraspec">
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="help and init opimize">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/ascii-patterns.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/ascii-patterns.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +105,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772902330745</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="help and init opimize">
+      <option name="closed" value="true" />
+      <created>1772903662746</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1772903662746</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -127,6 +136,7 @@
     <MESSAGE value="node bin/infraspec.js and init" />
     <MESSAGE value="delete openspec.js add infraspec.js to route '.infraspec init' to index.js" />
     <MESSAGE value="change openspec fold to infraspec" />
-    <option name="LAST_COMMIT_MESSAGE" value="change openspec fold to infraspec" />
+    <MESSAGE value="help and init opimize" />
+    <option name="LAST_COMMIT_MESSAGE" value="help and init opimize" />
   </component>
 </project>

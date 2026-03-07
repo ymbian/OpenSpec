@@ -4,13 +4,13 @@
  */
 
 import chalk from 'chalk';
-import { WELCOME_ANIMATION } from './ascii-patterns.js';
+import { WELCOME_ANIMATION, WELCOME_ART_WIDTH } from './ascii-patterns.js';
 
 // Minimum terminal width for side-by-side layout
 const MIN_WIDTH = 60;
 
 // Width of the ASCII art column (with padding)
-const ART_COLUMN_WIDTH = 24;
+const ART_COLUMN_WIDTH = WELCOME_ART_WIDTH;
 
 /**
  * Welcome text content (right column)

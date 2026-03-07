@@ -34,38 +34,39 @@ const UI = supportsUnicode
     };
 
 function pad(line = ''): string {
-  return line.padEnd(24, UI.empty);
+  return line.padEnd(ART_WIDTH, UI.empty);
 }
 
 function frame(lines: string[]): string[] {
   return lines.map((line) => pad(line));
 }
 
-/** INFRA word as 5-line block art (each letter 3 wide, 5 tall). */
+/** INFRA word as 5-line block art. N/R/A are widened for readability. */
 function infraBlockArt(): string[] {
   const g = UI.glow;
   const e = UI.empty;
   return [
-    `${g}${g}${g} ${g}${e}${g} ${g}${g}${g} ${g}${g}${g} ${e}${g}${e}`,
-    `${e}${g}${e} ${g}${g}${g} ${g}${e}${e} ${g}${e}${g} ${g}${e}${g}`,
-    `${e}${g}${e} ${g}${e}${g} ${g}${g}${g} ${g}${g}${g} ${g}${g}${g}`,
-    `${e}${g}${e} ${g}${e}${g} ${g}${e}${e} ${g}${e}${g} ${g}${e}${g}`,
-    `${g}${g}${g} ${g}${e}${g} ${g}${e}${e} ${g}${e}${g} ${g}${e}${g}`,
+    `${g}${g}${g} ${g}${e}${e}${e}${g} ${g}${g}${g} ${g}${g}${g}${g} ${e}${g}${g}${e}`,
+    `${e}${g}${e} ${g}${g}${e}${e}${g} ${g}${e}${e} ${g}${e}${e}${g} ${g}${e}${e}${g}`,
+    `${e}${g}${e} ${g}${e}${g}${e}${g} ${g}${g}${g} ${g}${g}${g}${g} ${g}${g}${g}${g}`,
+    `${e}${g}${e} ${g}${e}${e}${g}${g} ${g}${e}${e} ${g}${e}${e}${g} ${g}${e}${e}${g}`,
+    `${g}${g}${g} ${g}${e}${e}${e}${g} ${g}${e}${e} ${g}${e}${e}${g} ${g}${e}${e}${g}`,
   ];
 }
 
 const INFRA_LINES = infraBlockArt();
 const BOX_TOP = (n: number) => `  ${UI.tl}${UI.h.repeat(n)}${UI.tr}`;
 const BOX_BOT = (n: number) => `  ${UI.bl}${UI.h.repeat(n)}${UI.br}`;
-const BOX_V = (content: string) => `  ${UI.v} ${content} ${UI.v}`;
+const BOX_V = (content: string) => `  ${UI.v} ${content}  ${UI.v}`;
 
-/** Content width inside box: INFRA is 19 chars; with spaces and bars total line = 25, so box top/bot = 21. */
-const BOX_WIDTH = 21;
+/** Content width inside box: INFRA is 24 chars; with spaces and bars total line = 30, so box top/bot = 26. */
+const BOX_WIDTH = 26;
+const ART_WIDTH = BOX_WIDTH + 4;
 
 /** Single static frame: INFRA in a box (no animation). */
 function staticInfraFrame(): string[] {
   const title = ` ${UI.dot} ${UI.glow}${UI.glow}${UI.glow} INFRA SPEC ${UI.glow}${UI.glow}${UI.glow} ${UI.dot}`;
-  const titleCentered = UI.empty.repeat(Math.max(0, Math.round((24 - title.length) / 2))) + title;
+  const titleCentered = UI.empty.repeat(Math.max(0, Math.floor((ART_WIDTH - title.length) / 2))) + title;
   return [
     '',
     titleCentered,
@@ -81,3 +82,5 @@ export const WELCOME_ANIMATION = {
   interval: 0,
   frames: [frame(staticInfraFrame())],
 };
+
+export const WELCOME_ART_WIDTH = ART_WIDTH;
