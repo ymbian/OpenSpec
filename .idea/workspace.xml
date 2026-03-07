@@ -4,36 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="">
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="folder names prefixed with infra-">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/commands.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/commands.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/migration-guide.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/migration-guide.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/supported-tools.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/supported-tools.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/workflow/instructions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/workflow/instructions.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/init.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/init.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/profile-sync-drift.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/profile-sync-drift.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/shared/tool-detection.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/shared/tool-detection.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/apply-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/apply-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/archive-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/archive-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/bulk-archive-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/bulk-archive-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/continue-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/continue-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/explore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/explore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/ff-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/ff-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/propose.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/propose.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/sync-specs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/sync-specs.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/verify-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/verify-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/cli-e2e/basic.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/cli-e2e/basic.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/commands/artifact-workflow.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/commands/artifact-workflow.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/commands/config-profile.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/commands/config-profile.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/init.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/init.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/migration.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/migration.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/shared/skill-generation.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/shared/skill-generation.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/shared/tool-detection.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/shared/tool-detection.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/templates/skill-templates-parity.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/templates/skill-templates-parity.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/update.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/update.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,6 +64,15 @@
       <workItem from="1772200372114" duration="1259000" />
       <workItem from="1772290608449" duration="5318000" />
     </task>
+    <task id="LOCAL-00001" summary="folder names prefixed with infra-">
+      <option name="closed" value="true" />
+      <created>1772887126489</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1772887126489</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -107,5 +88,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="folder names prefixed with infra-" />
+    <option name="LAST_COMMIT_MESSAGE" value="folder names prefixed with infra-" />
   </component>
 </project>

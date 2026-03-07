@@ -9,7 +9,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 export function getNewChangeSkillTemplate(): SkillTemplate {
   return {
     name: 'infra-new-change',
-    description: 'Start a new OpenSpec change using the experimental artifact workflow. Use when the user wants to create a new feature, fix, or modification with a structured step-by-step approach.',
+    description: 'Start a new InfraSpec change using the experimental artifact workflow. Use when the user wants to create a new feature, fix, or modification with a structured step-by-step approach.',
     instructions: `Start a new change using the experimental artifact-driven approach.
 
 **Input**: The user's request should include a change name (kebab-case) OR a description of what they want to build.
@@ -40,7 +40,7 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
    openspec new change "<name>"
    \`\`\`
    Add \`--schema <name>\` only if the user requested a specific workflow.
-   This creates a scaffolded change at \`openspec/changes/<name>/\` with the selected schema.
+   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\` with the selected schema.
 
 4. **Show the artifact status**
    \`\`\`bash
@@ -74,7 +74,7 @@ After completing the steps, summarize:
 - If a change with that name already exists, suggest continuing that change instead
 - Pass --schema if using a non-default workflow`,
     license: 'MIT',
-    compatibility: 'Requires openspec CLI.',
+    compatibility: 'Requires InfraSpec CLI (`openspec`).',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -115,7 +115,7 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
    openspec new change "<name>"
    \`\`\`
    Add \`--schema <name>\` only if the user requested a specific workflow.
-   This creates a scaffolded change at \`openspec/changes/<name>/\` with the selected schema.
+   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\` with the selected schema.
 
 4. **Show the artifact status**
    \`\`\`bash

@@ -38,7 +38,7 @@ When ready to implement, run /infra:apply
    \`\`\`bash
    openspec new change "<name>"
    \`\`\`
-   This creates a scaffolded change at \`openspec/changes/<name>/\` with \`.openspec.yaml\`.
+   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\` with \`.openspec.yaml\`.
 
 3. **Get the artifact build order**
    \`\`\`bash
@@ -95,7 +95,7 @@ After completing all artifacts, summarize:
 
 **Artifact Creation Guidelines**
 
-- Follow the \`instruction\` field from \`openspec instructions\` for each artifact type
+- Follow the \`instruction\` field from the InfraSpec CLI (\`openspec instructions\`) for each artifact type
 - The schema defines what each artifact should contain - follow it
 - Read dependency artifacts for context before creating new ones
 - Use \`template\` as the structure for your output file - fill in its sections
@@ -110,7 +110,7 @@ After completing all artifacts, summarize:
 - If a change with that name already exists, ask if user wants to continue it or create a new one
 - Verify each artifact file exists after writing before proceeding to next`,
     license: 'MIT',
-    compatibility: 'Requires openspec CLI.',
+    compatibility: 'Requires InfraSpec CLI (`openspec`).',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -149,7 +149,7 @@ When ready to implement, run /infra:apply
    \`\`\`bash
    openspec new change "<name>"
    \`\`\`
-   This creates a scaffolded change at \`openspec/changes/<name>/\` with \`.openspec.yaml\`.
+   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\` with \`.openspec.yaml\`.
 
 3. **Get the artifact build order**
    \`\`\`bash
@@ -206,7 +206,7 @@ After completing all artifacts, summarize:
 
 **Artifact Creation Guidelines**
 
-- Follow the \`instruction\` field from \`openspec instructions\` for each artifact type
+- Follow the \`instruction\` field from the InfraSpec CLI (\`openspec instructions\`) for each artifact type
 - The schema defines what each artifact should contain - follow it
 - Read dependency artifacts for context before creating new ones
 - Use \`template\` as the structure for your output file - fill in its sections

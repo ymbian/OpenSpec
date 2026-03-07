@@ -138,7 +138,7 @@ Main specs are now updated. The change remains active - archive when implementat
 - Show what you're changing as you go
 - The operation should be idempotent - running twice should give same result`,
     license: 'MIT',
-    compatibility: 'Requires openspec CLI.',
+    compatibility: 'Requires InfraSpec CLI (`openspec`).',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }

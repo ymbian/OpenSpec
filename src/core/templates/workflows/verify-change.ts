@@ -168,7 +168,7 @@ Use clear markdown with:
 - Specific, actionable recommendations
 - No vague suggestions like "consider reviewing"`,
     license: 'MIT',
-    compatibility: 'Requires openspec CLI.',
+    compatibility: 'Requires InfraSpec CLI (`openspec`).',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }

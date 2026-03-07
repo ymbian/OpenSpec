@@ -9,7 +9,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 export function getFfChangeSkillTemplate(): SkillTemplate {
   return {
     name: 'infra-ff-change',
-    description: 'Fast-forward through OpenSpec artifact creation. Use when the user wants to quickly create all artifacts needed for implementation without stepping through each one individually.',
+    description: 'Fast-forward through InfraSpec artifact creation. Use when the user wants to quickly create all artifacts needed for implementation without stepping through each one individually.',
     instructions: `Fast-forward through artifact creation - generate everything needed to start implementation in one go.
 
 **Input**: The user's request should include a change name (kebab-case) OR a description of what they want to build.
@@ -29,7 +29,7 @@ export function getFfChangeSkillTemplate(): SkillTemplate {
    \`\`\`bash
    openspec new change "<name>"
    \`\`\`
-   This creates a scaffolded change at \`openspec/changes/<name>/\`.
+   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\`.
 
 3. **Get the artifact build order**
    \`\`\`bash
@@ -86,7 +86,7 @@ After completing all artifacts, summarize:
 
 **Artifact Creation Guidelines**
 
-- Follow the \`instruction\` field from \`openspec instructions\` for each artifact type
+- Follow the \`instruction\` field from the InfraSpec CLI (\`openspec instructions\`) for each artifact type
 - The schema defines what each artifact should contain - follow it
 - Read dependency artifacts for context before creating new ones
 - Use \`template\` as the structure for your output file - fill in its sections
@@ -101,7 +101,7 @@ After completing all artifacts, summarize:
 - If a change with that name already exists, suggest continuing that change instead
 - Verify each artifact file exists after writing before proceeding to next`,
     license: 'MIT',
-    compatibility: 'Requires openspec CLI.',
+    compatibility: 'Requires InfraSpec CLI (`openspec`).',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -131,7 +131,7 @@ export function getOpsxFfCommandTemplate(): CommandTemplate {
    \`\`\`bash
    openspec new change "<name>"
    \`\`\`
-   This creates a scaffolded change at \`openspec/changes/<name>/\`.
+   This creates a scaffolded change in the InfraSpec workspace at \`openspec/changes/<name>/\`.
 
 3. **Get the artifact build order**
    \`\`\`bash
@@ -188,7 +188,7 @@ After completing all artifacts, summarize:
 
 **Artifact Creation Guidelines**
 
-- Follow the \`instruction\` field from \`openspec instructions\` for each artifact type
+- Follow the \`instruction\` field from the InfraSpec CLI (\`openspec instructions\`) for each artifact type
 - The schema defines what each artifact should contain - follow it
 - Read dependency artifacts for context before creating new ones
 - Use \`template\` as the structure for your output file - fill in its sections

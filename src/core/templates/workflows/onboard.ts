@@ -9,22 +9,22 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 export function getOnboardSkillTemplate(): SkillTemplate {
   return {
     name: 'infra-onboard',
-    description: 'Guided onboarding for OpenSpec - walk through a complete workflow cycle with narration and real codebase work.',
+    description: 'Guided onboarding for InfraSpec - walk through a complete workflow cycle with narration and real codebase work.',
     instructions: getOnboardInstructions(),
     license: 'MIT',
-    compatibility: 'Requires openspec CLI.',
+    compatibility: 'Requires InfraSpec CLI (`openspec`).',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
 
 function getOnboardInstructions(): string {
-  return `Guide the user through their first complete OpenSpec workflow cycle. This is a teaching experience—you'll do real work in their codebase while explaining each step.
+  return `Guide the user through their first complete InfraSpec workflow cycle. This is a teaching experience—you'll do real work in their codebase while explaining each step.
 
 ---
 
 ## Preflight
 
-Before starting, check if the OpenSpec CLI is installed:
+Before starting, check if the InfraSpec CLI (\`openspec\`) is installed:
 
 \`\`\`bash
 # Unix/macOS
@@ -34,7 +34,7 @@ openspec --version 2>&1 || echo "CLI_NOT_INSTALLED"
 \`\`\`
 
 **If CLI not installed:**
-> OpenSpec CLI is not installed. Install it first, then come back to \`/infra:onboard\`.
+> InfraSpec CLI (\`openspec\`) is not installed. Install it first, then come back to \`/infra:onboard\`.
 
 Stop here if not installed.
 
@@ -123,7 +123,7 @@ Which task interests you? (Pick a number or describe your own)
 If the user picks or describes something too large (major feature, multi-day work):
 
 \`\`\`
-That's a valuable task, but it's probably larger than ideal for your first OpenSpec run-through.
+That's a valuable task, but it's probably larger than ideal for your first InfraSpec run-through.
 
 For learning the workflow, smaller is better—it lets you see the full cycle without getting stuck in implementation details.
 
@@ -176,7 +176,7 @@ Now let's create a change to hold our work.
 \`\`\`
 ## Creating a Change
 
-A "change" in OpenSpec is a container for all the thinking and planning around a piece of work. It lives in \`openspec/changes/<name>/\` and holds your artifacts—proposal, specs, design, tasks.
+A change in InfraSpec is a container for all the thinking and planning around a piece of work. It lives in the InfraSpec workspace at \`openspec/changes/<name>/\` and holds your artifacts—proposal, specs, design, tasks.
 
 Let me create one for our task.
 \`\`\`
@@ -458,7 +458,7 @@ The change is now part of your project's history. The code is in your codebase, 
 \`\`\`
 ## Congratulations!
 
-You just completed a full OpenSpec cycle:
+You just completed a full InfraSpec cycle:
 
 1. **Explore** - Thought through the problem
 2. **New** - Created a change container
@@ -525,7 +525,7 @@ Exit gracefully without pressure.
 If the user says they just want to see the commands or skip the tutorial:
 
 \`\`\`
-## OpenSpec Quick Reference
+## InfraSpec Quick Reference
 
 **Core workflow:**
 
@@ -566,7 +566,7 @@ Exit gracefully.
 export function getOpsxOnboardCommandTemplate(): CommandTemplate {
   return {
     name: 'INFRA: Onboard',
-    description: 'Guided onboarding - walk through a complete OpenSpec workflow cycle with narration',
+    description: 'Guided onboarding - walk through a complete InfraSpec workflow cycle with narration',
     category: 'Workflow',
     tags: ['workflow', 'onboarding', 'tutorial', 'learning'],
     content: getOnboardInstructions(),
