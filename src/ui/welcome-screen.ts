@@ -122,56 +122,23 @@ export async function showWelcomeScreen(): Promise<void> {
   const textLines = getWelcomeText();
 
   if (!canAnimate()) {
-    // Fallback: show static welcome
-    const frame = WELCOME_ANIMATION.frames[3]; // Peak frame
-    process.stdout.write('\n' + renderFrame(frame, textLines) + '\n\n');
+    const artFrame = WELCOME_ANIMATION.frames[0];
+    process.stdout.write('\n' + renderFrame(artFrame, textLines) + '\n\n');
+    await waitForEnter();
     return;
   }
 
-  let frameIndex = 0;
-  let running = true;
-  let isFirstRender = true;
-
-  // Content height for cursor movement between frames
-  const numContentLines = Math.max(WELCOME_ANIMATION.frames[0].length, textLines.length);
-  const frameHeight = numContentLines + 1; // internal newlines (11) + trailing newlines (2) = 13
-
-  // Total height including initial newline (for cleanup)
-  const totalHeight = frameHeight + 1; // 14
-
-  // Initial render
-  process.stdout.write('\n');
-
-  // Animation loop
-  const interval = setInterval(() => {
-    if (!running) return;
-
-    const frame = WELCOME_ANIMATION.frames[frameIndex];
-
-    // Move cursor up to overwrite previous frame (always after first render)
-    if (!isFirstRender) {
-      process.stdout.write(`\x1b[${frameHeight}A`);
-    }
-    isFirstRender = false;
-
-    // Render current frame
-    process.stdout.write(renderFrame(frame, textLines) + '\n\n');
-
-    // Advance to next frame
-    frameIndex = (frameIndex + 1) % WELCOME_ANIMATION.frames.length;
-  }, WELCOME_ANIMATION.interval);
-
-  // Wait for Enter
+  // Static welcome: render once, no animation loop
+  const artFrame = WELCOME_ANIMATION.frames[0];
+  process.stdout.write('\n' + renderFrame(artFrame, textLines) + '\n\n');
   await waitForEnter();
 
-  // Stop animation
-  running = false;
-  clearInterval(interval);
-
   // Clear the welcome screen and move on
+  const numContentLines = Math.max(artFrame.length, textLines.length);
+  const totalHeight = numContentLines + 2;
   process.stdout.write(`\x1b[${totalHeight}A`);
   for (let i = 0; i < totalHeight; i++) {
-    process.stdout.write('\x1b[2K\n'); // Clear line
+    process.stdout.write('\x1b[2K\n');
   }
-  process.stdout.write(`\x1b[${totalHeight}A`); // Move back up
+  process.stdout.write(`\x1b[${totalHeight}A`);
 }
