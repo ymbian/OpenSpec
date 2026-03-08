@@ -24,7 +24,7 @@ function getOnboardInstructions(): string {
 
 ## Preflight
 
-Before starting, check if the InfraSpec CLI (\`openspec\`) is installed:
+Before starting, check if the InfraSpec CLI (\`infraspec\`) is installed:
 
 \`\`\`bash
 # Unix/macOS
@@ -34,7 +34,7 @@ infraspec --version 2>&1 || echo "CLI_NOT_INSTALLED"
 \`\`\`
 
 **If CLI not installed:**
-> InfraSpec CLI (\`openspec\`) is not installed. Install it first, then come back to \`/infra:onboard\`.
+> InfraSpec CLI (\`infraspec\`) is not installed. Install it first, then come back to \`/infra:onboard\`.
 
 Stop here if not installed.
 

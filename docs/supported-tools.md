@@ -1,6 +1,6 @@
 # Supported Tools
 
-OpenSpec works with 20+ AI coding assistants. When you run `openspec init`, you'll be prompted to select which tools you use, and OpenSpec will configure the appropriate integrations.
+OpenSpec works with 20+ AI coding assistants. When you run `infraspec init`, you'll be prompted to select which tools you use, and OpenSpec will configure the appropriate integrations.
 
 ## How It Works
 
@@ -48,13 +48,13 @@ For CI/CD or scripted setup, use the `--tools` flag:
 
 ```bash
 # Configure specific tools
-openspec init --tools claude,cursor
+infraspec init --tools claude,cursor
 
 # Configure all supported tools
-openspec init --tools all
+infraspec init --tools all
 
 # Skip tool configuration
-openspec init --tools none
+infraspec init --tools none
 ```
 
 **Available tool IDs:** `amazon-q`, `antigravity`, `auggie`, `claude`, `cline`, `codebuddy`, `codex`, `continue`, `costrict`, `crush`, `cursor`, `factory`, `gemini`, `github-copilot`, `iflow`, `kilocode`, `kiro`, `opencode`, `pi`, `qoder`, `qwen`, `roocode`, `trae`, `windsurf`

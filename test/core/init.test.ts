@@ -53,16 +53,16 @@ describe('InitCommand', () => {
   });
 
   describe('execute with --tools flag', () => {
-    it('should create OpenSpec directory structure', async () => {
+    it('should create InfraSpec directory structure', async () => {
       const initCommand = new InitCommand({ tools: 'claude', force: true });
 
       await initCommand.execute(testDir);
 
-      const openspecPath = path.join(testDir, 'openspec');
-      expect(await directoryExists(openspecPath)).toBe(true);
-      expect(await directoryExists(path.join(openspecPath, 'specs'))).toBe(true);
-      expect(await directoryExists(path.join(openspecPath, 'changes'))).toBe(true);
-      expect(await directoryExists(path.join(openspecPath, 'changes', 'archive'))).toBe(true);
+      const infraspecPath = path.join(testDir, 'infraspec');
+      expect(await directoryExists(infraspecPath)).toBe(true);
+      expect(await directoryExists(path.join(infraspecPath, 'specs'))).toBe(true);
+      expect(await directoryExists(path.join(infraspecPath, 'changes'))).toBe(true);
+      expect(await directoryExists(path.join(infraspecPath, 'changes', 'archive'))).toBe(true);
     });
 
     it('should create config.yaml with default schema', async () => {
@@ -70,7 +70,7 @@ describe('InitCommand', () => {
 
       await initCommand.execute(testDir);
 
-      const configPath = path.join(testDir, 'openspec', 'config.yaml');
+      const configPath = path.join(testDir, 'infraspec', 'config.yaml');
       expect(await fileExists(configPath)).toBe(true);
 
       const content = await fs.readFile(configPath, 'utf-8');
@@ -200,9 +200,9 @@ describe('InitCommand', () => {
 
       await initCommand.execute(testDir);
 
-      // Should create OpenSpec structure but no skills
-      const openspecPath = path.join(testDir, 'openspec');
-      expect(await directoryExists(openspecPath)).toBe(true);
+      // Should create InfraSpec structure but no skills
+      const infraspecPath = path.join(testDir, 'infraspec');
+      expect(await directoryExists(infraspecPath)).toBe(true);
 
       // No tool-specific directories should be created
       const claudeSkillsDir = path.join(testDir, '.claude', 'skills');
@@ -251,9 +251,9 @@ describe('InitCommand', () => {
 
     it('should not create config.yaml if it already exists', async () => {
       // Pre-create config.yaml
-      const openspecDir = path.join(testDir, 'openspec');
-      await fs.mkdir(openspecDir, { recursive: true });
-      const configPath = path.join(openspecDir, 'config.yaml');
+      const infraspecDir = path.join(testDir, 'infraspec');
+      await fs.mkdir(infraspecDir, { recursive: true });
+      const configPath = path.join(infraspecDir, 'config.yaml');
       const existingContent = 'schema: custom-schema\n';
       await fs.writeFile(configPath, existingContent);
 
@@ -270,8 +270,8 @@ describe('InitCommand', () => {
 
       await initCommand.execute(newDir);
 
-      const openspecPath = path.join(newDir, 'openspec');
-      expect(await directoryExists(openspecPath)).toBe(true);
+      const infraspecPath = path.join(newDir, 'infraspec');
+      expect(await directoryExists(infraspecPath)).toBe(true);
     });
 
     it('should work in extend mode (re-running init)', async () => {
@@ -551,10 +551,10 @@ describe('InitCommand - profile and detection features', () => {
   });
 
   it('should preselect configured tools but not directory-detected tools in extend mode', async () => {
-    // Simulate existing OpenSpec project (extend mode).
-    await fs.mkdir(path.join(testDir, 'openspec'), { recursive: true });
+    // Simulate existing InfraSpec project (extend mode).
+    await fs.mkdir(path.join(testDir, 'infraspec'), { recursive: true });
 
-    // Configured with OpenSpec
+    // Configured with InfraSpec
     const claudeSkillDir = path.join(testDir, '.claude', 'skills', 'infra-explore');
     await fs.mkdir(claudeSkillDir, { recursive: true });
     await fs.writeFile(path.join(claudeSkillDir, 'SKILL.md'), 'configured');
@@ -581,7 +581,7 @@ describe('InitCommand - profile and detection features', () => {
   });
 
   it('should preselect detected tools for first-time interactive setup', async () => {
-    // First-time init: no openspec/ directory and no configured OpenSpec skills.
+    // First-time init: no infraspec/ directory and no configured InfraSpec skills.
     await fs.mkdir(path.join(testDir, '.github'), { recursive: true });
 
     searchableMultiSelectMock.mockResolvedValue(['github-copilot']);
@@ -621,7 +621,7 @@ describe('InitCommand - profile and detection features', () => {
   });
 
   it('should migrate commands-only extend mode to custom profile without injecting propose', async () => {
-    await fs.mkdir(path.join(testDir, 'openspec'), { recursive: true });
+    await fs.mkdir(path.join(testDir, 'infraspec'), { recursive: true });
     await fs.mkdir(path.join(testDir, '.claude', 'commands', 'infra'), { recursive: true });
     await fs.writeFile(path.join(testDir, '.claude', 'commands', 'infra', 'explore.md'), '# explore\n');
 

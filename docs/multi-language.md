@@ -104,7 +104,7 @@ To verify your language config is working:
 
 ```bash
 # Check the instructions - should show your language context
-openspec instructions proposal --change my-change
+infraspec instructions proposal --change my-change
 
 # Output will include your language context
 ```

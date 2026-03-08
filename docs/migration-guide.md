@@ -82,14 +82,14 @@ Don't worry about getting it perfect. We're still learning what works best here,
 
 ## Running the Migration
 
-Both `openspec init` and `openspec update` detect legacy files and guide you through the same cleanup process. Use whichever fits your situation:
+Both `infraspec init` and `infraspec update` detect legacy files and guide you through the same cleanup process. Use whichever fits your situation:
 
-### Using `openspec init`
+### Using `infraspec init`
 
 Run this if you want to add new tools or reconfigure which tools are set up:
 
 ```bash
-openspec init
+infraspec init
 ```
 
 The init command detects legacy files and guides you through cleanup:
@@ -133,12 +133,12 @@ Needs your attention
 4. New skills are installed in `.claude/skills/`
 5. `infraspec/config.yaml` is created with a default schema
 
-### Using `openspec update`
+### Using `infraspec update`
 
 Run this if you just want to migrate and refresh your existing tools to the latest version:
 
 ```bash
-openspec update
+infraspec update
 ```
 
 The update command also detects and cleans up legacy artifacts, then refreshes your skills to the latest version.
@@ -148,7 +148,7 @@ The update command also detects and cleans up legacy artifacts, then refreshes y
 For scripted migrations:
 
 ```bash
-openspec init --force --tools claude
+infraspec init --force --tools claude
 ```
 
 The `--force` flag skips prompts and auto-accepts cleanup.
@@ -416,7 +416,7 @@ Shows what's ready to create based on what already exists.
 **Need to see status?**
 
 ```bash
-openspec status --change add-my-feature
+infraspec status --change add-my-feature
 ```
 
 ---
@@ -494,7 +494,7 @@ See [Customization](customization.md) for details.
 You're running in a CI or non-interactive environment. Use:
 
 ```bash
-openspec init --force
+infraspec init --force
 ```
 
 ### Commands not appearing after migration

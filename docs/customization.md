@@ -21,7 +21,7 @@ The `infraspec/config.yaml` file is the easiest way to customize OpenSpec for yo
 ### Quick Setup
 
 ```bash
-openspec init
+infraspec init
 ```
 
 This walks you through creating a config interactively. Or create one manually:
@@ -51,10 +51,10 @@ rules:
 
 ```bash
 # Without config
-openspec new change my-feature --schema spec-driven
+infraspec new change my-feature --schema spec-driven
 
 # With config - schema is automatic
-openspec new change my-feature
+infraspec new change my-feature
 ```
 
 **Context and rules injection:**
@@ -241,7 +241,7 @@ Once created, use your schema with:
 
 ```bash
 # Specify on command
-openspec new change feature --schema my-workflow
+infraspec new change feature --schema my-workflow
 
 # Or set as default in config.yaml
 schema: my-workflow

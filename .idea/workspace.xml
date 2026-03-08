@@ -4,23 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="INFRA optimize">
-      <change beforePath="$PROJECT_DIR$/.cursor/commands/opsx-apply.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.cursor/commands/opsx-archive.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.cursor/commands/opsx-explore.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.cursor/commands/opsx-propose.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.cursor/skills/openspec-apply-change/SKILL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.cursor/skills/openspec-archive-change/SKILL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.cursor/skills/openspec-explore/SKILL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.cursor/skills/openspec-propose/SKILL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.devagent/skills/openspec-apply-change/SKILL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.devagent/skills/openspec-archive-change/SKILL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.devagent/skills/openspec-explore/SKILL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.devagent/skills/openspec-propose/SKILL.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.devagentrules/workflows/opsx-apply.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.devagentrules/workflows/opsx-archive.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.devagentrules/workflows/opsx-explore.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.devagentrules/workflows/opsx-propose.md" beforeDir="false" />
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="delete legency spec tasks">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/openspec-parallel-merge-plan.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/init.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/init.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/fixtures/tmp-init/openspec/changes/c1/proposal.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/fixtures/tmp-init/openspec/changes/c1/specs/alpha/spec.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/fixtures/tmp-init/openspec/specs/alpha/spec.md" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -135,7 +126,31 @@
       <option name="project" value="LOCAL" />
       <updated>1772906033460</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="delete cursor and divalent folders">
+      <option name="closed" value="true" />
+      <created>1772974199098</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1772974199098</updated>
+    </task>
+    <task id="LOCAL-00009" summary="delete legency spec tasks">
+      <option name="closed" value="true" />
+      <created>1772974738137</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1772974738137</updated>
+    </task>
+    <task id="LOCAL-00010" summary="delete legency spec tasks">
+      <option name="closed" value="true" />
+      <created>1772974928950</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1772974928950</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -160,6 +175,8 @@
     <MESSAGE value="change openspec fold to infraspec" />
     <MESSAGE value="help and init opimize" />
     <MESSAGE value="INFRA optimize" />
-    <option name="LAST_COMMIT_MESSAGE" value="INFRA optimize" />
+    <MESSAGE value="delete cursor and divalent folders" />
+    <MESSAGE value="delete legency spec tasks" />
+    <option name="LAST_COMMIT_MESSAGE" value="delete legency spec tasks" />
   </component>
 </project>

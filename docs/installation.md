@@ -73,7 +73,7 @@ After installing, initialize OpenSpec in your project:
 
 ```bash
 cd your-project
-openspec init
+infraspec init
 ```
 
 See [Getting Started](getting-started.md) for a full walkthrough.
