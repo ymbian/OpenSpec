@@ -1,4 +1,4 @@
-# @fission-ai/openspec
+# @bym-ai/infraspec
 
 ## 2.0.0
 

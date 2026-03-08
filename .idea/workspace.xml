@@ -4,12 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="update docs">
-      <change beforePath="$PROJECT_DIR$/docs/opsx.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/openspec-parallel-merge-plan.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/fixtures/tmp-init/openspec/changes/c1/proposal.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/fixtures/tmp-init/openspec/changes/c1/specs/alpha/spec.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/fixtures/tmp-init/openspec/specs/alpha/spec.md" beforeDir="false" />
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="update test">
+      <change beforePath="$PROJECT_DIR$/.changeset/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/.changeset/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.changeset/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.changeset/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/release-prepare.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/release-prepare.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/cli.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/cli.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/getting-started.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/getting-started.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/infra.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/infra.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/installation.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/installation.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eslint.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/eslint.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flake.nix" beforeDir="false" afterPath="$PROJECT_DIR$/flake.nix" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/pack-version-check.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/pack-version-check.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/commands/feedback.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/feedback.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/update.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/update.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/commands/feedback.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/commands/feedback.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,7 +168,23 @@
       <option name="project" value="LOCAL" />
       <updated>1772976331387</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="update docs">
+      <option name="closed" value="true" />
+      <created>1772976688605</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1772976688605</updated>
+    </task>
+    <task id="LOCAL-00013" summary="update test">
+      <option name="closed" value="true" />
+      <created>1772976778564</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1772976778564</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,6 +212,7 @@
     <MESSAGE value="delete cursor and divalent folders" />
     <MESSAGE value="delete legency spec tasks" />
     <MESSAGE value="update docs" />
-    <option name="LAST_COMMIT_MESSAGE" value="update docs" />
+    <MESSAGE value="update test" />
+    <option name="LAST_COMMIT_MESSAGE" value="update test" />
   </component>
 </project>

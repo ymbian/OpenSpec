@@ -144,7 +144,7 @@ infraspec update [path] [options]
 
 ```bash
 # Update instruction files after npm upgrade
-npm update @fission-ai/openspec
+npm update @bym-ai/infraspec
 infraspec update
 ```
 
@@ -735,7 +735,7 @@ infraspec schema which spec-driven
 
 ```
 spec-driven resolves from: package
-  Source: /usr/local/lib/node_modules/@fission-ai/openspec/schemas/spec-driven
+  Source: /usr/local/lib/node_modules/@bym-ai/infraspec/schemas/spec-driven
 ```
 
 **Schema precedence:**

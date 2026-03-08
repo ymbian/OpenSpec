@@ -1,10 +1,10 @@
 # Getting Started
 
-This guide explains how OpenSpec works after you've installed and initialized it. For installation instructions, see the [main README](../README.md#quick-start).
+This guide explains how InfraSpec works after you've installed and initialized it. For installation instructions, see the [main README](../README.md#quick-start).
 
 ## How It Works
 
-OpenSpec helps you and your AI coding assistant agree on what to build before any code is written. The workflow follows a simple pattern:
+InfraSpec helps you and your AI coding assistant agree on what to build before any code is written. The workflow follows a simple pattern:
 
 ```
 ┌────────────────────┐
@@ -31,12 +31,12 @@ OpenSpec helps you and your AI coding assistant agree on what to build before an
 └────────────────────┘
 ```
 
-## What OpenSpec Creates
+## What InfraSpec Creates
 
 After running `infraspec init`, your project has this structure:
 
 ```
-openspec/
+infraspec/
 ├── specs/              # Source of truth (your system's behavior)
 │   └── <domain>/
 │       └── spec.md
@@ -81,7 +81,7 @@ You can always go back and refine earlier artifacts as you learn more during imp
 
 ## How Delta Specs Work
 
-Delta specs are the key concept in OpenSpec. They show what's changing relative to your current specs.
+Delta specs are the key concept in InfraSpec. They show what's changing relative to your current specs.
 
 ### The Format
 
@@ -256,13 +256,13 @@ Use the CLI to check on your changes:
 infraspec list
 
 # View change details
-openspec show add-dark-mode
+infraspec show add-dark-mode
 
 # Validate spec formatting
 infraspec validate add-dark-mode
 
 # Interactive dashboard
-openspec view
+infraspec view
 ```
 
 ## Next Steps
@@ -270,4 +270,4 @@ openspec view
 - [Workflows](workflows.md) - Common patterns and when to use each command
 - [Commands](commands.md) - Full reference for all slash commands
 - [Concepts](concepts.md) - Deeper understanding of specs, changes, and schemas
-- [Customization](customization.md) - Make OpenSpec work your way
+- [Customization](customization.md) - Make InfraSpec work your way

@@ -1,15 +1,15 @@
 <p align="center">
-  <a href="https://github.com/Fission-AI/OpenSpec">
+  <a href="https://github.com/Bym-AI/OpenSpec">
     <picture>
       <source srcset="assets/openspec_bg.png">
-      <img src="assets/openspec_bg.png" alt="OpenSpec logo">
+      <img src="assets/openspec_bg.png" alt="InfraSpec logo">
     </picture>
   </a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Fission-AI/OpenSpec/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Fission-AI/OpenSpec/actions/workflows/ci.yml/badge.svg" /></a>
-  <a href="https://www.npmjs.com/package/@fission-ai/openspec"><img alt="npm version" src="https://img.shields.io/npm/v/@fission-ai/openspec?style=flat-square" /></a>
+  <a href="https://github.com/Bym-AI/OpenSpec/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Bym-AI/OpenSpec/actions/workflows/ci.yml/badge.svg" /></a>
+  <a href="https://www.npmjs.com/package/@bym-ai/infraspec"><img alt="npm version" src="https://img.shields.io/npm/v/@bym-ai/infraspec?style=flat-square" /></a>
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
   <a href="https://discord.gg/YctCnvvshC"><img alt="Discord" src="https://img.shields.io/discord/1411657095639601154?style=flat-square&logo=discord&logoColor=white&label=Discord&suffix=%20online" /></a>
 </p>
@@ -17,9 +17,9 @@
 <details>
 <summary><strong>The most loved spec framework.</strong></summary>
 
-[![Stars](https://img.shields.io/github/stars/Fission-AI/OpenSpec?style=flat-square&label=Stars)](https://github.com/Fission-AI/OpenSpec/stargazers)
-[![Downloads](https://img.shields.io/npm/dm/@fission-ai/openspec?style=flat-square&label=Downloads/mo)](https://www.npmjs.com/package/@fission-ai/openspec)
-[![Contributors](https://img.shields.io/github/contributors/Fission-AI/OpenSpec?style=flat-square&label=Contributors)](https://github.com/Fission-AI/OpenSpec/graphs/contributors)
+[![Stars](https://img.shields.io/github/stars/Bym-AI/OpenSpec?style=flat-square&label=Stars)](https://github.com/Bym-AI/OpenSpec/stargazers)
+[![Downloads](https://img.shields.io/npm/dm/@bym-ai/infraspec?style=flat-square&label=Downloads/mo)](https://www.npmjs.com/package/@bym-ai/infraspec)
+[![Contributors](https://img.shields.io/github/contributors/Bym-AI/OpenSpec?style=flat-square&label=Contributors)](https://github.com/Bym-AI/OpenSpec/graphs/contributors)
 
 </details>
 <p></p>
@@ -34,17 +34,17 @@ Our philosophy:
 ```
 
 > [!TIP]
-> **New workflow now available!** We've rebuilt OpenSpec with a new artifact-guided workflow.
+> **New workflow now available!** We've rebuilt InfraSpec with a new artifact-guided workflow.
 >
 > Run `/infra:onboard` to get started. → [Learn more here](docs/infra.md)
 
 <p align="center">
-  Follow <a href="https://x.com/0xTab">@0xTab on X</a> for updates · Join the <a href="https://discord.gg/YctCnvvshC">OpenSpec Discord</a> for help and questions.
+  Follow <a href="https://x.com/0xTab">@0xTab on X</a> for updates · Join the <a href="https://discord.gg/YctCnvvshC">InfraSpec Discord</a> for help and questions.
 </p>
 
 ### Teams
 
-Using OpenSpec in a team? [Email here](mailto:teams@openspec.dev) for access to our Slack channel.
+Using InfraSpec in a team? [Email here](mailto:teams@openspec.dev) for access to our Slack channel.
 
 <!-- TODO: Add GIF demo of /infra:new → /infra:archive workflow -->
 
@@ -52,7 +52,7 @@ Using OpenSpec in a team? [Email here](mailto:teams@openspec.dev) for access to 
 
 ```text
 You: /infra:new add-dark-mode
-AI:  Created openspec/changes/add-dark-mode/
+AI:  Created infraspec/changes/add-dark-mode/
      Ready to create: proposal
 
 You: /infra:ff   # "fast-forward" - generate all planning docs
@@ -71,15 +71,15 @@ AI:  Implementing tasks...
      All tasks complete!
 
 You: /infra:archive
-AI:  Archived to openspec/changes/archive/2025-01-23-add-dark-mode/
+AI:  Archived to infraspec/changes/archive/2025-01-23-add-dark-mode/
      Specs updated. Ready for the next feature.
 ```
 
 <details>
-<summary><strong>OpenSpec Dashboard</strong></summary>
+<summary><strong>InfraSpec Dashboard</strong></summary>
 
 <p align="center">
-  <img src="assets/openspec_dashboard.png" alt="OpenSpec dashboard preview" width="90%">
+  <img src="assets/openspec_dashboard.png" alt="InfraSpec dashboard preview" width="90%">
 </p>
 
 </details>
@@ -88,17 +88,17 @@ AI:  Archived to openspec/changes/archive/2025-01-23-add-dark-mode/
 
 **Requires Node.js 20.19.0 or higher.**
 
-Install OpenSpec globally:
+Install InfraSpec globally:
 
 ```bash
-npm install -g @fission-ai/openspec@latest
+npm install -g @bym-ai/infraspec@latest
 ```
 
 Then navigate to your project directory and initialize:
 
 ```bash
 cd your-project
-openspec init
+infraspec init
 ```
 
 Now tell your AI: `/infra:new <what-you-want-to-build>`
@@ -120,9 +120,9 @@ Now tell your AI: `/infra:new <what-you-want-to-build>`
 → **[Customization](docs/customization.md)**: make it yours
 
 
-## Why OpenSpec?
+## Why InfraSpec?
 
-AI coding assistants are powerful but unpredictable when requirements live only in chat history. OpenSpec adds a lightweight spec layer so you agree on what to build before any code is written.
+AI coding assistants are powerful but unpredictable when requirements live only in chat history. InfraSpec adds a lightweight spec layer so you agree on what to build before any code is written.
 
 - **Agree before you build** — human and AI align on specs before code gets written
 - **Stay organized** — each change gets its own folder with proposal, specs, design, and tasks
@@ -131,18 +131,18 @@ AI coding assistants are powerful but unpredictable when requirements live only 
 
 ### How we compare
 
-**vs. [Spec Kit](https://github.com/github/spec-kit)** (GitHub) — Thorough but heavyweight. Rigid phase gates, lots of Markdown, Python setup. OpenSpec is lighter and lets you iterate freely.
+**vs. [Spec Kit](https://github.com/github/spec-kit)** (GitHub) — Thorough but heavyweight. Rigid phase gates, lots of Markdown, Python setup. InfraSpec is lighter and lets you iterate freely.
 
-**vs. [Kiro](https://kiro.dev)** (AWS) — Powerful but you're locked into their IDE and limited to Claude models. OpenSpec works with the tools you already use.
+**vs. [Kiro](https://kiro.dev)** (AWS) — Powerful but you're locked into their IDE and limited to Claude models. InfraSpec works with the tools you already use.
 
-**vs. nothing** — AI coding without specs means vague prompts and unpredictable results. OpenSpec brings predictability without the ceremony.
+**vs. nothing** — AI coding without specs means vague prompts and unpredictable results. InfraSpec brings predictability without the ceremony.
 
-## Updating OpenSpec
+## Updating InfraSpec
 
 **Upgrade the package**
 
 ```bash
-npm install -g @fission-ai/openspec@latest
+npm install -g @bym-ai/infraspec@latest
 ```
 
 **Refresh agent instructions**
@@ -150,22 +150,22 @@ npm install -g @fission-ai/openspec@latest
 Run this inside each project to regenerate AI guidance and ensure the latest slash commands are active:
 
 ```bash
-openspec update
+infraspec update
 ```
 
 ## Usage Notes
 
-**Model selection**: OpenSpec works best with high-reasoning models. We recommend Opus 4.5 and GPT 5.2 for both planning and implementation.
+**Model selection**: InfraSpec works best with high-reasoning models. We recommend Opus 4.5 and GPT 5.2 for both planning and implementation.
 
-**Context hygiene**: OpenSpec benefits from a clean context window. Clear your context before starting implementation and maintain good context hygiene throughout your session.
+**Context hygiene**: InfraSpec benefits from a clean context window. Clear your context before starting implementation and maintain good context hygiene throughout your session.
 
 ## Contributing
 
 **Small fixes** — Bug fixes, typo corrections, and minor improvements can be submitted directly as PRs.
 
-**Larger changes** — For new features, significant refactors, or architectural changes, please submit an OpenSpec change proposal first so we can align on intent and goals before implementation begins.
+**Larger changes** — For new features, significant refactors, or architectural changes, please submit an InfraSpec change proposal first so we can align on intent and goals before implementation begins.
 
-When writing proposals, keep the OpenSpec philosophy in mind: we serve a wide variety of users across different coding agents, models, and use cases. Changes should work well for everyone.
+When writing proposals, keep the InfraSpec philosophy in mind: we serve a wide variety of users across different coding agents, models, and use cases. Changes should work well for everyone.
 
 **AI-generated code is welcome** — as long as it's been tested and verified. PRs containing AI-generated code should mention the coding agent and model used (e.g., "Generated with Claude Code using claude-opus-4-5-20251101").
 
@@ -182,7 +182,7 @@ When writing proposals, keep the OpenSpec philosophy in mind: we serve a wide va
 <details>
 <summary><strong>Telemetry</strong></summary>
 
-OpenSpec collects anonymous usage stats.
+InfraSpec collects anonymous usage stats.
 
 We collect only command names and version to understand usage patterns. No arguments, paths, content, or PII. Automatically disabled in CI.
 

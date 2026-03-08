@@ -272,7 +272,6 @@ export class UpdateCommand {
       console.log('  /infra:continue  Create the next artifact');
       console.log('  /infra:apply     Implement tasks');
       console.log();
-      console.log(`Learn more: ${chalk.cyan('https://github.com/Fission-AI/OpenSpec')}`);
     }
 
     const configuredAndNewTools = [...new Set([...configuredTools, ...newlyConfiguredTools])];

@@ -9,39 +9,39 @@
 ### npm
 
 ```bash
-npm install -g @fission-ai/openspec@latest
+npm install -g @bym-ai/infraspec@latest
 ```
 
 ### pnpm
 
 ```bash
-pnpm add -g @fission-ai/openspec@latest
+pnpm add -g @bym-ai/infraspec@latest
 ```
 
 ### yarn
 
 ```bash
-yarn global add @fission-ai/openspec@latest
+yarn global add @bym-ai/infraspec@latest
 ```
 
 ### bun
 
 ```bash
-bun add -g @fission-ai/openspec@latest
+bun add -g @bym-ai/infraspec@latest
 ```
 
 ## Nix
 
-Run OpenSpec directly without installation:
+Run InfraSpec directly without installation:
 
 ```bash
-nix run github:Fission-AI/OpenSpec -- init
+nix run github:Bym-AI/OpenSpec -- init
 ```
 
 Or install to your profile:
 
 ```bash
-nix profile install github:Fission-AI/OpenSpec
+nix profile install github:Bym-AI/OpenSpec
 ```
 
 Or add to your development environment in `flake.nix`:
@@ -50,12 +50,12 @@ Or add to your development environment in `flake.nix`:
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    openspec.url = "github:Fission-AI/OpenSpec";
+    infraspec.url = "github:Bym-AI/OpenSpec";
   };
 
-  outputs = { nixpkgs, openspec, ... }: {
+  outputs = { nixpkgs, infraspec, ... }: {
     devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
-      buildInputs = [ openspec.packages.x86_64-linux.default ];
+      buildInputs = [ infraspec.packages.x86_64-linux.default ];
     };
   };
 }
@@ -64,12 +64,12 @@ Or add to your development environment in `flake.nix`:
 ## Verify Installation
 
 ```bash
-openspec --version
+infraspec --version
 ```
 
 ## Next Steps
 
-After installing, initialize OpenSpec in your project:
+After installing, initialize InfraSpec in your project:
 
 ```bash
 cd your-project
