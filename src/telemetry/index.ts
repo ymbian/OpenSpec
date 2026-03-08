@@ -1,12 +1,13 @@
 /**
  * Telemetry module for anonymous usage analytics.
- *
  * Privacy-first design:
  * - Only tracks command name and version
  * - No arguments, file paths, or content
  * - Opt-out via OPENSPEC_TELEMETRY=0 or DO_NOT_TRACK=1
  * - Auto-disabled in CI environments
  * - Anonymous ID is a random UUID with no relation to the user
+ * Telemetry is disabled: no data is ever sent.
+ * The module remains so callers need not change; isTelemetryEnabled() always returns false.
  */
 import { PostHog } from 'posthog-node';
 import { randomUUID } from 'crypto';
@@ -28,24 +29,10 @@ let anonymousId: string | null = null;
  * - OPENSPEC_TELEMETRY=0
  * - DO_NOT_TRACK=1
  * - CI=true (any CI environment)
+ *  * Always returns false — telemetry is disabled and no data is sent.
  */
 export function isTelemetryEnabled(): boolean {
-  // Check explicit opt-out
-  if (process.env.OPENSPEC_TELEMETRY === '0') {
-    return false;
-  }
-
-  // Respect DO_NOT_TRACK standard
-  if (process.env.DO_NOT_TRACK === '1') {
-    return false;
-  }
-
-  // Auto-disable in CI environments
-  if (process.env.CI === 'true') {
-    return false;
-  }
-
-  return true;
+  return false;
 }
 
 /**

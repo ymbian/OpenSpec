@@ -179,11 +179,7 @@ When writing proposals, keep the InfraSpec philosophy in mind: we serve a wide v
 <details>
 <summary><strong>Telemetry</strong></summary>
 
-InfraSpec collects anonymous usage stats.
-
-We collect only command names and version to understand usage patterns. No arguments, paths, content, or PII. Automatically disabled in CI.
-
-**Opt-out:** `export OPENSPEC_TELEMETRY=0` or `export DO_NOT_TRACK=1`
+Telemetry is disabled. No usage data is collected or sent.
 
 </details>
 
