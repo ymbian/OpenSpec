@@ -98,7 +98,7 @@ function formatBody(bodyText?: string): string {
  * Generate a pre-filled GitHub issue URL for manual submission
  */
 function generateManualSubmissionUrl(title: string, body: string): string {
-  const repo = 'Bym-AI/OpenSpec';
+  const repo = 'Bym-AI/InfraSpec';
   const encodedTitle = encodeURIComponent(title);
   const encodedBody = encodeURIComponent(body);
   const encodedLabels = encodeURIComponent('feedback');
@@ -130,7 +130,7 @@ function submitViaGhCli(title: string, body: string): void {
         'issue',
         'create',
         '--repo',
-        'Bym-AI/OpenSpec',
+        'Bym-AI/InfraSpec',
         '--title',
         title,
         '--body',

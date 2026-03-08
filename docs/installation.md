@@ -35,13 +35,13 @@ bun add -g @bym-ai/infraspec@latest
 Run InfraSpec directly without installation:
 
 ```bash
-nix run github:Bym-AI/OpenSpec -- init
+nix run github:Bym-AI/InfraSpec -- init
 ```
 
 Or install to your profile:
 
 ```bash
-nix profile install github:Bym-AI/OpenSpec
+nix profile install github:Bym-AI/InfraSpec
 ```
 
 Or add to your development environment in `flake.nix`:
@@ -50,7 +50,7 @@ Or add to your development environment in `flake.nix`:
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    infraspec.url = "github:Bym-AI/OpenSpec";
+    infraspec.url = "github:Bym-AI/InfraSpec";
   };
 
   outputs = { nixpkgs, infraspec, ... }: {
