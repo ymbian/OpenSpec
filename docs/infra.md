@@ -1,23 +1,23 @@
-# OPSX Workflow
+# InfraSpec Workflow
 
 > Feedback welcome on [Discord](https://discord.gg/YctCnvvshC).
 
 ## What Is It?
 
-OPSX is now the standard workflow for OpenSpec.
+InfraSpec is the standard workflow for spec-driven development.
 
-It's a **fluid, iterative workflow** for OpenSpec changes. No more rigid phases — just actions you can take anytime.
+It's a **fluid, iterative workflow** for InfraSpec changes. No more rigid phases — just actions you can take anytime.
 
 ## Why This Exists
 
-The legacy OpenSpec workflow works, but it's **locked down**:
+The legacy workflow works, but it's **locked down**:
 
 - **Instructions are hardcoded** — buried in TypeScript, you can't change them
 - **All-or-nothing** — one big command creates everything, can't test individual pieces
 - **Fixed structure** — same workflow for everyone, no customization
 - **Black box** — when AI output is bad, you can't tweak the prompts
 
-**OPSX opens it up.** Now anyone can:
+**InfraSpec opens it up.** Now anyone can:
 
 1. **Experiment with instructions** — edit a template, see if the AI does better
 2. **Test granularly** — validate each artifact's instructions independently
@@ -39,16 +39,16 @@ Legacy workflow:                      INFRA:
 **This is for everyone:**
 - **Teams** — create workflows that match how you actually work
 - **Power users** — tweak prompts to get better AI outputs for your codebase
-- **OpenSpec contributors** — experiment with new approaches without releases
+- **InfraSpec contributors** — experiment with new approaches without releases
 
-We're all still learning what works best. OPSX lets us learn together.
+We're all still learning what works best. InfraSpec lets us learn together.
 
 ## The User Experience
 
 **The problem with linear workflows:**
 You're "in planning phase", then "in implementation phase", then "done". But real work doesn't work that way. You implement something, realize your design was wrong, need to update specs, continue implementing. Linear phases fight against how work actually happens.
 
-**OPSX approach:**
+**Infra approach:**
 - **Actions, not phases** — create, implement, update, archive — do any of them anytime
 - **Dependencies are enablers** — they show what's possible, not what's required next
 
@@ -59,8 +59,8 @@ You're "in planning phase", then "in implementation phase", then "done". But rea
 ## Setup
 
 ```bash
-# Make sure you have openspec installed — skills are automatically generated
-openspec init
+# Make sure you have infraspec installed — skills are automatically generated
+infraspec init
 ```
 
 This creates skills in `.claude/skills/` (or equivalent) that AI coding assistants auto-detect.
@@ -73,7 +73,7 @@ Project config lets you set defaults and inject project-specific context into al
 
 ### Creating Config
 
-Config is created during `openspec init`, or manually:
+Config is created during `infraspec init`, or manually:
 
 ```yaml
 # infraspec/config.yaml
@@ -140,7 +140,7 @@ rules:
 
 **"Unknown artifact ID in rules: X"**
 - Check artifact IDs match your schema (see list above)
-- Run `openspec schemas --json` to see artifact IDs for each schema
+- Run `infraspec schemas --json` to see artifact IDs for each schema
 
 **Config not being applied:**
 - Ensure file is at `infraspec/config.yaml` (not `.yml`)
@@ -287,18 +287,18 @@ Think of it like git branches:
 
 ## What's Different?
 
-| | Legacy (`/openspec:proposal`) | OPSX (`/infra:*`) |
+| | Legacy (`/openspec:proposal`) | Infra (`/infra:*`) |
 |---|---|---|
 | **Structure** | One big proposal document | Discrete artifacts with dependencies |
 | **Workflow** | Linear phases: plan → implement → archive | Fluid actions — do anything anytime |
 | **Iteration** | Awkward to go back | Update artifacts as you learn |
 | **Customization** | Fixed structure | Schema-driven (define your own artifacts) |
 
-**The key insight:** work isn't linear. OPSX stops pretending it is.
+**The key insight:** work isn't linear. InfraSpec stops pretending it is.
 
 ## Architecture Deep Dive
 
-This section explains how OPSX works under the hood and how it compares to the legacy workflow.
+This section explains how InfraSpec works under the hood and how it compares to the legacy workflow.
 
 ### Philosophy: Phases vs Actions
 
@@ -324,7 +324,7 @@ This section explains how OPSX works under the hood and how it compares to the l
 
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                            OPSX WORKFLOW                                     │
+│                         INFRASPEC WORKFLOW                                   │
 │                      (Fluid Actions, Iterative)                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
@@ -367,11 +367,11 @@ This section explains how OPSX works under the hood and how it compares to the l
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**OPSX** uses external schemas and a dependency graph engine:
+**InfraSpec** uses external schemas and a dependency graph engine:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                         OPSX COMPONENTS                                      │
+│                      INFRASPEC COMPONENTS                                    │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │   Schema Definitions (YAML)                                                 │
@@ -395,7 +395,7 @@ This section explains how OPSX works under the hood and how it compares to the l
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                    │                                                        │
 │                    ▼                                                        │
-│   Skill Files (.claude/skills/openspec-*/SKILL.md)                          │
+│   Skill Files (.claude/skills/infra-*/SKILL.md)                              │
 │                                                                             │
 │   • Cross-editor compatible (Claude Code, Cursor, Windsurf)                 │
 │   • Skills query CLI for structured data                                    │
@@ -466,7 +466,7 @@ Artifacts form a directed acyclic graph (DAG). Dependencies are **enablers**, no
   Agent creates ALL artifacts in one go
 ```
 
-**OPSX** — agent queries for rich context:
+**InfraSpec** — agent queries for rich context:
 
 ```
   User: "/infra:continue"
@@ -475,7 +475,7 @@ Artifacts form a directed acyclic graph (DAG). Dependencies are **enablers**, no
   ┌──────────────────────────────────────────────────────────────────────────┐
   │  Step 1: Query current state                                             │
   │  ┌────────────────────────────────────────────────────────────────────┐  │
-  │  │  $ openspec status --change "add-auth" --json                      │  │
+  │  │  $ infraspec status --change "add-auth" --json                      │  │
   │  │                                                                    │  │
   │  │  {                                                                 │  │
   │  │    "artifacts": [                                                  │  │
@@ -489,7 +489,7 @@ Artifacts form a directed acyclic graph (DAG). Dependencies are **enablers**, no
   │                                                                          │
   │  Step 2: Get rich instructions for ready artifact                        │
   │  ┌────────────────────────────────────────────────────────────────────┐  │
-  │  │  $ openspec instructions specs --change "add-auth" --json          │  │
+  │  │  $ infraspec instructions specs --change "add-auth" --json          │  │
   │  │                                                                    │  │
   │  │  {                                                                 │  │
   │  │    "template": "# Specification\n\n## ADDED Requirements...",      │  │
@@ -523,7 +523,7 @@ Artifacts form a directed acyclic graph (DAG). Dependencies are **enablers**, no
        └── Creates ALL artifacts at once
 ```
 
-**OPSX** — natural iteration:
+**InfraSpec** — natural iteration:
 
 ```
   /infra:new ───► /infra:continue ───► /infra:apply ───► /infra:archive
@@ -549,23 +549,23 @@ Create custom workflows using the schema management commands:
 
 ```bash
 # Create a new schema from scratch (interactive)
-openspec schema init my-workflow
+infraspec schema init my-workflow
 
 # Or fork an existing schema as a starting point
-openspec schema fork spec-driven my-workflow
+infraspec schema fork spec-driven my-workflow
 
 # Validate your schema structure
-openspec schema validate my-workflow
+infraspec schema validate my-workflow
 
 # See where a schema resolves from (useful for debugging)
-openspec schema which my-workflow
+infraspec schema which my-workflow
 ```
 
-Schemas are stored in `openspec/schemas/` (project-local, version controlled) or `~/.local/share/openspec/schemas/` (user global).
+Schemas are stored in `infraspec/schemas/` (project-local, version controlled) or `~/.local/share/openspec/schemas/` (user global).
 
 **Schema structure:**
 ```
-openspec/schemas/research-first/
+infraspec/schemas/research-first/
 ├── schema.yaml
 └── templates/
     ├── research.md
@@ -597,7 +597,7 @@ artifacts:
 
 ### Summary
 
-| Aspect | Legacy | OPSX |
+| Aspect | Legacy | InfraSpec |
 |--------|----------|------|
 | **Templates** | Hardcoded TypeScript | External YAML + Markdown |
 | **Dependencies** | None (all at once) | DAG with topological sort |
@@ -614,19 +614,19 @@ Schemas define what artifacts exist and their dependencies. Currently available:
 
 ```bash
 # List available schemas
-openspec schemas
+infraspec schemas
 
 # See all schemas with their resolution sources
-openspec schema which --all
+infraspec schema which --all
 
 # Create a new schema interactively
-openspec schema init my-workflow
+infraspec schema init my-workflow
 
 # Fork an existing schema for customization
-openspec schema fork spec-driven my-workflow
+infraspec schema fork spec-driven my-workflow
 
 # Validate schema structure before use
-openspec schema validate my-workflow
+infraspec schema validate my-workflow
 ```
 
 ## Tips
@@ -635,7 +635,7 @@ openspec schema validate my-workflow
 - `/infra:ff` when you know what you want, `/infra:continue` when exploring
 - During `/infra:apply`, if something's wrong — fix the artifact, then continue
 - Tasks track progress via checkboxes in `tasks.md`
-- Check status anytime: `openspec status --change "name"`
+- Check status anytime: `infraspec status --change "name"`
 
 ## Feedback
 

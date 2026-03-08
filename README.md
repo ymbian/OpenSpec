@@ -36,7 +36,7 @@ Our philosophy:
 > [!TIP]
 > **New workflow now available!** We've rebuilt OpenSpec with a new artifact-guided workflow.
 >
-> Run `/infra:onboard` to get started. → [Learn more here](docs/opsx.md)
+> Run `/infra:onboard` to get started. → [Learn more here](docs/infra.md)
 
 <p align="center">
   Follow <a href="https://x.com/0xTab">@0xTab on X</a> for updates · Join the <a href="https://discord.gg/YctCnvvshC">OpenSpec Discord</a> for help and questions.

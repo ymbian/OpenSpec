@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="delete legency spec tasks">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="update docs">
+      <change beforePath="$PROJECT_DIR$/docs/opsx.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/openspec-parallel-merge-plan.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/init.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/init.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/fixtures/tmp-init/openspec/changes/c1/proposal.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test/fixtures/tmp-init/openspec/changes/c1/specs/alpha/spec.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test/fixtures/tmp-init/openspec/specs/alpha/spec.md" beforeDir="false" />
@@ -150,7 +148,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772974928950</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="update docs">
+      <option name="closed" value="true" />
+      <created>1772976331387</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1772976331387</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -177,6 +183,7 @@
     <MESSAGE value="INFRA optimize" />
     <MESSAGE value="delete cursor and divalent folders" />
     <MESSAGE value="delete legency spec tasks" />
-    <option name="LAST_COMMIT_MESSAGE" value="delete legency spec tasks" />
+    <MESSAGE value="update docs" />
+    <option name="LAST_COMMIT_MESSAGE" value="update docs" />
   </component>
 </project>
