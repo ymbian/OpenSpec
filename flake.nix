@@ -73,7 +73,6 @@
 
             meta = with pkgs.lib; {
               description = "AI-native system for spec-driven development";
-              homepage = "https://github.com/Bym-AI/OpenSpec";
               license = licenses.mit;
               maintainers = [ ];
               mainProgram = "infraspec";

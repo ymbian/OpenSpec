@@ -1,14 +1,13 @@
 <p align="center">
-  <a href="https://github.com/Bym-AI/OpenSpec">
+  <span>
     <picture>
       <source srcset="assets/openspec_bg.png">
       <img src="assets/openspec_bg.png" alt="InfraSpec logo">
     </picture>
-  </a>
+  </span>
 </p>
 
 <p align="center">
-  <a href="https://github.com/Bym-AI/OpenSpec/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Bym-AI/OpenSpec/actions/workflows/ci.yml/badge.svg" /></a>
   <a href="https://www.npmjs.com/package/@bym-ai/infraspec"><img alt="npm version" src="https://img.shields.io/npm/v/@bym-ai/infraspec?style=flat-square" /></a>
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" /></a>
   <a href="https://discord.gg/YctCnvvshC"><img alt="Discord" src="https://img.shields.io/discord/1411657095639601154?style=flat-square&logo=discord&logoColor=white&label=Discord&suffix=%20online" /></a>
@@ -17,9 +16,7 @@
 <details>
 <summary><strong>The most loved spec framework.</strong></summary>
 
-[![Stars](https://img.shields.io/github/stars/Bym-AI/OpenSpec?style=flat-square&label=Stars)](https://github.com/Bym-AI/OpenSpec/stargazers)
 [![Downloads](https://img.shields.io/npm/dm/@bym-ai/infraspec?style=flat-square&label=Downloads/mo)](https://www.npmjs.com/package/@bym-ai/infraspec)
-[![Contributors](https://img.shields.io/github/contributors/Bym-AI/OpenSpec?style=flat-square&label=Contributors)](https://github.com/Bym-AI/OpenSpec/graphs/contributors)
 
 </details>
 <p></p>

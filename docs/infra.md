@@ -1,7 +1,5 @@
 # InfraSpec Workflow
 
-> Feedback welcome on [Discord](https://discord.gg/YctCnvvshC).
-
 ## What Is It?
 
 InfraSpec is the standard workflow for spec-driven development.
@@ -636,9 +634,3 @@ infraspec schema validate my-workflow
 - During `/infra:apply`, if something's wrong — fix the artifact, then continue
 - Tasks track progress via checkboxes in `tasks.md`
 - Check status anytime: `infraspec status --change "name"`
-
-## Feedback
-
-This is rough. That's intentional — we're learning what works.
-
-Found a bug? Have ideas? Join us on [Discord](https://discord.gg/YctCnvvshC) or open an issue on [GitHub](https://github.com/Bym-AI/OpenSpec/issues).

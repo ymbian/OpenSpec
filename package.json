@@ -9,11 +9,6 @@
     "ai",
     "development"
   ],
-  "homepage": "https://github.com/Bym-AI/OpenSpec",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Bym-AI/OpenSpec"
-  },
   "license": "MIT",
   "author": "InfraSpec Contributors",
   "type": "module",

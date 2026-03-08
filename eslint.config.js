@@ -7,8 +7,7 @@ export default tseslint.config(
     rules: {
       // Prevent static imports of @inquirer modules to avoid pre-commit hook hangs.
       // These modules have side effects that can keep the Node.js event loop alive
-      // when stdin is piped. Use dynamic import() instead.
-      // See: https://github.com/Bym-AI/OpenSpec/issues/367
+      // when stdin is piped. Use dynamic import() instead. See #367.
       'no-restricted-imports': [
         'error',
         {
