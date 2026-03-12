@@ -13,7 +13,7 @@ export class ViewCommand {
       process.exit(1);
     }
 
-    console.log(chalk.bold('\nOpenSpec Dashboard\n'));
+    console.log(chalk.bold('\nInfraSpec Dashboard\n'));
     console.log('═'.repeat(60));
 
     // Get changes and specs data
