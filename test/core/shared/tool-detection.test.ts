@@ -126,7 +126,7 @@ describe('tool-detection', () => {
       await fs.writeFile(filePath, `---
 name: infra-explore
 metadata:
-  author: openspec
+  author: bianyongmei
   version: "1.0"
 ---
 
@@ -142,7 +142,7 @@ Content here
       await fs.writeFile(filePath, `---
 name: infra-explore
 metadata:
-  author: openspec
+  author: bianyongmei
   version: "1.0"
   generatedBy: "0.23.0"
 ---
@@ -206,7 +206,7 @@ Content here
       await fs.writeFile(path.join(skillDir, 'SKILL.md'), `---
 name: infra-explore
 metadata:
-  author: openspec
+  author: bianyongmei
   version: "1.0"
 ---
 
@@ -225,7 +225,7 @@ Content here
       await fs.writeFile(path.join(skillDir, 'SKILL.md'), `---
 name: infra-explore
 metadata:
-  author: openspec
+  author: bianyongmei
   version: "1.0"
   generatedBy: "0.22.0"
 ---
@@ -245,7 +245,7 @@ Content here
       await fs.writeFile(path.join(skillDir, 'SKILL.md'), `---
 name: infra-explore
 metadata:
-  author: openspec
+  author: bianyongmei
   version: "1.0"
   generatedBy: "0.23.0"
 ---

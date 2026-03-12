@@ -289,7 +289,7 @@ But this summary is optional. Sometimes the thinking IS the value.
 - **Do question assumptions** - Including the user's and your own`,
     license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
-    metadata: { author: 'openspec', version: '1.0' },
+    metadata: { author: 'bianyongmei', version: '1.0' },
   };
 }
 

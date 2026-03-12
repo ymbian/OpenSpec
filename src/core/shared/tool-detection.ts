@@ -138,7 +138,7 @@ export function extractGeneratedByVersion(skillFilePath: string): string | null 
     // ---
     // ...
     // metadata:
-    //   author: openspec
+    //   author: bianyongmei
     //   version: "1.0"
     //   generatedBy: "0.23.0"
     // ---

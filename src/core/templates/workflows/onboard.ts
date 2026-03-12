@@ -13,7 +13,7 @@ export function getOnboardSkillTemplate(): SkillTemplate {
     instructions: getOnboardInstructions(),
     license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
-    metadata: { author: 'openspec', version: '1.0' },
+    metadata: { author: 'bianyongmei', version: '1.0' },
   };
 }
 

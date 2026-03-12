@@ -4,7 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="1.0.0" />
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="1.0.0">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/shared/tool-detection.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/shared/tool-detection.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/apply-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/apply-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/archive-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/archive-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/bulk-archive-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/bulk-archive-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/continue-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/continue-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/explore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/explore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/feedback.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/feedback.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/ff-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/ff-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/propose.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/propose.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/sync-specs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/sync-specs.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/verify-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/verify-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/shared/skill-generation.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/shared/skill-generation.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/shared/tool-detection.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/shared/tool-detection.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/update.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/update.test.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,7 +32,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="6a3a1263fe4d5994716841c46acdd3c3d799c042" />
+        <entry key="$PROJECT_DIR$" value="featuredoc" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -197,6 +216,26 @@
     <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/featuredoc" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="1.2.0" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">

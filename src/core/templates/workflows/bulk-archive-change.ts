@@ -247,7 +247,7 @@ No active changes found. Create a new change to get started.
 - If archive target exists, fail that change but continue with others`,
     license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
-    metadata: { author: 'openspec', version: '1.0' },
+    metadata: { author: 'bianyongmei', version: '1.0' },
   };
 }
 

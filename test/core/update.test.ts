@@ -108,7 +108,7 @@ description: Old description
 license: MIT
 compatibility: Requires infraspec CLI.
 metadata:
-  author: openspec
+  author: bianyongmei
   version: "0.9"
 ---
 
@@ -618,7 +618,7 @@ Old instructions content
         `---
 name: infra-explore
 metadata:
-  author: openspec
+  author: bianyongmei
   version: "1.0"
 ---
 

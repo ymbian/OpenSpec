@@ -139,7 +139,7 @@ Main specs are now updated. The change remains active - archive when implementat
 - The operation should be idempotent - running twice should give same result`,
     license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
-    metadata: { author: 'openspec', version: '1.0' },
+    metadata: { author: 'bianyongmei', version: '1.0' },
   };
 }
 

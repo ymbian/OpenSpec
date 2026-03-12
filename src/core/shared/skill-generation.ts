@@ -139,7 +139,7 @@ description: ${template.description}
 license: ${template.license || 'MIT'}
 compatibility: ${template.compatibility || 'Requires infraspec CLI.'}
 metadata:
-  author: ${template.metadata?.author || 'openspec'}
+  author: ${template.metadata?.author || 'bianyongmei'}
   version: "${template.metadata?.version || '1.0'}"
   generatedBy: "${generatedByVersion}"
 ---

@@ -157,7 +157,7 @@ This skill supports the "actions on a change" model:
 - **Allows artifact updates**: If implementation reveals design issues, suggest updating artifacts - not phase-locked, work fluidly`,
     license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
-    metadata: { author: 'openspec', version: '1.0' },
+    metadata: { author: 'bianyongmei', version: '1.0' },
   };
 }
 

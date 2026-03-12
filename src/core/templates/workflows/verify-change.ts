@@ -169,7 +169,7 @@ Use clear markdown with:
 - No vague suggestions like "consider reviewing"`,
     license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
-    metadata: { author: 'openspec', version: '1.0' },
+    metadata: { author: 'bianyongmei', version: '1.0' },
   };
 }
 

@@ -222,7 +222,7 @@ describe('skill-generation', () => {
 
       expect(content).toContain('license: MIT');
       expect(content).toContain('compatibility: Requires infraspec CLI.');
-      expect(content).toContain('author: openspec');
+      expect(content).toContain('author: bianyongmei');
       expect(content).toContain('version: "1.0"');
       expect(content).toContain('generatedBy: "0.24.0"');
     });

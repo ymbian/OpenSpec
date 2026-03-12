@@ -119,7 +119,7 @@ For other schemas, follow the \`instruction\` field from the CLI output.
   - These guide what you write, but should never appear in the output`,
     license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
-    metadata: { author: 'openspec', version: '1.0' },
+    metadata: { author: 'bianyongmei', version: '1.0' },
   };
 }
 

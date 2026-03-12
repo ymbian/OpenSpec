@@ -75,7 +75,7 @@ After completing the steps, summarize:
 - Pass --schema if using a non-default workflow`,
     license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
-    metadata: { author: 'openspec', version: '1.0' },
+    metadata: { author: 'bianyongmei', version: '1.0' },
   };
 }
 
