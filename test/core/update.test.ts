@@ -77,7 +77,7 @@ describe('UpdateCommand', () => {
       });
 
       await expect(updateCommand.execute(testDir)).rejects.toThrow(
-        "No OpenSpec directory found. Run 'infraspec init' first."
+        "No InfraSpec directory found. Run 'infraspec init' first."
       );
     });
 

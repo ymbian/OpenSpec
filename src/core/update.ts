@@ -1,7 +1,7 @@
 /**
  * Update Command
  *
- * Refreshes OpenSpec skills and commands for configured tools.
+ * Refreshes InfraSpec skills and commands for configured tools.
  * Supports profile-aware updates, delivery changes, migration, and smart update detection.
  */
 
@@ -85,7 +85,7 @@ export class UpdateCommand {
 
     // 1. Check infraspec directory exists
     if (!await FileSystemUtils.directoryExists(openspecPath)) {
-      throw new Error(`No OpenSpec directory found. Run 'infraspec init' first.`);
+      throw new Error(`No InfraSpec directory found. Run 'infraspec init' first.`);
     }
 
     // 2. Perform one-time migration if needed before any legacy upgrade generation.

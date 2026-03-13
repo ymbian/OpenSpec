@@ -61,7 +61,7 @@ export class ArchiveCommand {
     try {
       await fs.access(changesDir);
     } catch {
-      throw new Error("No OpenSpec changes directory found. Run 'infraspec init' first.");
+      throw new Error("No InfraSpec changes directory found. Run 'infraspec init' first.");
     }
 
     // Get change name interactively if not provided

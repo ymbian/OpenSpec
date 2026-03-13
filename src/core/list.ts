@@ -85,7 +85,7 @@ export class ListCommand {
       try {
         await fs.access(changesDir);
       } catch {
-        throw new Error("No OpenSpec changes directory found. Run 'infraspec init' first.");
+        throw new Error("No InfraSpec changes directory found. Run 'infraspec init' first.");
       }
 
       // Get all directories in changes (excluding archive)

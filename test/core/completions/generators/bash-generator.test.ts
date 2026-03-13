@@ -24,14 +24,14 @@ describe('BashGenerator', () => {
       const commands: CommandDefinition[] = [
         {
           name: 'init',
-          description: 'Initialize OpenSpec',
+          description: 'Initialize InfraSpec',
           flags: [],
         },
       ];
 
       const script = generator.generate(commands);
 
-      expect(script).toContain('# Bash completion script for OpenSpec CLI');
+      expect(script).toContain('# Bash completion script for InfraSpec CLI');
       expect(script).toContain('_infraspec_completion() {');
       expect(script).toContain('local cur prev words cword');
       expect(script).toContain('_init_completion -n : || return');
@@ -41,7 +41,7 @@ describe('BashGenerator', () => {
       const commands: CommandDefinition[] = [
         {
           name: 'init',
-          description: 'Initialize OpenSpec',
+          description: 'Initialize InfraSpec',
           flags: [],
         },
         {

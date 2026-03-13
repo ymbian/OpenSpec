@@ -4,24 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="1.0.0">
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="InfraSpec Dashboard">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/shared/tool-detection.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/shared/tool-detection.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/apply-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/apply-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/archive-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/archive-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/bulk-archive-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/bulk-archive-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/continue-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/continue-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/explore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/explore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/feedback.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/feedback.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/ff-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/ff-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/propose.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/propose.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/sync-specs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/sync-specs.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/verify-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/verify-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/shared/skill-generation.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/shared/skill-generation.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/shared/tool-detection.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/shared/tool-detection.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/commands/completion.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/completion.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/commands/feedback.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/feedback.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/archive.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/archive.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/completions/command-registry.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/completions/command-registry.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/completions/generators/bash-generator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/completions/generators/bash-generator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/completions/generators/fish-generator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/completions/generators/fish-generator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/completions/generators/powershell-generator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/completions/generators/powershell-generator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/completions/generators/zsh-generator.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/completions/generators/zsh-generator.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/list.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/list.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/update.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/update.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/commands/config.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/commands/config.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/commands/feedback.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/commands/feedback.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/archive.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/archive.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/completions/generators/bash-generator.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/completions/generators/bash-generator.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/completions/generators/fish-generator.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/completions/generators/fish-generator.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/completions/generators/powershell-generator.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/completions/generators/powershell-generator.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/completions/generators/zsh-generator.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/completions/generators/zsh-generator.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/list.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/list.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/core/update.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/update.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -209,7 +211,23 @@
       <option name="project" value="LOCAL" />
       <updated>1772980945771</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="author">
+      <option name="closed" value="true" />
+      <created>1773300083544</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1773300083544</updated>
+    </task>
+    <task id="LOCAL-00018" summary="InfraSpec Dashboard">
+      <option name="closed" value="true" />
+      <created>1773301102175</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1773301102175</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -261,6 +279,8 @@
     <MESSAGE value="update org" />
     <MESSAGE value="bym-ai" />
     <MESSAGE value="1.0.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="1.0.0" />
+    <MESSAGE value="author" />
+    <MESSAGE value="InfraSpec Dashboard" />
+    <option name="LAST_COMMIT_MESSAGE" value="InfraSpec Dashboard" />
   </component>
 </project>
