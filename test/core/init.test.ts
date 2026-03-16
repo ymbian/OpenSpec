@@ -82,10 +82,12 @@ describe('InitCommand', () => {
 
       await initCommand.execute(testDir);
 
-      // Core profile: propose, explore, apply, archive
+      // Core profile: propose, explore, new, continue, apply, archive
       const coreSkillNames = [
         'infra-propose',
         'infra-explore',
+        'infra-new-change',
+        'infra-continue-change',
         'infra-apply-change',
         'infra-archive-change',
       ];
@@ -102,8 +104,6 @@ describe('InitCommand', () => {
 
       // Non-core skills should NOT be created
       const nonCoreSkillNames = [
-        'infra-new-change',
-        'infra-continue-change',
         'infra-ff-change',
         'infra-sync-specs',
         'infra-bulk-archive-change',
@@ -121,10 +121,12 @@ describe('InitCommand', () => {
 
       await initCommand.execute(testDir);
 
-      // Core profile: propose, explore, apply, archive
+      // Core profile: propose, explore, new, continue, apply, archive
       const coreCommandNames = [
         'infra/propose.md',
         'infra/explore.md',
+        'infra/new.md',
+        'infra/continue.md',
         'infra/apply.md',
         'infra/archive.md',
       ];
@@ -136,8 +138,6 @@ describe('InitCommand', () => {
 
       // Non-core commands should NOT be created
       const nonCoreCommandNames = [
-        'infra/new.md',
-        'infra/continue.md',
         'infra/ff.md',
         'infra/sync.md',
         'infra/bulk-archive.md',
@@ -521,9 +521,9 @@ describe('InitCommand - profile and detection features', () => {
     const proposeSkill = path.join(testDir, '.claude', 'skills', 'infra-propose', 'SKILL.md');
     expect(await fileExists(proposeSkill)).toBe(true);
 
-    // Non-core skills (from the custom profile) should NOT be created
+    // Core profile skills should include the default 6-workflow set
     const newChangeSkill = path.join(testDir, '.claude', 'skills', 'infra-new-change', 'SKILL.md');
-    expect(await fileExists(newChangeSkill)).toBe(false);
+    expect(await fileExists(newChangeSkill)).toBe(true);
   });
 
   it('should reject invalid --profile values', async () => {

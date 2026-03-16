@@ -155,9 +155,11 @@ Old instructions content
 
       await updateCommand.execute(testDir);
 
-      // Verify core profile skill files were created/updated (propose, explore, apply, archive)
+      // Verify core profile skill files were created/updated (propose, explore, new, continue, apply, archive)
       const coreSkillNames = [
         'infra-explore',
+        'infra-new-change',
+        'infra-continue-change',
         'infra-apply-change',
         'infra-archive-change',
         'infra-propose',
@@ -176,8 +178,6 @@ Old instructions content
 
       // Verify non-core skills are NOT created
       const nonCoreSkillNames = [
-        'infra-new-change',
-        'infra-continue-change',
         'infra-ff-change',
         'infra-sync-specs',
         'infra-bulk-archive-change',
@@ -233,8 +233,8 @@ Old instructions content
 
       await updateCommand.execute(testDir);
 
-      // Verify core profile commands were created (propose, explore, apply, archive)
-      const coreCommandIds = ['explore', 'apply', 'archive', 'propose'];
+      // Verify core profile commands were created (propose, explore, new, continue, apply, archive)
+      const coreCommandIds = ['explore', 'new', 'continue', 'apply', 'archive', 'propose'];
       const commandsDir = path.join(testDir, '.claude', 'commands', 'infra');
       for (const cmdId of coreCommandIds) {
         const cmdFile = path.join(commandsDir, `${cmdId}.md`);
@@ -243,7 +243,7 @@ Old instructions content
       }
 
       // Verify non-core commands are NOT created
-      const nonCoreCommandIds = ['new', 'continue', 'ff', 'sync', 'bulk-archive', 'verify'];
+      const nonCoreCommandIds = ['ff', 'sync', 'bulk-archive', 'verify'];
       for (const cmdId of nonCoreCommandIds) {
         const cmdFile = path.join(commandsDir, `${cmdId}.md`);
         const exists = await FileSystemUtils.fileExists(cmdFile);
@@ -1322,6 +1322,8 @@ More user content after markers.
       const skillNames = [
         'infra-propose',
         'infra-explore',
+        'infra-new-change',
+        'infra-continue-change',
         'infra-apply-change',
         'infra-archive-change',
       ];
@@ -1333,7 +1335,7 @@ More user content after markers.
         expect(exists).toBe(true);
       }
 
-      const nonCoreSkill = path.join(skillsDir, 'infra-new-change', 'SKILL.md');
+      const nonCoreSkill = path.join(skillsDir, 'infra-sync-specs', 'SKILL.md');
       expect(await FileSystemUtils.fileExists(nonCoreSkill)).toBe(false);
     });
 
@@ -1568,7 +1570,7 @@ content
     });
 
     it('should remove workflows outside profile during update sync', async () => {
-      // Set core profile (propose, explore, apply, archive)
+      // Set core profile (propose, explore, new, continue, apply, archive)
       setMockConfig({
         featureFlags: {},
         profile: 'core',
@@ -1581,9 +1583,9 @@ content
       await fs.writeFile(path.join(skillsDir, 'infra-explore', 'SKILL.md'), 'old');
 
       // Add a non-core workflow
-      await fs.mkdir(path.join(skillsDir, 'infra-new-change'), { recursive: true });
-      await fs.writeFile(path.join(skillsDir, 'infra-new-change', 'SKILL.md'), 'old');
-      const extraCommandFile = path.join(testDir, '.claude', 'commands', 'infra', 'new.md');
+      await fs.mkdir(path.join(skillsDir, 'infra-sync-specs'), { recursive: true });
+      await fs.writeFile(path.join(skillsDir, 'infra-sync-specs', 'SKILL.md'), 'old');
+      const extraCommandFile = path.join(testDir, '.claude', 'commands', 'infra', 'sync.md');
       await fs.mkdir(path.dirname(extraCommandFile), { recursive: true });
       await fs.writeFile(extraCommandFile, 'old');
 
@@ -1593,7 +1595,7 @@ content
 
       // Deselected workflow artifacts should be removed for both delivery surfaces.
       expect(await FileSystemUtils.fileExists(
-        path.join(skillsDir, 'infra-new-change', 'SKILL.md')
+        path.join(skillsDir, 'infra-sync-specs', 'SKILL.md')
       )).toBe(false);
       expect(await FileSystemUtils.fileExists(extraCommandFile)).toBe(false);
 
