@@ -11,13 +11,7 @@ import type { Profile } from './global-config.js';
  * Core workflows included in the 'core' profile.
  * These provide the streamlined experience for new users.
  */
-export const CORE_WORKFLOWS = ['propose', 'explore', 'new', 'continue', 'review', 'apply', 'archive'] as const;
-
-/**
- * Legacy core workflows from before the review alias was introduced.
- * Keep this for backward compatibility with migrated custom profiles.
- */
-const LEGACY_CORE_WORKFLOWS = ['propose', 'explore', 'new', 'continue', 'apply', 'archive'] as const;
+export const CORE_WORKFLOWS = ['propose', 'explore', 'new', 'review', 'apply', 'archive'] as const;
 
 /**
  * All available workflows in the system.
@@ -40,23 +34,6 @@ export const ALL_WORKFLOWS = [
 export type WorkflowId = (typeof ALL_WORKFLOWS)[number];
 export type CoreWorkflowId = (typeof CORE_WORKFLOWS)[number];
 
-function normalizeCustomWorkflows(customWorkflows?: string[]): readonly string[] {
-  if (!customWorkflows) {
-    return [];
-  }
-
-  const uniqueWorkflows = [...new Set(customWorkflows)];
-  const isLegacyCoreSet =
-    uniqueWorkflows.length === LEGACY_CORE_WORKFLOWS.length &&
-    LEGACY_CORE_WORKFLOWS.every((workflow) => uniqueWorkflows.includes(workflow));
-
-  if (isLegacyCoreSet) {
-    return CORE_WORKFLOWS;
-  }
-
-  return uniqueWorkflows;
-}
-
 /**
  * Resolves which workflows should be active for a given profile configuration.
  *
@@ -68,7 +45,7 @@ export function getProfileWorkflows(
   customWorkflows?: string[]
 ): readonly string[] {
   if (profile === 'custom') {
-    return normalizeCustomWorkflows(customWorkflows);
+    return customWorkflows ?? [];
   }
   return CORE_WORKFLOWS;
 }
