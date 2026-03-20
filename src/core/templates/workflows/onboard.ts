@@ -489,7 +489,6 @@ This same rhythm works for any size change—a small fix or a major feature.
 | Command | What it does |
 |---------|--------------|
 | \`/infra:new\` | Start a new change, step through artifacts one at a time |
-| \`/infra:continue\` | Continue working on an existing change |
 | \`/infra:review\` | Review an existing change by creating the next artifact |
 | \`/infra:ff\` | Fast-forward: create all artifacts at once |
 | \`/infra:verify\` | Verify implementation matches artifacts |
@@ -513,8 +512,7 @@ If the user says they need to stop, want to pause, or seem disengaged:
 No problem! Your change is saved at \`infraspec/changes/<name>/\`.
 
 To pick up where we left off later:
-- \`/infra:continue <name>\` - Resume artifact creation
-- \`/infra:review <name>\` - Resume artifact creation with the review alias
+- \`/infra:review <name>\` - Review the artifact before creating the next one
 - \`/infra:apply <name>\` - Jump to implementation (if tasks exist)
 
 The work won't be lost. Come back whenever you're ready.
@@ -543,8 +541,7 @@ If the user says they just want to see the commands or skip the tutorial:
 | Command | What it does |
 |---------|--------------|
 | \`/infra:new <name>\` | Start a new change, step by step |
-| \`/infra:continue <name>\` | Continue an existing change |
-| \`/infra:review <name>\` | Review an existing change |
+| \`/infra:review <name>\` | Review the artifact before creating the next one |
 | \`/infra:ff <name>\` | Fast-forward: all artifacts at once |
 | \`/infra:verify <name>\` | Verify implementation |
 

@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="add review">
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="review">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/skill-templates.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/skill-templates.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/continue-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/continue-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/commands/workflow/instructions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/workflow/instructions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/apply-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/apply-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/update.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/update.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -234,7 +237,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773971682576</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="add review-change.ts">
+      <option name="closed" value="true" />
+      <created>1773976179934</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1773976179934</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -291,6 +302,8 @@
     <MESSAGE value="InfraSpec" />
     <MESSAGE value="add new and continue commans to core workflows" />
     <MESSAGE value="add review" />
-    <option name="LAST_COMMIT_MESSAGE" value="add review" />
+    <MESSAGE value="add review-change.ts" />
+    <MESSAGE value="review" />
+    <option name="LAST_COMMIT_MESSAGE" value="review" />
   </component>
 </project>
