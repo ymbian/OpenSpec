@@ -12,18 +12,18 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
     description: 'Start a new InfraSpec change using the experimental artifact workflow. Use when the user wants to create a new feature, fix, or modification with a structured step-by-step approach.',
     instructions: `Start a new change using the experimental artifact-driven approach.
 
-**Input**: The user's request should include a change name (kebab-case) OR a description of what they want to build.
+**Input**: The user's request should include a change name (kebab-case) OR requirement content describing what they want to build. The requirement content may be a plain-text requirement document that has already been preprocessed from another format.
 
 **Steps**
 
 1. **If no clear input provided, ask what they want to build**
 
    Use the **AskUserQuestion tool** (open-ended, no preset options) to ask:
-   > "What change do you want to work on? Describe what you want to build or fix."
+   > "What change do you want to work on? Describe the requirement or paste the requirement document text."
 
    From their description, derive a kebab-case name (e.g., "add user authentication" → \`add-user-auth\`).
 
-   **IMPORTANT**: Do NOT proceed without understanding what the user wants to build.
+   **IMPORTANT**: Do NOT proceed without understanding the requirement content.
 
 2. **Determine the workflow schema**
 
@@ -42,34 +42,48 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
    Add \`--schema <name>\` only if the user requested a specific workflow.
    This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\` with the selected schema.
 
-4. **Show the artifact status**
-   \`\`\`bash
-   infraspec status --change "<name>"
-   \`\`\`
-   This shows which artifacts need to be created and which are ready (dependencies satisfied).
+4. **Create \`requirements.md\`**
+   Save the requirement input to:
+   \`infraspec/changes/<name>/requirements.md\`
 
-5. **Get instructions for the first artifact**
-   The first artifact depends on the schema (e.g., \`proposal\` for spec-driven).
-   Check the status output to find the first artifact with status "ready".
-   \`\`\`bash
-   infraspec instructions <first-artifact-id> --change "<name>"
-   \`\`\`
-   This outputs the template and context for creating the first artifact.
+   Convert the user's requirement input into this exact company structure:
+   - \`# 需求文档\`
+   - \`## 1. 需求概述\`
+   - \`### 1.1 背景、目标及价值（必填）\`
+   - \`### 1.2 关键指标（必填）\`
+   - \`### 1.3 术语名词解释（选填）\`
+   - \`## 2. 需求解析\`
+   - \`### 2.1 现状分析（选填）\`
+   - \`### 2.2 方案设计（选填）\`
+   - \`### 2.3 功能清单（必填）\`
+   - \`## 3. 影响分析\`
+   - \`### 3.1 依赖评估（选填）\`
+   - \`### 3.2 影响评估（选填）\`
+   - \`### 3.3 安全评估（选填）\`
 
-6. **STOP and wait for user direction**
+   Writing rules:
+   - Preserve the user's original meaning.
+   - Use the company-required section order exactly.
+   - Fill required sections with substantive content.
+   - Optional sections may be filled when supported by the input; otherwise explicitly write \`本次未明确\`.
+   - If important information is missing, write \`待确认事项\` instead of inventing facts.
+   - In \`2.3 功能清单\`, use stable identifiers like \`F1\`, \`F2\`, \`F3\`.
+
+5. **STOP and wait for user direction**
+   Do not create proposal.md, specs, design.md, or tasks.md in this step.
 
 **Output**
 
 After completing the steps, summarize:
 - Change name and location
-- Schema/workflow being used and its artifact sequence
-- Current status (0/N artifacts complete)
-- The template for the first artifact
-- Prompt: "Ready to create the first artifact? Just describe what this change is about and I'll draft it, or ask me to continue."
+- Requirements file location
+- What was saved in \`requirements.md\`
+- Prompt: "Run \`/infra:review\` to generate the company-format detailed design document."
 
 **Guardrails**
-- Do NOT create any artifacts yet - just show the instructions
-- Do NOT advance beyond showing the first artifact template
+- Do NOT create any formal InfraSpec artifacts yet
+- Do NOT show the first artifact template in this step
+- Do NOT advance beyond saving \`requirements.md\`
 - If the name is invalid (not kebab-case), ask for a valid name
 - If a change with that name already exists, suggest continuing that change instead
 - Pass --schema if using a non-default workflow`,
@@ -87,18 +101,18 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
     tags: ['workflow', 'artifacts', 'experimental'],
     content: `Start a new change using the experimental artifact-driven approach.
 
-**Input**: The argument after \`/infra:new\` is the change name (kebab-case), OR a description of what the user wants to build.
+**Input**: The argument after \`/infra:new\` is the change name (kebab-case), OR requirement content describing what the user wants to build. The requirement content may be a plain-text requirement document that has already been preprocessed from another format.
 
 **Steps**
 
 1. **If no input provided, ask what they want to build**
 
    Use the **AskUserQuestion tool** (open-ended, no preset options) to ask:
-   > "What change do you want to work on? Describe what you want to build or fix."
+   > "What change do you want to work on? Describe the requirement or paste the requirement document text."
 
    From their description, derive a kebab-case name (e.g., "add user authentication" → \`add-user-auth\`).
 
-   **IMPORTANT**: Do NOT proceed without understanding what the user wants to build.
+   **IMPORTANT**: Do NOT proceed without understanding the requirement content.
 
 2. **Determine the workflow schema**
 
@@ -117,33 +131,48 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
    Add \`--schema <name>\` only if the user requested a specific workflow.
    This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\` with the selected schema.
 
-4. **Show the artifact status**
-   \`\`\`bash
-   infraspec status --change "<name>"
-   \`\`\`
-   This shows which artifacts need to be created and which are ready (dependencies satisfied).
+4. **Create \`requirements.md\`**
+   Save the requirement input to:
+   \`infraspec/changes/<name>/requirements.md\`
 
-5. **Get instructions for the first artifact**
-   The first artifact depends on the schema. Check the status output to find the first artifact with status "ready".
-   \`\`\`bash
-   infraspec instructions <first-artifact-id> --change "<name>"
-   \`\`\`
-   This outputs the template and context for creating the first artifact.
+   Convert the user's requirement input into this exact company structure:
+   - \`# 需求文档\`
+   - \`## 1. 需求概述\`
+   - \`### 1.1 背景、目标及价值（必填）\`
+   - \`### 1.2 关键指标（必填）\`
+   - \`### 1.3 术语名词解释（选填）\`
+   - \`## 2. 需求解析\`
+   - \`### 2.1 现状分析（选填）\`
+   - \`### 2.2 方案设计（选填）\`
+   - \`### 2.3 功能清单（必填）\`
+   - \`## 3. 影响分析\`
+   - \`### 3.1 依赖评估（选填）\`
+   - \`### 3.2 影响评估（选填）\`
+   - \`### 3.3 安全评估（选填）\`
 
-6. **STOP and wait for user direction**
+   Writing rules:
+   - Preserve the user's original meaning.
+   - Use the company-required section order exactly.
+   - Fill required sections with substantive content.
+   - Optional sections may be filled when supported by the input; otherwise explicitly write \`本次未明确\`.
+   - If important information is missing, write \`待确认事项\` instead of inventing facts.
+   - In \`2.3 功能清单\`, use stable identifiers like \`F1\`, \`F2\`, \`F3\`.
+
+5. **STOP and wait for user direction**
+   Do not create proposal.md, specs, design.md, or tasks.md in this step.
 
 **Output**
 
 After completing the steps, summarize:
 - Change name and location
-- Schema/workflow being used and its artifact sequence
-- Current status (0/N artifacts complete)
-- The template for the first artifact
-- Prompt: "Ready to create the first artifact? Run \`/infra:review\` or just describe what this change is about and I'll draft it."
+- Requirements file location
+- What was saved in \`requirements.md\`
+- Prompt: "Run \`/infra:review\` to generate the company-format detailed design document."
 
 **Guardrails**
-- Do NOT create any artifacts yet - just show the instructions
-- Do NOT advance beyond showing the first artifact template
+- Do NOT create any formal InfraSpec artifacts yet
+- Do NOT show the first artifact template in this step
+- Do NOT advance beyond saving \`requirements.md\`
 - If the name is invalid (not kebab-case), ask for a valid name
 - If a change with that name already exists, suggest using \`/infra:review\` instead
 - Pass --schema if using a non-default workflow`

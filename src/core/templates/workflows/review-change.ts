@@ -31,6 +31,63 @@ export function getReviewChangeSkillTemplate(): SkillTemplate {
    **IMPORTANT**: Do NOT guess or auto-select a change. Always let the user choose.
 
 2. **Check current status**
+   Before using the artifact workflow, check whether the two pre-spec documents for this review flow already exist:
+   - \`infraspec/changes/<name>/requirements.md\`
+   - \`infraspec/changes/<name>/detailed-design.md\`
+
+   The fixed review flow is:
+   \`requirements -> detailed-design -> proposal -> specs/design -> tasks\`
+
+   Handle the pre-spec documents first:
+
+   - If \`requirements.md\` does not exist:
+     - Create it from the user's requirement document or the best available conversation context.
+     - If the requirements are ambiguous or incomplete, ask the user before writing it.
+     - Save it to \`infraspec/changes/<name>/requirements.md\`.
+     - STOP after creating only this file.
+
+   - If \`requirements.md\` exists but \`detailed-design.md\` does not:
+     - Read \`requirements.md\`.
+     - Create \`detailed-design.md\` using the company's required design-document format.
+     - Generate it in Markdown using this exact section order:
+       - \`# 详细设计文档\`
+       - \`## 1. 引言\`
+       - \`### 1.1 目的\`
+       - \`### 1.2 统一术语\`
+       - \`## 2. 应用架构详细设计\`
+       - \`### 2.1 接口设计\`
+       - \`#### 2.1.1 <接口名称> 接口\`
+       - \`### 2.2 业务功能的流程设计\`
+       - \`#### 2.2.1 <功能名称> 功能流程设计\`
+       - \`### 2.3 领域模型设计（可选）\`
+       - \`#### 2.3.1 <实体名称> 实体设计\`
+       - \`### 2.4 持久化模型设计（可选）\`
+       - \`#### 2.4.1 <持久化模型名称> 持久化模型设计\`
+       - \`### 2.5 技术参数变更的流程设计（可选）\`
+       - \`#### 2.5.1 <参数或流程名称> 流程设计\`
+       - \`## 3. 系统架构详细设计\`
+       - \`### 3.1 数据库详细设计\`
+       - \`#### 3.1.1 数据库表设计\`
+       - \`#### 3.1.2 数据库索引设计\`
+       - \`### 3.2 云服务落地方案\`
+       - \`#### 3.2.1 <云服务名称> 云服务\`
+     - Section requirements:
+       - Interface design MUST cover purpose, caller/callee, method/path, request params, response, error handling, and security/auth.
+       - Business flow design MUST cover goal, preconditions, main flow, exception flow, inputs/outputs, and flow notes.
+       - Optional sections MUST either contain concrete content or explicitly state \`本次不涉及\`.
+       - Database design MUST explicitly state \`本次不涉及\` if there are no schema/index changes.
+       - Cloud service design MUST explicitly state \`本次不涉及\` if no cloud resource changes are required.
+     - Generation rules:
+       - Base the document on \`requirements.md\` first, then use reasonable engineering inference where necessary.
+       - Replace every placeholder with concrete names.
+       - Do not output an empty outline.
+       - If requirements are insufficient, mark the missing parts as \`待确认事项\` instead of inventing facts.
+     - Save it to \`infraspec/changes/<name>/detailed-design.md\`.
+     - STOP after creating only this file.
+
+   - Only after both files exist, continue with the existing artifact workflow below.
+
+   Then check the current InfraSpec artifact status:
    \`\`\`bash
    infraspec status --change "<name>" --json
    \`\`\`
@@ -93,14 +150,30 @@ After each invocation, show:
 - Prompt: name the artifact just created and the next ready artifact(s)
   - Example: "You can now review \`<created-artifact>\` and then run \`/infra:review\` again to create the next artifact (\`design\` or \`specs\`)."
 
+For the two pre-spec documents:
+- \`requirements.md\`: distilled requirements from the user's requirement document
+- \`detailed-design.md\`: company-format detailed design derived from \`requirements.md\`
+- These two files are mandatory in review before proposal/specs/design/tasks
+- They are part of the review flow even though the later InfraSpec status output still tracks only the existing schema artifacts
+
 **Artifact Creation Guidelines**
 
 The artifact types and their purpose depend on the schema. Use the \`instruction\` field from the instructions output to understand what to create.
 
 Common artifact patterns:
 
+**review pre-spec documents**:
+- **requirements.md**: Capture the user's requirement document in a concise, implementation-ready form. Preserve scope, constraints, actors, inputs/outputs, and acceptance expectations.
+- **detailed-design.md**: Produce the company-required detailed design document from \`requirements.md\`. Follow the required company structure exactly.
+  - Required structure:
+    - \`1. 引言\` → \`1.1 目的\`, \`1.2 统一术语\`
+    - \`2. 应用架构详细设计\` → \`2.1 接口设计\`, \`2.2 业务功能的流程设计\`, \`2.3 领域模型设计（可选）\`, \`2.4 持久化模型设计（可选）\`, \`2.5 技术参数变更的流程设计（可选）\`
+    - \`3. 系统架构详细设计\` → \`3.1 数据库详细设计\`, \`3.2 云服务落地方案\`
+  - Optional sections must explicitly say \`本次不涉及\` when not applicable.
+  - Unknown details must be marked as \`待确认事项\`.
+
 **spec-driven schema** (proposal → specs → design → tasks):
-- **proposal.md**: Ask user about the change if not clear. Fill in Why, What Changes, Capabilities, Impact.
+- **proposal.md**: Base this on \`detailed-design.md\`. Fill in Why, What Changes, Capabilities, Impact.
   - The Capabilities section is critical - each capability listed will need a spec file.
 - **specs/<capability>/spec.md**: Create one spec per capability listed in the proposal's Capabilities section (use the capability name, not the change name).
 - **design.md**: Document technical decisions, architecture, and implementation approach.
@@ -110,6 +183,7 @@ For other schemas, follow the \`instruction\` field from the CLI output.
 
 **Guardrails**
 - Create ONE artifact per invocation
+- In review, treat \`requirements.md\` and \`detailed-design.md\` as required predecessors before creating \`proposal.md\`
 - Always read dependency artifacts before creating a new one
 - Never skip artifacts or create out of order
 - If context is unclear, ask the user before creating
@@ -151,6 +225,63 @@ export function getOpsxReviewCommandTemplate(): CommandTemplate {
    **IMPORTANT**: Do NOT guess or auto-select a change. Always let the user choose.
 
 2. **Check current status**
+   Before using the artifact workflow, check whether the two pre-spec documents for this review flow already exist:
+   - \`infraspec/changes/<name>/requirements.md\`
+   - \`infraspec/changes/<name>/detailed-design.md\`
+
+   The fixed review flow is:
+   \`requirements -> detailed-design -> proposal -> specs/design -> tasks\`
+
+   Handle the pre-spec documents first:
+
+   - If \`requirements.md\` does not exist:
+     - Create it from the user's requirement document or the best available conversation context.
+     - If the requirements are ambiguous or incomplete, ask the user before writing it.
+     - Save it to \`infraspec/changes/<name>/requirements.md\`.
+     - STOP after creating only this file.
+
+   - If \`requirements.md\` exists but \`detailed-design.md\` does not:
+     - Read \`requirements.md\`.
+     - Create \`detailed-design.md\` using the company's required design-document format.
+     - Generate it in Markdown using this exact section order:
+       - \`# 详细设计文档\`
+       - \`## 1. 引言\`
+       - \`### 1.1 目的\`
+       - \`### 1.2 统一术语\`
+       - \`## 2. 应用架构详细设计\`
+       - \`### 2.1 接口设计\`
+       - \`#### 2.1.1 <接口名称> 接口\`
+       - \`### 2.2 业务功能的流程设计\`
+       - \`#### 2.2.1 <功能名称> 功能流程设计\`
+       - \`### 2.3 领域模型设计（可选）\`
+       - \`#### 2.3.1 <实体名称> 实体设计\`
+       - \`### 2.4 持久化模型设计（可选）\`
+       - \`#### 2.4.1 <持久化模型名称> 持久化模型设计\`
+       - \`### 2.5 技术参数变更的流程设计（可选）\`
+       - \`#### 2.5.1 <参数或流程名称> 流程设计\`
+       - \`## 3. 系统架构详细设计\`
+       - \`### 3.1 数据库详细设计\`
+       - \`#### 3.1.1 数据库表设计\`
+       - \`#### 3.1.2 数据库索引设计\`
+       - \`### 3.2 云服务落地方案\`
+       - \`#### 3.2.1 <云服务名称> 云服务\`
+     - Section requirements:
+       - Interface design MUST cover purpose, caller/callee, method/path, request params, response, error handling, and security/auth.
+       - Business flow design MUST cover goal, preconditions, main flow, exception flow, inputs/outputs, and flow notes.
+       - Optional sections MUST either contain concrete content or explicitly state \`本次不涉及\`.
+       - Database design MUST explicitly state \`本次不涉及\` if there are no schema/index changes.
+       - Cloud service design MUST explicitly state \`本次不涉及\` if no cloud resource changes are required.
+     - Generation rules:
+       - Base the document on \`requirements.md\` first, then use reasonable engineering inference where necessary.
+       - Replace every placeholder with concrete names.
+       - Do not output an empty outline.
+       - If requirements are insufficient, mark the missing parts as \`待确认事项\` instead of inventing facts.
+     - Save it to \`infraspec/changes/<name>/detailed-design.md\`.
+     - STOP after creating only this file.
+
+   - Only after both files exist, continue with the existing artifact workflow below.
+
+   Then check the current InfraSpec artifact status:
    \`\`\`bash
    infraspec status --change "<name>" --json
    \`\`\`
@@ -210,8 +341,14 @@ After each invocation, show:
 - Schema workflow being used
 - Current progress (N/M complete)
 - What artifacts are now unlocked
-- Prompt: "npmReview the artifact manually and then run \`/infra:review\` to create the next artifact"
+- Prompt: name the artifact just created and the next ready artifact(s)
   - Example: "You can now review \`<created-artifact>\` and then run \`/infra:review\` again to create the next artifact (\`design\` or \`specs\`)."
+
+For the two pre-spec documents:
+- \`requirements.md\`: distilled requirements from the user's requirement document
+- \`detailed-design.md\`: company-format detailed design derived from \`requirements.md\`
+- These two files are mandatory in review before proposal/specs/design/tasks
+- They are part of the review flow even though the later InfraSpec status output still tracks only the existing schema artifacts
 
 **Artifact Creation Guidelines**
 
@@ -219,8 +356,18 @@ The artifact types and their purpose depend on the schema. Use the \`instruction
 
 Common artifact patterns:
 
+**review pre-spec documents**:
+- **requirements.md**: Capture the user's requirement document in a concise, implementation-ready form. Preserve scope, constraints, actors, inputs/outputs, and acceptance expectations.
+- **detailed-design.md**: Produce the company-required detailed design document from \`requirements.md\`. Follow the required company structure exactly.
+  - Required structure:
+    - \`1. 引言\` → \`1.1 目的\`, \`1.2 统一术语\`
+    - \`2. 应用架构详细设计\` → \`2.1 接口设计\`, \`2.2 业务功能的流程设计\`, \`2.3 领域模型设计（可选）\`, \`2.4 持久化模型设计（可选）\`, \`2.5 技术参数变更的流程设计（可选）\`
+    - \`3. 系统架构详细设计\` → \`3.1 数据库详细设计\`, \`3.2 云服务落地方案\`
+  - Optional sections must explicitly say \`本次不涉及\` when not applicable.
+  - Unknown details must be marked as \`待确认事项\`.
+
 **spec-driven schema** (proposal → specs → design → tasks):
-- **proposal.md**: Ask user about the change if not clear. Fill in Why, What Changes, Capabilities, Impact.
+- **proposal.md**: Base this on \`detailed-design.md\`. Fill in Why, What Changes, Capabilities, Impact.
   - The Capabilities section is critical - each capability listed will need a spec file.
 - **specs/<capability>/spec.md**: Create one spec per capability listed in the proposal's Capabilities section (use the capability name, not the change name).
 - **design.md**: Document technical decisions, architecture, and implementation approach.
@@ -230,6 +377,7 @@ For other schemas, follow the \`instruction\` field from the CLI output.
 
 **Guardrails**
 - Create ONE artifact per invocation
+- In review, treat \`requirements.md\` and \`detailed-design.md\` as required predecessors before creating \`proposal.md\`
 - Always read dependency artifacts before creating a new one
 - Never skip artifacts or create out of order
 - If context is unclear, ask the user before creating
