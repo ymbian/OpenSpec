@@ -6,10 +6,10 @@
  */
 import type { SkillTemplate, CommandTemplate } from '../types.js';
 
-export function getContinueChangeSkillTemplate(): SkillTemplate {
+export function getReviewChangeSkillTemplate(): SkillTemplate {
   return {
-    name: 'infra-continue-change',
-    description: 'Continue working on an InfraSpec change by creating the next artifact. Use when the user wants to progress their change, create the next artifact, or continue their workflow.',
+    name: 'infra-review-change',
+    description: 'Review an artifact before creating the next artifact. Use when the user wants to review their change progress, create the next artifact, or continue the workflow under the review command.',
     instructions: `Continue working on a change by creating the next artifact.
 
 **Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
@@ -90,7 +90,7 @@ After each invocation, show:
 - Schema workflow being used
 - Current progress (N/M complete)
 - What artifacts are now unlocked
-- Prompt: "Want to continue? Just ask me to continue or tell me what to do next."
+- Prompt: "Run \`/infra:review\` to create the next artifact"
 
 **Artifact Creation Guidelines**
 
@@ -123,15 +123,15 @@ For other schemas, follow the \`instruction\` field from the CLI output.
   };
 }
 
-export function getOpsxContinueCommandTemplate(): CommandTemplate {
+export function getOpsxReviewCommandTemplate(): CommandTemplate {
   return {
-    name: 'INFRA: Continue',
-    description: 'Continue working on a change - create the next artifact (Experimental)',
+    name: 'INFRA: Review',
+    description: 'Review a change - create the next artifact (Experimental)',
     category: 'Workflow',
     tags: ['workflow', 'artifacts', 'experimental'],
     content: `Continue working on a change by creating the next artifact.
 
-**Input**: Optionally specify a change name after \`/infra:continue\` (e.g., \`/infra:continue add-auth\`). If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
+**Input**: Optionally specify a change name after \`/infra:review\` (e.g., \`/infra:review add-auth\`). If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
 
 **Steps**
 
@@ -209,7 +209,7 @@ After each invocation, show:
 - Schema workflow being used
 - Current progress (N/M complete)
 - What artifacts are now unlocked
-- Prompt: "Run \`/infra:continue\` to create the next artifact"
+- Prompt: "Run \`/infra:review\` to create the next artifact"
 
 **Artifact Creation Guidelines**
 
