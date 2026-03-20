@@ -6,10 +6,13 @@
  */
 import type { SkillTemplate, CommandTemplate } from '../types.js';
 
-export function getContinueChangeSkillTemplate(): SkillTemplate {
+function buildContinueLikeSkillTemplate(
+  skillName: string,
+  description: string
+): SkillTemplate {
   return {
-    name: 'infra-continue-change',
-    description: 'Continue working on an InfraSpec change by creating the next artifact. Use when the user wants to progress their change, create the next artifact, or continue their workflow.',
+    name: skillName,
+    description,
     instructions: `Continue working on a change by creating the next artifact.
 
 **Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
@@ -123,15 +126,19 @@ For other schemas, follow the \`instruction\` field from the CLI output.
   };
 }
 
-export function getOpsxContinueCommandTemplate(): CommandTemplate {
+function buildContinueLikeCommandTemplate(
+  commandName: 'continue' | 'review',
+  name: string,
+  description: string
+): CommandTemplate {
   return {
-    name: 'INFRA: Continue',
-    description: 'Continue working on a change - create the next artifact (Experimental)',
+    name,
+    description,
     category: 'Workflow',
     tags: ['workflow', 'artifacts', 'experimental'],
     content: `Continue working on a change by creating the next artifact.
 
-**Input**: Optionally specify a change name after \`/infra:continue\` (e.g., \`/infra:continue add-auth\`). If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
+**Input**: Optionally specify a change name after \`/infra:${commandName}\` (e.g., \`/infra:${commandName} add-auth\`). If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
 
 **Steps**
 
@@ -209,7 +216,7 @@ After each invocation, show:
 - Schema workflow being used
 - Current progress (N/M complete)
 - What artifacts are now unlocked
-- Prompt: "Run \`/infra:continue\` to create the next artifact"
+- Prompt: "Run \`/infra:${commandName}\` to create the next artifact"
 
 **Artifact Creation Guidelines**
 
@@ -237,4 +244,34 @@ For other schemas, follow the \`instruction\` field from the CLI output.
   - Do NOT copy \`<context>\`, \`<rules>\`, \`<project_context>\` blocks into the artifact
   - These guide what you write, but should never appear in the output`
   };
+}
+
+export function getContinueChangeSkillTemplate(): SkillTemplate {
+  return buildContinueLikeSkillTemplate(
+    'infra-continue-change',
+    'Continue working on an InfraSpec change by creating the next artifact. Use when the user wants to progress their change, create the next artifact, or continue their workflow.'
+  );
+}
+
+export function getReviewChangeSkillTemplate(): SkillTemplate {
+  return buildContinueLikeSkillTemplate(
+    'infra-review-change',
+    'Review an artifact before creating the next artifact. Use when the user wants to review their change progress, create the next artifact, or continue the workflow under the review command.'
+  );
+}
+
+export function getOpsxContinueCommandTemplate(): CommandTemplate {
+  return buildContinueLikeCommandTemplate(
+    'continue',
+    'INFRA: Continue',
+    'Continue working on a change - create the next artifact (Experimental)'
+  );
+}
+
+export function getOpsxReviewCommandTemplate(): CommandTemplate {
+  return buildContinueLikeCommandTemplate(
+    'review',
+    'INFRA: Review',
+    'Review a change - create the next artifact (Experimental)'
+  );
 }

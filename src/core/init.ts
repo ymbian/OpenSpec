@@ -64,6 +64,7 @@ const WORKFLOW_TO_SKILL_DIR: Record<string, string> = {
   'explore': 'infra-explore',
   'new': 'infra-new-change',
   'continue': 'infra-continue-change',
+  'review': 'infra-review-change',
   'apply': 'infra-apply-change',
   'ff': 'infra-ff-change',
   'sync': 'infra-sync-specs',

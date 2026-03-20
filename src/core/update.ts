@@ -270,6 +270,7 @@ export class UpdateCommand {
       console.log(chalk.bold('Getting started:'));
       console.log('  /infra:new       Start a new change');
       console.log('  /infra:continue  Create the next artifact');
+      console.log('  /infra:review    Review before creating the next artifact');
       console.log('  /infra:apply     Implement tasks');
       console.log();
     }

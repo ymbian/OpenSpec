@@ -46,7 +46,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
    - Dynamic instruction based on current state
 
    **Handle states:**
-   - If \`state: "blocked"\` (missing artifacts): show message, suggest using infra-continue-change
+   - If \`state: "blocked"\` (missing artifacts): show message, suggest using infra-continue-change or infra-review-change
    - If \`state: "all_done"\`: congratulate, suggest archive
    - Otherwise: proceed to implementation
 
@@ -203,7 +203,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    - Dynamic instruction based on current state
 
    **Handle states:**
-   - If \`state: "blocked"\` (missing artifacts): show message, suggest using \`/infra:continue\`
+   - If \`state: "blocked"\` (missing artifacts): show message, suggest using \`/infra:continue\` or \`/infra:review\`
    - If \`state: "all_done"\`: congratulate, suggest archive
    - Otherwise: proceed to implementation
 

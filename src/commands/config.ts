@@ -58,6 +58,10 @@ const WORKFLOW_PROMPT_META: Record<string, WorkflowPromptMeta> = {
     name: 'Continue change',
     description: 'Resume work on an existing change',
   },
+  review: {
+    name: 'Review change',
+    description: 'Resume work on an existing change with the review alias',
+  },
   apply: {
     name: 'Apply tasks',
     description: 'Implement tasks from the current change',
