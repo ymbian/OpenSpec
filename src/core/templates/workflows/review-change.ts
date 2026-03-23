@@ -341,7 +341,7 @@ After each invocation, show:
 - Schema workflow being used
 - Current progress (N/M complete)
 - What artifacts are now unlocked
-- Prompt: name the artifact just created and the next ready artifact(s)
+- Prompt: "Review the artifact manually and then run \`/infra:review\` to create the next artifact"
   - Example: "You can now review \`<created-artifact>\` and then run \`/infra:review\` again to create the next artifact (\`design\` or \`specs\`)."
 
 For the two pre-spec documents:
