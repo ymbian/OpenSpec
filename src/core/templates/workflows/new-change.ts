@@ -78,7 +78,7 @@ After completing the steps, summarize:
 - Change name and location
 - Requirements file location
 - What was saved in \`requirements.md\`
-- Prompt: "Run \`/infra:review\` to generate the company-format detailed design document."
+- Prompt: "Run \`/infra:review\` to generate the lean-process detailed design specification (\`detailed-design.md\`)."
 
 **Guardrails**
 - Do NOT create any formal InfraSpec artifacts yet
@@ -167,7 +167,7 @@ After completing the steps, summarize:
 - Change name and location
 - Requirements file location
 - What was saved in \`requirements.md\`
-- Prompt: "Run \`/infra:review\` to generate the company-format detailed design document."
+- Prompt: "Run \`/infra:review\` to generate the lean-process detailed design specification (\`detailed-design.md\`)."
 
 **Guardrails**
 - Do NOT create any formal InfraSpec artifacts yet
