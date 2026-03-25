@@ -219,7 +219,10 @@ export function generateInstructions(
   }
 
   const templateContent = loadTemplate(context.schemaName, artifact.template, context.projectRoot);
-  const dependencies = getDependencyInfo(artifact, context.graph, context.completed);
+  const dependencies = [
+    ...getDependencyInfo(artifact, context.graph, context.completed),
+    ...getExtraReviewDependencies(context.changeDir, artifact.id),
+  ];
   const unlocks = getUnlockedArtifacts(context.graph, artifactId);
 
   // Use projectRoot from context if not explicitly provided
@@ -291,6 +294,26 @@ function getDependencyInfo(
       description: depArtifact?.description ?? '',
     };
   });
+}
+
+function getExtraReviewDependencies(changeDir: string, artifactId: string): DependencyInfo[] {
+  if (artifactId !== 'design') {
+    return [];
+  }
+
+  const detailedDesignPath = path.join(changeDir, 'detailed-design.md');
+  if (!fs.existsSync(detailedDesignPath)) {
+    return [];
+  }
+
+  return [
+    {
+      id: 'detailed-design',
+      done: true,
+      path: 'detailed-design.md',
+      description: 'Lean-process detailed design specification created during review',
+    },
+  ];
 }
 
 /**

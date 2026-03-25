@@ -95,18 +95,44 @@ artifacts:
       - Security, performance, or migration complexity
       - Ambiguity that benefits from technical decisions before coding
 
+      This document is implementation- and verification-oriented. It is not a verbatim
+      copy of the company-format detailed design document. Instead, it should synthesize
+      the most important engineering details from proposal.md, specs, and, when present,
+      detailed-design.md.
+
+      Before generating design.md, read:
+      - proposal.md for motivation, scope, and capability boundaries
+      - specs/** for functional requirements and behavioral constraints
+      - detailed-design.md (if present) for interface definitions, flow design,
+        persistence/database details, external dependencies, security constraints,
+        and rollout considerations
+
       Sections:
-      - **Context**: Background, current state, constraints, stakeholders
-      - **Goals / Non-Goals**: What this design achieves and explicitly excludes
-      - **Decisions**: Key technical choices with rationale (why X over Y?). Include alternatives considered for each decision.
-      - **Risks / Trade-offs**: Known limitations, things that could go wrong. Format: [Risk] → Mitigation
-      - **Migration Plan**: Steps to deploy, rollback strategy (if applicable)
-      - **Open Questions**: Outstanding decisions or unknowns to resolve
+      - **Context and Scope**: Background, scope, non-goals, and constraints
+      - **Architecture Overview**: Involved modules/services, overall approach, and key interactions
+      - **Interface Design**: Core interfaces relevant to implementation, key request/response fields,
+        error handling, and auth/security expectations
+      - **Key Business Flows**: Main flows, important exception flows, inputs/outputs, and state transitions
+      - **Data and Persistence Design**: Core entities, persistence model, schema/index changes,
+        consistency requirements, and migration-sensitive data concerns
+      - **Infrastructure and External Dependencies**: Cloud resources, messaging, cache, third-party services,
+        and environment/config changes that affect implementation
+      - **Technical Decisions and Trade-offs**: Key technical choices, alternatives considered, and rationale
+      - **Migration and Rollout**: Deployment steps, compatibility considerations, migration/rollback plan
+      - **Risks and Mitigations**: Major implementation risks and how they will be mitigated
+      - **Open Questions**: Outstanding uncertainties and decisions still to be confirmed
 
-      Focus on architecture and approach, not line-by-line implementation.
-      Reference the proposal for motivation and specs for requirements.
+      Writing requirements:
+      - Preserve implementation-critical detail; do not reduce the document to abstract summaries only
+      - Synthesize detailed-design.md when present, but do not mechanically mirror its company-format structure
+      - Prioritize information that directly affects coding, task breakdown, and verification
+      - Explicitly retain key interface contracts, critical flows, database/persistence changes,
+        external dependency impacts, security constraints, and rollout requirements
+      - If proposal.md, specs, and detailed-design.md conflict, call out the conflict instead of guessing
+      - Focus on engineering approach and implementation constraints, not line-by-line code details
 
-      Good design docs explain the "why" behind technical decisions.
+      A good design.md should make it easier to generate actionable tasks.md
+      and to verify later whether the implementation matches the intended design.
     requires:
       - proposal
 
@@ -115,15 +141,42 @@ artifacts:
     description: Implementation checklist with trackable tasks
     template: tasks.md
     instruction: |
-      Create the task list that breaks down the implementation work.
+      Create the task list that breaks down the implementation work into actionable, verifiable steps.
 
       **IMPORTANT: Follow the template below exactly.** The apply phase parses
       checkbox format to track progress. Tasks not using `- [ ]` won't be tracked.
 
+      Before generating tasks.md, read:
+      - specs/** for required behavior and acceptance expectations
+      - design.md for implementation approach, interfaces, flows, data/persistence changes,
+        infrastructure dependencies, rollout requirements, and key constraints
+
+      Task generation principles:
+      - Derive tasks from both specs and design.md
+      - Prioritize implementation-critical work over descriptive detail
+      - Convert design elements into tasks only when they require concrete engineering work
+      - Do NOT mechanically turn every section or subsection of design.md into a task
+      - Keep tasks small enough to complete in a focused work session
+      - Order tasks by dependency and execution flow
+
+      Include tasks for concrete work such as:
+      - Interface/API implementation and integration
+      - Core business flow implementation
+      - Data model, persistence, schema, or index changes
+      - Infrastructure, configuration, or external dependency integration
+      - Testing, validation, migration, and rollout preparation where required
+
+      Do not create standalone tasks for:
+      - Background/context descriptions
+      - Pure rationale or trade-off explanations
+      - Open questions unless they require explicit follow-up work
+      - Risks unless mitigation requires a concrete implementation step
+
       Guidelines:
       - Group related tasks under ## numbered headings
       - Each task MUST be a checkbox: `- [ ] X.Y Task description`
-      - Tasks should be small enough to complete in one session
+      - Organize tasks into logical implementation groups
+      - Each task should be specific, actionable, verifiable, and scoped to a meaningful unit of engineering work
       - Order tasks by dependency (what must be done first?)
 
       Example:
@@ -139,8 +192,8 @@ artifacts:
       - [ ] 2.2 Add CSV formatting utilities
       ```
 
-      Reference specs for what needs to be built, design for how to build it.
-      Each task should be verifiable - you know when it's done.
+      A good tasks.md should make implementation progress easy to track
+      and should cover the key work implied by both the specs and the design.
     requires:
       - specs
       - design

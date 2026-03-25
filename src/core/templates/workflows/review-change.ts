@@ -176,7 +176,10 @@ Common artifact patterns:
 - **proposal.md**: Base this on \`detailed-design.md\`. Fill in Why, What Changes, Capabilities, Impact.
   - The Capabilities section is critical - each capability listed will need a spec file.
 - **specs/<capability>/spec.md**: Create one spec per capability listed in the proposal's Capabilities section (use the capability name, not the change name).
-- **design.md**: Document technical decisions, architecture, and implementation approach.
+- **design.md**: Create an implementation-oriented technical design that synthesizes \`proposal.md\`, \`specs\`, and \`detailed-design.md\` when present.
+  - MUST read \`detailed-design.md\` before generating \`design.md\` if the file exists.
+  - Preserve implementation-critical detail such as interface contracts, key flows, persistence/database changes, external dependencies, security constraints, and rollout requirements.
+  - Do NOT mechanically copy the company-format headings from \`detailed-design.md\`; reorganize the content into the \`design.md\` template structure.
 - **tasks.md**: Break down implementation into checkboxed tasks.
 
 For other schemas, follow the \`instruction\` field from the CLI output.
@@ -370,7 +373,10 @@ Common artifact patterns:
 - **proposal.md**: Base this on \`detailed-design.md\`. Fill in Why, What Changes, Capabilities, Impact.
   - The Capabilities section is critical - each capability listed will need a spec file.
 - **specs/<capability>/spec.md**: Create one spec per capability listed in the proposal's Capabilities section (use the capability name, not the change name).
-- **design.md**: Document technical decisions, architecture, and implementation approach.
+- **design.md**: Create an implementation-oriented technical design that synthesizes \`proposal.md\`, \`specs\`, and \`detailed-design.md\` when present.
+  - MUST read \`detailed-design.md\` before generating \`design.md\` if the file exists.
+  - Preserve implementation-critical detail such as interface contracts, key flows, persistence/database changes, external dependencies, security constraints, and rollout requirements.
+  - Do NOT mechanically copy the company-format headings from \`detailed-design.md\`; reorganize the content into the \`design.md\` template structure.
 - **tasks.md**: Break down implementation into checkboxed tasks.
 
 For other schemas, follow the \`instruction\` field from the CLI output.
