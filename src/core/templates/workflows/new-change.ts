@@ -78,7 +78,7 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
 - Change name 和所在位置
 - Requirements 文件位置
 - \`requirements.md\` 中保存了什么
-- Prompt: "Run \`/infra:review\` to generate the lean-process detailed design specification (\`detailed-design.md\`)."
+- Prompt: "Run \`/infra:review <name>\` to generate the lean-process detailed design specification (\`detailed-design.md\`)."
 
 **Guardrails**
 - 现在还不要创建任何正式的 InfraSpec artifacts
@@ -167,7 +167,7 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
 - Change name 和所在位置
 - Requirements 文件位置
 - \`requirements.md\` 中保存了什么
-- Prompt: "Run \`/infra:review\` to generate the lean-process detailed design specification (\`detailed-design.md\`)."
+- Prompt: "Run \`/infra:review <name>\` to generate the lean-process detailed design specification (\`detailed-design.md\`)."
 
 **Guardrails**
 - 现在还不要创建任何正式的 InfraSpec artifacts

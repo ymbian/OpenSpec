@@ -147,8 +147,8 @@ export function getReviewChangeSkillTemplate(): SkillTemplate {
 - 当前使用的 schema workflow
 - 当前进度（N/M complete）
 - 现在又解锁了哪些 artifacts
-- Prompt：点名刚创建的 artifact，以及下一个 ready 的 artifact
-  - 示例："You can now review \`<created-artifact>\` and then run \`/infra:review\` again to create the next artifact (\`design\` or \`specs\`)."
+- Prompt：点名刚创建的 artifact，以及下一个 ready 的 artifact，并在命令里显式带上当前 change name
+  - 示例："You can now review \`<created-artifact>\` and then run \`/infra:review <name>\` again to create the next artifact (\`design\` or \`specs\`)."
 
 对于这两个 pre-spec 文档：
 - \`requirements.md\`：从用户的需求文档中提炼出的 requirements
@@ -344,8 +344,8 @@ export function getOpsxReviewCommandTemplate(): CommandTemplate {
 - 当前使用的 schema workflow
 - 当前进度（N/M complete）
 - 现在又解锁了哪些 artifacts
-- Prompt："Review the artifact manually and then run \`/infra:review\` to create the next artifact"
-  - 示例："You can now review \`<created-artifact>\` and then run \`/infra:review\` again to create the next artifact (\`design\` or \`specs\`)."
+- Prompt："Review the artifact manually and then run \`/infra:review <name>\` to create the next artifact"
+  - 示例："You can now review \`<created-artifact>\` and then run \`/infra:review <name>\` again to create the next artifact (\`design\` or \`specs\`)."
 
 对于这两个 pre-spec 文档：
 - \`requirements.md\`：从用户的需求文档中提炼出的 requirements
