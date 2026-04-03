@@ -9,44 +9,44 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 export function getNewChangeSkillTemplate(): SkillTemplate {
   return {
     name: 'infra-new-change',
-    description: 'Start a new InfraSpec change using the experimental artifact workflow. Use when the user wants to create a new feature, fix, or modification with a structured step-by-step approach.',
-    instructions: `Start a new change using the experimental artifact-driven approach.
+    description: '使用实验性的 artifact workflow 启动一个新的 InfraSpec change。适用于用户想以结构化、分步骤的方式创建新功能、修复问题或做修改的场景。',
+    instructions: `使用实验性的 artifact-driven 方式启动一个新的 change。
 
-**Input**: The user's request should include a change name (kebab-case) OR requirement content describing what they want to build. The requirement content may be a plain-text requirement document that has already been preprocessed from another format.
+**Input**: 用户请求中应包含 change name（kebab-case），或者描述其想要构建内容的 requirement 内容。该 requirement 内容也可能是已经从其他格式预处理后的纯文本需求文档。
 
 **Steps**
 
-1. **If no clear input provided, ask what they want to build**
+1. **如果没有清晰输入，先询问用户要构建什么**
 
-   Use the **AskUserQuestion tool** (open-ended, no preset options) to ask:
+   使用 **AskUserQuestion tool**（开放式提问，不提供预设选项）询问：
    > "What change do you want to work on? Describe the requirement or paste the requirement document text."
 
-   From their description, derive a kebab-case name (e.g., "add user authentication" → \`add-user-auth\`).
+   根据用户描述推导出一个 kebab-case name（例如 "add user authentication" → \`add-user-auth\`）。
 
-   **IMPORTANT**: Do NOT proceed without understanding the requirement content.
+   **IMPORTANT**: 在理解 requirement 内容之前，不要继续。
 
-2. **Determine the workflow schema**
+2. **确定 workflow schema**
 
-   Use the default schema (omit \`--schema\`) unless the user explicitly requests a different workflow.
+   默认使用默认 schema（即省略 \`--schema\`），除非用户明确要求使用其他 workflow。
 
-   **Use a different schema only if the user mentions:**
-   - A specific schema name → use \`--schema <name>\`
-   - "show workflows" or "what workflows" → run \`infraspec schemas --json\` and let them choose
+   **只有在用户提到以下情况时，才使用非默认 schema：**
+   - 明确给出某个 schema name → 使用 \`--schema <name>\`
+   - 提到 "show workflows" 或 "what workflows" → 运行 \`infraspec schemas --json\` 并让用户选择
 
-   **Otherwise**: Omit \`--schema\` to use the default.
+   **Otherwise**: 省略 \`--schema\`，使用默认 workflow。
 
-3. **Create the change directory**
+3. **创建 change 目录**
    \`\`\`bash
    infraspec new change "<name>"
    \`\`\`
-   Add \`--schema <name>\` only if the user requested a specific workflow.
-   This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\` with the selected schema.
+   只有在用户要求特定 workflow 时才附加 \`--schema <name>\`。
+   这会在 InfraSpec workspace 的 \`infraspec/changes/<name>/\` 下，用所选 schema 创建一个脚手架化的 change。
 
-4. **Create \`requirements.md\`**
-   Save the requirement input to:
+4. **创建 \`requirements.md\`**
+   将 requirement 输入保存到：
    \`infraspec/changes/<name>/requirements.md\`
 
-   Convert the user's requirement input into this exact company structure:
+   将用户的 requirement 输入整理成以下精确的公司结构：
    - \`# 需求文档\`
    - \`## 1. 需求概述\`
    - \`### 1.1 背景、目标及价值（必填）\`
@@ -61,32 +61,32 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
    - \`### 3.2 影响评估（选填）\`
    - \`### 3.3 安全评估（选填）\`
 
-   Writing rules:
-   - Preserve the user's original meaning.
-   - Use the company-required section order exactly.
-   - Fill required sections with substantive content.
-   - Optional sections may be filled when supported by the input; otherwise explicitly write \`本次未明确\`.
-   - If important information is missing, write \`待确认事项\` instead of inventing facts.
-   - In \`2.3 功能清单\`, use stable identifiers like \`F1\`, \`F2\`, \`F3\`.
+   写作规则：
+   - 保留用户原始表达的真实含义。
+   - 严格使用公司要求的章节顺序。
+   - 所有必填章节都要写出有实质内容的内容。
+   - 选填章节如果输入支持则填写；否则明确写 \`本次未明确\`。
+   - 如果关键信息缺失，写 \`待确认事项\`，不要编造事实。
+   - 在 \`2.3 功能清单\` 中，使用稳定标识符，例如 \`F1\`、\`F2\`、\`F3\`。
 
-5. **STOP and wait for user direction**
-   Do not create proposal.md, specs, design.md, or tasks.md in this step.
+5. **STOP，等待用户下一步指示**
+   在这一步不要创建 proposal.md、specs、design.md 或 tasks.md。
 
 **Output**
 
-After completing the steps, summarize:
-- Change name and location
-- Requirements file location
-- What was saved in \`requirements.md\`
+完成以上步骤后，输出总结：
+- Change name 和所在位置
+- Requirements 文件位置
+- \`requirements.md\` 中保存了什么
 - Prompt: "Run \`/infra:review\` to generate the lean-process detailed design specification (\`detailed-design.md\`)."
 
 **Guardrails**
-- Do NOT create any formal InfraSpec artifacts yet
-- Do NOT show the first artifact template in this step
-- Do NOT advance beyond saving \`requirements.md\`
-- If the name is invalid (not kebab-case), ask for a valid name
-- If a change with that name already exists, suggest continuing that change instead
-- Pass --schema if using a non-default workflow`,
+- 现在还不要创建任何正式的 InfraSpec artifacts
+- 在这一步不要展示第一个 artifact template
+- 不要推进到保存 \`requirements.md\` 之后的阶段
+- 如果 name 非法（不是 kebab-case），要求用户提供合法名称
+- 如果同名 change 已存在，建议用户继续该 change，而不是新建
+- 如果使用非默认 workflow，记得传入 \`--schema\``,
     license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
     metadata: { author: 'bianyongmei', version: '1.0' },
@@ -96,46 +96,46 @@ After completing the steps, summarize:
 export function getOpsxNewCommandTemplate(): CommandTemplate {
   return {
     name: 'INFRA: New',
-    description: 'Start a new change using the experimental artifact workflow (INFRA)',
+    description: '使用实验性的 artifact workflow 启动一个新的 change（INFRA）',
     category: 'Workflow',
     tags: ['workflow', 'artifacts', 'experimental'],
-    content: `Start a new change using the experimental artifact-driven approach.
+    content: `使用实验性的 artifact-driven 方式启动一个新的 change。
 
-**Input**: The argument after \`/infra:new\` is the change name (kebab-case), OR requirement content describing what the user wants to build. The requirement content may be a plain-text requirement document that has already been preprocessed from another format.
+**Input**: \`/infra:new\` 后的参数可以是 change name（kebab-case），或者描述用户想构建内容的 requirement 内容。该 requirement 内容也可能是已经从其他格式预处理后的纯文本需求文档。
 
 **Steps**
 
-1. **If no input provided, ask what they want to build**
+1. **如果没有提供输入，先询问用户要构建什么**
 
-   Use the **AskUserQuestion tool** (open-ended, no preset options) to ask:
+   使用 **AskUserQuestion tool**（开放式提问，不提供预设选项）询问：
    > "What change do you want to work on? Describe the requirement or paste the requirement document text."
 
-   From their description, derive a kebab-case name (e.g., "add user authentication" → \`add-user-auth\`).
+   根据用户描述推导出一个 kebab-case name（例如 "add user authentication" → \`add-user-auth\`）。
 
-   **IMPORTANT**: Do NOT proceed without understanding the requirement content.
+   **IMPORTANT**: 在理解 requirement 内容之前，不要继续。
 
-2. **Determine the workflow schema**
+2. **确定 workflow schema**
 
-   Use the default schema (omit \`--schema\`) unless the user explicitly requests a different workflow.
+   默认使用默认 schema（即省略 \`--schema\`），除非用户明确要求使用其他 workflow。
 
-   **Use a different schema only if the user mentions:**
-   - A specific schema name → use \`--schema <name>\`
-   - "show workflows" or "what workflows" → run \`infraspec schemas --json\` and let them choose
+   **只有在用户提到以下情况时，才使用非默认 schema：**
+   - 明确给出某个 schema name → 使用 \`--schema <name>\`
+   - 提到 "show workflows" 或 "what workflows" → 运行 \`infraspec schemas --json\` 并让用户选择
 
-   **Otherwise**: Omit \`--schema\` to use the default.
+   **Otherwise**: 省略 \`--schema\`，使用默认 workflow。
 
-3. **Create the change directory**
+3. **创建 change 目录**
    \`\`\`bash
    infraspec new change "<name>"
    \`\`\`
-   Add \`--schema <name>\` only if the user requested a specific workflow.
-   This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\` with the selected schema.
+   只有在用户要求特定 workflow 时才附加 \`--schema <name>\`。
+   这会在 InfraSpec workspace 的 \`infraspec/changes/<name>/\` 下，用所选 schema 创建一个脚手架化的 change。
 
-4. **Create \`requirements.md\`**
-   Save the requirement input to:
+4. **创建 \`requirements.md\`**
+   将 requirement 输入保存到：
    \`infraspec/changes/<name>/requirements.md\`
 
-   Convert the user's requirement input into this exact company structure:
+   将用户的 requirement 输入整理成以下精确的公司结构：
    - \`# 需求文档\`
    - \`## 1. 需求概述\`
    - \`### 1.1 背景、目标及价值（必填）\`
@@ -150,31 +150,31 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
    - \`### 3.2 影响评估（选填）\`
    - \`### 3.3 安全评估（选填）\`
 
-   Writing rules:
-   - Preserve the user's original meaning.
-   - Use the company-required section order exactly.
-   - Fill required sections with substantive content.
-   - Optional sections may be filled when supported by the input; otherwise explicitly write \`本次未明确\`.
-   - If important information is missing, write \`待确认事项\` instead of inventing facts.
-   - In \`2.3 功能清单\`, use stable identifiers like \`F1\`, \`F2\`, \`F3\`.
+   写作规则：
+   - 保留用户原始表达的真实含义。
+   - 严格使用公司要求的章节顺序。
+   - 所有必填章节都要写出有实质内容的内容。
+   - 选填章节如果输入支持则填写；否则明确写 \`本次未明确\`。
+   - 如果关键信息缺失，写 \`待确认事项\`，不要编造事实。
+   - 在 \`2.3 功能清单\` 中，使用稳定标识符，例如 \`F1\`、\`F2\`、\`F3\`。
 
-5. **STOP and wait for user direction**
-   Do not create proposal.md, specs, design.md, or tasks.md in this step.
+5. **STOP，等待用户下一步指示**
+   在这一步不要创建 proposal.md、specs、design.md 或 tasks.md。
 
 **Output**
 
-After completing the steps, summarize:
-- Change name and location
-- Requirements file location
-- What was saved in \`requirements.md\`
+完成以上步骤后，输出总结：
+- Change name 和所在位置
+- Requirements 文件位置
+- \`requirements.md\` 中保存了什么
 - Prompt: "Run \`/infra:review\` to generate the lean-process detailed design specification (\`detailed-design.md\`)."
 
 **Guardrails**
-- Do NOT create any formal InfraSpec artifacts yet
-- Do NOT show the first artifact template in this step
-- Do NOT advance beyond saving \`requirements.md\`
-- If the name is invalid (not kebab-case), ask for a valid name
-- If a change with that name already exists, suggest using \`/infra:review\` instead
-- Pass --schema if using a non-default workflow`
+- 现在还不要创建任何正式的 InfraSpec artifacts
+- 在这一步不要展示第一个 artifact template
+- 不要推进到保存 \`requirements.md\` 之后的阶段
+- 如果 name 非法（不是 kebab-case），要求用户提供合法名称
+- 如果同名 change 已存在，建议用户改用 \`/infra:review\`
+- 如果使用非默认 workflow，记得传入 \`--schema\``
   };
 }

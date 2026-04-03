@@ -9,47 +9,47 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 export function getReviewChangeSkillTemplate(): SkillTemplate {
   return {
     name: 'infra-review-change',
-    description: 'Review an artifact before creating the next artifact. Use when the user wants to review their change progress, create the next artifact, or continue the workflow under the review command.',
-    instructions: `Continue working on a change by creating the next artifact.
+    description: '在创建下一个 artifact 前先 review 当前变更。适用于用户想查看变更进度、创建下一个 artifact，或通过 review 命令继续工作流的场景。',
+    instructions: `通过创建下一个 artifact 来继续推进一个 change。
 
-**Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
+**Input**: 可以可选地指定 change name。如果未指定，先检查是否能从当前对话上下文中推断；如果不明确或有歧义，你 MUST 提示用户从可用 changes 中选择。
 
 **Steps**
 
-1. **If no change name provided, prompt for selection**
+1. **如果没有提供 change name，提示用户进行选择**
 
-   Run \`infraspec list --json\` to get available changes sorted by most recently modified. Then use the **AskUserQuestion tool** to let the user select which change to work on.
+   运行 \`infraspec list --json\` 获取可用 changes，并按最近修改时间排序。然后使用 **AskUserQuestion tool** 让用户选择要继续处理的 change。
 
-   Present the top 3-4 most recently modified changes as options, showing:
+   将最近修改的 3-4 个 changes 作为选项展示，并包含：
    - Change name
-   - Schema (from \`schema\` field if present, otherwise "spec-driven")
-   - Status (e.g., "0/5 tasks", "complete", "no tasks")
-   - How recently it was modified (from \`lastModified\` field)
+   - Schema（如果存在 \`schema\` 字段则显示其值，否则显示 "spec-driven"）
+   - Status（例如 "0/5 tasks"、"complete"、"no tasks"）
+   - 最近一次修改时间（来自 \`lastModified\` 字段）
 
-   Mark the most recently modified change as "(Recommended)" since it's likely what the user wants to continue.
+   将最近修改的 change 标记为 "(Recommended)"，因为它最可能是用户想继续处理的对象。
 
-   **IMPORTANT**: Do NOT guess or auto-select a change. Always let the user choose.
+   **IMPORTANT**: 不要猜测，也不要自动替用户选择 change。必须让用户自己选。
 
-2. **Check current status**
-   Before using the artifact workflow, check whether the two pre-spec documents for this review flow already exist:
+2. **检查当前状态**
+   在进入 artifact workflow 之前，先检查本 review 流程要求的两个 pre-spec 文档是否已经存在：
    - \`infraspec/changes/<name>/requirements.md\`
    - \`infraspec/changes/<name>/detailed-design.md\`
 
-   The fixed review flow is:
+   固定的 review 流程为：
    \`requirements -> detailed-design -> proposal -> specs/design -> tasks\`
 
-   Handle the pre-spec documents first:
+   先处理这两个 pre-spec 文档：
 
    - If \`requirements.md\` does not exist:
-     - Create it from the user's requirement document or the best available conversation context.
-     - If the requirements are ambiguous or incomplete, ask the user before writing it.
-     - Save it to \`infraspec/changes/<name>/requirements.md\`.
-     - STOP after creating only this file.
+     - 根据用户提供的需求文档，或当前对话里最可靠的需求上下文来创建它。
+     - 如果需求存在歧义或信息不完整，先向用户确认，再进行写入。
+     - 保存到 \`infraspec/changes/<name>/requirements.md\`。
+     - 只创建这个文件后就 STOP。
 
    - If \`requirements.md\` exists but \`detailed-design.md\` does not:
-     - Read \`requirements.md\`.
-     - Create \`detailed-design.md\` using the company's required design-document format.
-     - Generate it in Markdown using this exact section order:
+     - 读取 \`requirements.md\`。
+     - 按公司要求的详细设计文档格式创建 \`detailed-design.md\`。
+     - 使用 Markdown 生成，并严格遵循以下章节顺序：
        - \`# 详细设计文档\`
        - \`## 1. 引言\`
        - \`### 1.1 目的\`
@@ -71,130 +71,130 @@ export function getReviewChangeSkillTemplate(): SkillTemplate {
        - \`#### 3.1.2 数据库索引设计\`
        - \`### 3.2 云服务落地方案\`
        - \`#### 3.2.1 <云服务名称> 云服务\`
-     - Section requirements:
-       - Interface design MUST cover purpose, caller/callee, method/path, request params, response, error handling, and security/auth.
-       - Business flow design MUST cover goal, preconditions, main flow, exception flow, inputs/outputs, and flow notes.
-       - Optional sections MUST either contain concrete content or explicitly state \`本次不涉及\`.
-       - Database design MUST explicitly state \`本次不涉及\` if there are no schema/index changes.
-       - Cloud service design MUST explicitly state \`本次不涉及\` if no cloud resource changes are required.
-     - Generation rules:
-       - Base the document on \`requirements.md\` first, then use reasonable engineering inference where necessary.
-       - Replace every placeholder with concrete names.
-       - Do not output an empty outline.
-       - If requirements are insufficient, mark the missing parts as \`待确认事项\` instead of inventing facts.
-     - Save it to \`infraspec/changes/<name>/detailed-design.md\`.
-     - STOP after creating only this file.
+     - 章节要求：
+       - 接口设计 MUST 覆盖 purpose、caller/callee、method/path、request params、response、error handling 和 security/auth。
+       - 业务流程设计 MUST 覆盖 goal、preconditions、main flow、exception flow、inputs/outputs 和 flow notes。
+       - 可选章节 MUST 要么写出具体内容，要么明确写 \`本次不涉及\`。
+       - 如果没有 schema/index 变更，数据库设计 MUST 明确写 \`本次不涉及\`。
+       - 如果没有云资源变更，云服务设计 MUST 明确写 \`本次不涉及\`。
+     - 生成规则：
+       - 先以 \`requirements.md\` 为基础，再在必要时做合理的工程推断。
+       - 将所有占位符替换成具体名称。
+       - 不要输出空白大纲。
+       - 如果需求信息不足，将缺失部分标记为 \`待确认事项\`，不要编造事实。
+     - 保存到 \`infraspec/changes/<name>/detailed-design.md\`。
+     - 只创建这个文件后就 STOP。
 
-   - Only after both files exist, continue with the existing artifact workflow below.
+   - 只有在这两个文件都存在之后，才继续下面已有的 artifact workflow。
 
-   Then check the current InfraSpec artifact status:
+   然后检查当前 InfraSpec artifact 状态：
    \`\`\`bash
    infraspec status --change "<name>" --json
    \`\`\`
-   Parse the JSON to understand current state. The response includes:
-   - \`schemaName\`: The workflow schema being used (e.g., "spec-driven")
-   - \`artifacts\`: Array of artifacts with their status ("done", "ready", "blocked")
-   - \`isComplete\`: Boolean indicating if all artifacts are complete
+   解析 JSON 以理解当前状态。返回内容包括：
+   - \`schemaName\`：当前使用的 workflow schema（例如 "spec-driven"）
+   - \`artifacts\`：artifact 数组，以及每个 artifact 的状态（"done"、"ready"、"blocked"）
+   - \`isComplete\`：布尔值，表示所有 artifacts 是否都已完成
 
-3. **Act based on status**:
+3. **根据状态执行相应动作**：
 
    ---
 
-   **If all artifacts are complete (\`isComplete: true\`)**:
-   - Congratulate the user
-   - Show final status including the schema used
-   - Suggest: "All artifacts created! You can now implement this change or archive it."
+   **如果所有 artifacts 都已完成（\`isComplete: true\`）**：
+   - 祝贺用户
+   - 展示最终状态，并带上当前使用的 schema
+   - 提示："All artifacts created! You can now implement this change or archive it."
    - STOP
 
    ---
 
-   **If artifacts are ready to create** (status shows artifacts with \`status: "ready"\`):
-   - Pick the FIRST artifact with \`status: "ready"\` from the status output
-   - Get its instructions:
+   **如果存在可创建的 artifacts**（状态中有 \`status: "ready"\` 的 artifact）：
+   - 从状态输出中选择第一个 \`status: "ready"\` 的 artifact
+   - 获取它的 instructions：
      \`\`\`bash
      infraspec instructions <artifact-id> --change "<name>" --json
      \`\`\`
-   - Parse the JSON. The key fields are:
-     - \`context\`: Project background (constraints for you - do NOT include in output)
-     - \`rules\`: Artifact-specific rules (constraints for you - do NOT include in output)
-     - \`template\`: The structure to use for your output file
-     - \`instruction\`: Schema-specific guidance
-     - \`outputPath\`: Where to write the artifact
-     - \`dependencies\`: Completed artifacts to read for context
-   - **Create the artifact file**:
-     - Read any completed dependency files for context
-     - Use \`template\` as the structure - fill in its sections
-     - Apply \`context\` and \`rules\` as constraints when writing - but do NOT copy them into the file
-     - Write to the output path specified in instructions
-   - Show what was created and what's now unlocked
-   - STOP after creating ONE artifact
+   - 解析 JSON。关键字段包括：
+     - \`context\`：项目背景（这是给你的约束，不要出现在输出文件里）
+     - \`rules\`：artifact 专属规则（这是给你的约束，不要出现在输出文件里）
+     - \`template\`：输出文件应采用的结构
+     - \`instruction\`：schema 专属指导
+     - \`outputPath\`：artifact 的写入路径
+     - \`dependencies\`：创建前需要读取的已完成 artifacts
+   - **创建 artifact 文件**：
+     - 读取已完成的 dependency 文件作为上下文
+     - 以 \`template\` 作为结构，填写对应章节内容
+     - 在写作时应用 \`context\` 和 \`rules\` 作为约束，但不要把它们原样复制进文件
+     - 按 instructions 指定的 \`outputPath\` 写入
+   - 展示已创建的内容，以及因此解锁了哪些后续 artifact
+   - 只创建一个 artifact 后就 STOP
 
    ---
 
-   **If no artifacts are ready (all blocked)**:
-   - This shouldn't happen with a valid schema
-   - Show status and suggest checking for issues
+   **如果没有任何 artifact 可创建（全部 blocked）**：
+   - 这在有效 schema 下通常不应该发生
+   - 展示当前状态，并建议检查是否存在异常问题
 
-4. **After creating an artifact, show progress**
+4. **创建 artifact 后，展示进度**
    \`\`\`bash
    infraspec status --change "<name>"
    \`\`\`
 
 **Output**
 
-After each invocation, show:
-- Which artifact was created
-- Schema workflow being used
-- Current progress (N/M complete)
-- What artifacts are now unlocked
-- Prompt: name the artifact just created and the next ready artifact(s)
-  - Example: "You can now review \`<created-artifact>\` and then run \`/infra:review\` again to create the next artifact (\`design\` or \`specs\`)."
+每次执行后，都要展示：
+- 刚创建的是哪个 artifact
+- 当前使用的 schema workflow
+- 当前进度（N/M complete）
+- 现在又解锁了哪些 artifacts
+- Prompt：点名刚创建的 artifact，以及下一个 ready 的 artifact
+  - 示例："You can now review \`<created-artifact>\` and then run \`/infra:review\` again to create the next artifact (\`design\` or \`specs\`)."
 
-For the two pre-spec documents:
-- \`requirements.md\`: distilled requirements from the user's requirement document
-- \`detailed-design.md\`: company-format detailed design derived from \`requirements.md\`
-- These two files are mandatory in review before proposal/specs/design/tasks
-- They are part of the review flow even though the later InfraSpec status output still tracks only the existing schema artifacts
+对于这两个 pre-spec 文档：
+- \`requirements.md\`：从用户的需求文档中提炼出的 requirements
+- \`detailed-design.md\`：基于 \`requirements.md\` 生成的公司格式详细设计
+- 在进入 proposal/specs/design/tasks 之前，这两个文件在 review 流程中是必需前置项
+- 即使后续 InfraSpec status 输出仍只跟踪 schema 中原有的 artifacts，这两个文件仍然属于 review flow 的组成部分
 
 **Artifact Creation Guidelines**
 
-The artifact types and their purpose depend on the schema. Use the \`instruction\` field from the instructions output to understand what to create.
+artifact 的类型和用途取决于 schema。使用 instructions 输出里的 \`instruction\` 字段来理解当前应该创建什么。
 
-Common artifact patterns:
+常见 artifact 模式：
 
-**review pre-spec documents**:
-- **requirements.md**: Capture the user's requirement document in a concise, implementation-ready form. Preserve scope, constraints, actors, inputs/outputs, and acceptance expectations.
-- **detailed-design.md**: Produce the company-required detailed design document from \`requirements.md\`. Follow the required company structure exactly.
-  - Required structure:
+**review pre-spec documents**：
+- **requirements.md**：以简洁、可直接用于实现的方式承接用户的需求文档。保留 scope、constraints、actors、inputs/outputs 和 acceptance expectations。
+- **detailed-design.md**：基于 \`requirements.md\` 生成公司要求的详细设计文档，并严格遵循公司规定结构。
+  - Required structure：
     - \`1. 引言\` → \`1.1 目的\`, \`1.2 统一术语\`
     - \`2. 应用架构详细设计\` → \`2.1 接口设计\`, \`2.2 业务功能的流程设计\`, \`2.3 领域模型设计（可选）\`, \`2.4 持久化模型设计（可选）\`, \`2.5 技术参数变更的流程设计（可选）\`
     - \`3. 系统架构详细设计\` → \`3.1 数据库详细设计\`, \`3.2 云服务落地方案\`
-  - Optional sections must explicitly say \`本次不涉及\` when not applicable.
-  - Unknown details must be marked as \`待确认事项\`.
+  - 可选章节在不适用时必须明确写 \`本次不涉及\`。
+  - 未知细节必须标记为 \`待确认事项\`。
 
-**spec-driven schema** (proposal → specs → design → tasks):
-- **proposal.md**: Base this on \`detailed-design.md\`. Fill in Why, What Changes, Capabilities, Impact.
-  - The Capabilities section is critical - each capability listed will need a spec file.
-- **specs/<capability>/spec.md**: Create one spec per capability listed in the proposal's Capabilities section (use the capability name, not the change name).
-- **design.md**: Create an implementation-oriented technical design that synthesizes \`proposal.md\`, \`specs\`, and \`detailed-design.md\` when present.
-  - MUST read \`detailed-design.md\` before generating \`design.md\` if the file exists.
-  - Preserve implementation-critical detail such as interface contracts, key flows, persistence/database changes, external dependencies, security constraints, and rollout requirements.
-  - Do NOT mechanically copy the company-format headings from \`detailed-design.md\`; reorganize the content into the \`design.md\` template structure.
-- **tasks.md**: Break down implementation into checkboxed tasks.
+**spec-driven schema**（proposal → specs → design → tasks）：
+- **proposal.md**：以 \`detailed-design.md\` 为基础，填写 Why、What Changes、Capabilities、Impact。
+  - Capabilities 章节非常关键，其中列出的每个 capability 都需要对应一个 spec file。
+- **specs/<capability>/spec.md**：为 proposal 的 Capabilities 章节中列出的每个 capability 创建一个 spec（使用 capability 名，而不是 change 名）。
+- **design.md**：创建一个面向实现的技术设计文档，综合 \`proposal.md\`、\`specs\` 以及（如果存在）\`detailed-design.md\`。
+  - 如果 \`detailed-design.md\` 存在，在生成 \`design.md\` 前 MUST 先读取它。
+  - 保留会影响实现的关键细节，例如接口约束、关键流程、持久化/数据库变更、外部依赖、安全限制和 rollout 要求。
+  - 不要机械复制 \`detailed-design.md\` 的公司格式标题；应将内容重组到 \`design.md\` 模板结构中。
+- **tasks.md**：将实现工作拆分为带 checkbox 的任务列表。
 
-For other schemas, follow the \`instruction\` field from the CLI output.
+对于其他 schemas，遵循 CLI 输出中的 \`instruction\` 字段。
 
 **Guardrails**
-- Create ONE artifact per invocation
-- In review, treat \`requirements.md\` and \`detailed-design.md\` as required predecessors before creating \`proposal.md\`
-- Always read dependency artifacts before creating a new one
-- Never skip artifacts or create out of order
-- If context is unclear, ask the user before creating
-- Verify the artifact file exists after writing before marking progress
-- Use the schema's artifact sequence, don't assume specific artifact names
-- **IMPORTANT**: \`context\` and \`rules\` are constraints for YOU, not content for the file
-  - Do NOT copy \`<context>\`, \`<rules>\`, \`<project_context>\` blocks into the artifact
-  - These guide what you write, but should never appear in the output`,
+- 每次调用只创建 ONE artifact
+- 在 review 中，\`requirements.md\` 和 \`detailed-design.md\` 必须作为 \`proposal.md\` 之前的前置项
+- 创建新 artifact 前始终先读取 dependency artifacts
+- 不要跳过 artifact，也不要乱序创建
+- 如果上下文不清楚，先向用户确认，再创建
+- 写入后先确认 artifact 文件确实存在，再汇报进度
+- 遵循 schema 定义的 artifact 顺序，不要自行假设固定 artifact 名称
+- **IMPORTANT**：\`context\` 和 \`rules\` 是给你的约束，不是文件内容
+  - 不要把 \`<context>\`、\`<rules>\`、\`<project_context>\` 这些块复制进 artifact
+  - 它们只用于指导你写什么，不应直接出现在输出中`,
     license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
     metadata: { author: 'bianyongmei', version: '1.0' },
@@ -204,49 +204,49 @@ For other schemas, follow the \`instruction\` field from the CLI output.
 export function getOpsxReviewCommandTemplate(): CommandTemplate {
   return {
     name: 'INFRA: Review',
-    description: 'Review a change - create the next artifact (Experimental)',
+    description: 'Review 一个 change，并创建下一个 artifact（Experimental）',
     category: 'Workflow',
     tags: ['workflow', 'artifacts', 'experimental'],
-    content: `Continue working on a change by creating the next artifact.
+    content: `通过创建下一个 artifact 来继续推进一个 change。
 
-**Input**: Optionally specify a change name after \`/infra:review\` (e.g., \`/infra:review add-auth\`). If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
+**Input**: 可以在 \`/infra:review\` 后可选指定 change name（例如 \`/infra:review add-auth\`）。如果未指定，先检查是否能从当前对话上下文中推断；如果不明确或有歧义，你 MUST 提示用户从可用 changes 中选择。
 
 **Steps**
 
-1. **If no change name provided, prompt for selection**
+1. **如果没有提供 change name，提示用户进行选择**
 
-   Run \`infraspec list --json\` to get available changes sorted by most recently modified. Then use the **AskUserQuestion tool** to let the user select which change to work on.
+   运行 \`infraspec list --json\` 获取可用 changes，并按最近修改时间排序。然后使用 **AskUserQuestion tool** 让用户选择要继续处理的 change。
 
-   Present the top 3-4 most recently modified changes as options, showing:
+   将最近修改的 3-4 个 changes 作为选项展示，并包含：
    - Change name
-   - Schema (from \`schema\` field if present, otherwise "spec-driven")
-   - Status (e.g., "0/5 tasks", "complete", "no tasks")
-   - How recently it was modified (from \`lastModified\` field)
+   - Schema（如果存在 \`schema\` 字段则显示其值，否则显示 "spec-driven"）
+   - Status（例如 "0/5 tasks"、"complete"、"no tasks"）
+   - 最近一次修改时间（来自 \`lastModified\` 字段）
 
-   Mark the most recently modified change as "(Recommended)" since it's likely what the user wants to continue.
+   将最近修改的 change 标记为 "(Recommended)"，因为它最可能是用户想继续处理的对象。
 
-   **IMPORTANT**: Do NOT guess or auto-select a change. Always let the user choose.
+   **IMPORTANT**: 不要猜测，也不要自动替用户选择 change。必须让用户自己选。
 
-2. **Check current status**
-   Before using the artifact workflow, check whether the two pre-spec documents for this review flow already exist:
+2. **检查当前状态**
+   在进入 artifact workflow 之前，先检查本 review 流程要求的两个 pre-spec 文档是否已经存在：
    - \`infraspec/changes/<name>/requirements.md\`
    - \`infraspec/changes/<name>/detailed-design.md\`
 
-   The fixed review flow is:
+   固定的 review 流程为：
    \`requirements -> detailed-design -> proposal -> specs/design -> tasks\`
 
-   Handle the pre-spec documents first:
+   先处理这两个 pre-spec 文档：
 
    - If \`requirements.md\` does not exist:
-     - Create it from the user's requirement document or the best available conversation context.
-     - If the requirements are ambiguous or incomplete, ask the user before writing it.
-     - Save it to \`infraspec/changes/<name>/requirements.md\`.
-     - STOP after creating only this file.
+     - 根据用户提供的需求文档，或当前对话里最可靠的需求上下文来创建它。
+     - 如果需求存在歧义或信息不完整，先向用户确认，再进行写入。
+     - 保存到 \`infraspec/changes/<name>/requirements.md\`。
+     - 只创建这个文件后就 STOP。
 
    - If \`requirements.md\` exists but \`detailed-design.md\` does not:
-     - Read \`requirements.md\`.
-     - Create \`detailed-design.md\` using the company's required design-document format.
-     - Generate it in Markdown using this exact section order:
+     - 读取 \`requirements.md\`。
+     - 按公司要求的详细设计文档格式创建 \`detailed-design.md\`。
+     - 使用 Markdown 生成，并严格遵循以下章节顺序：
        - \`# 详细设计文档\`
        - \`## 1. 引言\`
        - \`### 1.1 目的\`
@@ -268,129 +268,129 @@ export function getOpsxReviewCommandTemplate(): CommandTemplate {
        - \`#### 3.1.2 数据库索引设计\`
        - \`### 3.2 云服务落地方案\`
        - \`#### 3.2.1 <云服务名称> 云服务\`
-     - Section requirements:
-       - Interface design MUST cover purpose, caller/callee, method/path, request params, response, error handling, and security/auth.
-       - Business flow design MUST cover goal, preconditions, main flow, exception flow, inputs/outputs, and flow notes.
-       - Optional sections MUST either contain concrete content or explicitly state \`本次不涉及\`.
-       - Database design MUST explicitly state \`本次不涉及\` if there are no schema/index changes.
-       - Cloud service design MUST explicitly state \`本次不涉及\` if no cloud resource changes are required.
-     - Generation rules:
-       - Base the document on \`requirements.md\` first, then use reasonable engineering inference where necessary.
-       - Replace every placeholder with concrete names.
-       - Do not output an empty outline.
-       - If requirements are insufficient, mark the missing parts as \`待确认事项\` instead of inventing facts.
-     - Save it to \`infraspec/changes/<name>/detailed-design.md\`.
-     - STOP after creating only this file.
+     - 章节要求：
+       - 接口设计 MUST 覆盖 purpose、caller/callee、method/path、request params、response、error handling 和 security/auth。
+       - 业务流程设计 MUST 覆盖 goal、preconditions、main flow、exception flow、inputs/outputs 和 flow notes。
+       - 可选章节 MUST 要么写出具体内容，要么明确写 \`本次不涉及\`。
+       - 如果没有 schema/index 变更，数据库设计 MUST 明确写 \`本次不涉及\`。
+       - 如果没有云资源变更，云服务设计 MUST 明确写 \`本次不涉及\`。
+     - 生成规则：
+       - 先以 \`requirements.md\` 为基础，再在必要时做合理的工程推断。
+       - 将所有占位符替换成具体名称。
+       - 不要输出空白大纲。
+       - 如果需求信息不足，将缺失部分标记为 \`待确认事项\`，不要编造事实。
+     - 保存到 \`infraspec/changes/<name>/detailed-design.md\`。
+     - 只创建这个文件后就 STOP。
 
-   - Only after both files exist, continue with the existing artifact workflow below.
+   - 只有在这两个文件都存在之后，才继续下面已有的 artifact workflow。
 
-   Then check the current InfraSpec artifact status:
+   然后检查当前 InfraSpec artifact 状态：
    \`\`\`bash
    infraspec status --change "<name>" --json
    \`\`\`
-   Parse the JSON to understand current state. The response includes:
-   - \`schemaName\`: The workflow schema being used (e.g., "spec-driven")
-   - \`artifacts\`: Array of artifacts with their status ("done", "ready", "blocked")
-   - \`isComplete\`: Boolean indicating if all artifacts are complete
+   解析 JSON 以理解当前状态。返回内容包括：
+   - \`schemaName\`：当前使用的 workflow schema（例如 "spec-driven"）
+   - \`artifacts\`：artifact 数组，以及每个 artifact 的状态（"done"、"ready"、"blocked"）
+   - \`isComplete\`：布尔值，表示所有 artifacts 是否都已完成
 
-3. **Act based on status**:
+3. **根据状态执行相应动作**：
 
    ---
 
-   **If all artifacts are complete (\`isComplete: true\`)**:
-   - Congratulate the user
-   - Show final status including the schema used
-   - Suggest: "All artifacts created! You can now implement this change with \`/infra:apply\` or archive it with \`/infra:archive\`."
+   **如果所有 artifacts 都已完成（\`isComplete: true\`）**：
+   - 祝贺用户
+   - 展示最终状态，并带上当前使用的 schema
+   - 提示："All artifacts created! You can now implement this change with \`/infra:apply\` or archive it with \`/infra:archive\`."
    - STOP
 
    ---
 
-   **If artifacts are ready to create** (status shows artifacts with \`status: "ready"\`):
-   - Pick the FIRST artifact with \`status: "ready"\` from the status output
-   - Get its instructions:
+   **如果存在可创建的 artifacts**（状态中有 \`status: "ready"\` 的 artifact）：
+   - 从状态输出中选择第一个 \`status: "ready"\` 的 artifact
+   - 获取它的 instructions：
      \`\`\`bash
      infraspec instructions <artifact-id> --change "<name>" --json
      \`\`\`
-   - Parse the JSON. The key fields are:
-     - \`context\`: Project background (constraints for you - do NOT include in output)
-     - \`rules\`: Artifact-specific rules (constraints for you - do NOT include in output)
-     - \`template\`: The structure to use for your output file
-     - \`instruction\`: Schema-specific guidance
-     - \`outputPath\`: Where to write the artifact
-     - \`dependencies\`: Completed artifacts to read for context
-   - **Create the artifact file**:
-     - Read any completed dependency files for context
-     - Use \`template\` as the structure - fill in its sections
-     - Apply \`context\` and \`rules\` as constraints when writing - but do NOT copy them into the file
-     - Write to the output path specified in instructions
-   - Show what was created and what's now unlocked
-   - STOP after creating ONE artifact
+   - 解析 JSON。关键字段包括：
+     - \`context\`：项目背景（这是给你的约束，不要出现在输出文件里）
+     - \`rules\`：artifact 专属规则（这是给你的约束，不要出现在输出文件里）
+     - \`template\`：输出文件应采用的结构
+     - \`instruction\`：schema 专属指导
+     - \`outputPath\`：artifact 的写入路径
+     - \`dependencies\`：创建前需要读取的已完成 artifacts
+   - **创建 artifact 文件**：
+     - 读取已完成的 dependency 文件作为上下文
+     - 以 \`template\` 作为结构，填写对应章节内容
+     - 在写作时应用 \`context\` 和 \`rules\` 作为约束，但不要把它们原样复制进文件
+     - 按 instructions 指定的 \`outputPath\` 写入
+   - 展示已创建的内容，以及因此解锁了哪些后续 artifact
+   - 只创建一个 artifact 后就 STOP
 
    ---
 
-   **If no artifacts are ready (all blocked)**:
-   - This shouldn't happen with a valid schema
-   - Show status and suggest checking for issues
+   **如果没有任何 artifact 可创建（全部 blocked）**：
+   - 这在有效 schema 下通常不应该发生
+   - 展示当前状态，并建议检查是否存在异常问题
 
-4. **After creating an artifact, show progress**
+4. **创建 artifact 后，展示进度**
    \`\`\`bash
    infraspec status --change "<name>"
    \`\`\`
 
 **Output**
 
-After each invocation, show:
-- Which artifact was created
-- Schema workflow being used
-- Current progress (N/M complete)
-- What artifacts are now unlocked
-- Prompt: "Review the artifact manually and then run \`/infra:review\` to create the next artifact"
-  - Example: "You can now review \`<created-artifact>\` and then run \`/infra:review\` again to create the next artifact (\`design\` or \`specs\`)."
+每次执行后，都要展示：
+- 刚创建的是哪个 artifact
+- 当前使用的 schema workflow
+- 当前进度（N/M complete）
+- 现在又解锁了哪些 artifacts
+- Prompt："Review the artifact manually and then run \`/infra:review\` to create the next artifact"
+  - 示例："You can now review \`<created-artifact>\` and then run \`/infra:review\` again to create the next artifact (\`design\` or \`specs\`)."
 
-For the two pre-spec documents:
-- \`requirements.md\`: distilled requirements from the user's requirement document
-- \`detailed-design.md\`: company-format detailed design derived from \`requirements.md\`
-- These two files are mandatory in review before proposal/specs/design/tasks
-- They are part of the review flow even though the later InfraSpec status output still tracks only the existing schema artifacts
+对于这两个 pre-spec 文档：
+- \`requirements.md\`：从用户的需求文档中提炼出的 requirements
+- \`detailed-design.md\`：基于 \`requirements.md\` 生成的公司格式详细设计
+- 在进入 proposal/specs/design/tasks 之前，这两个文件在 review 流程中是必需前置项
+- 即使后续 InfraSpec status 输出仍只跟踪 schema 中原有的 artifacts，这两个文件仍然属于 review flow 的组成部分
 
 **Artifact Creation Guidelines**
 
-The artifact types and their purpose depend on the schema. Use the \`instruction\` field from the instructions output to understand what to create.
+artifact 的类型和用途取决于 schema。使用 instructions 输出里的 \`instruction\` 字段来理解当前应该创建什么。
 
-Common artifact patterns:
+常见 artifact 模式：
 
-**review pre-spec documents**:
-- **requirements.md**: Capture the user's requirement document in a concise, implementation-ready form. Preserve scope, constraints, actors, inputs/outputs, and acceptance expectations.
-- **detailed-design.md**: Produce the company-required detailed design document from \`requirements.md\`. Follow the required company structure exactly.
-  - Required structure:
+**review pre-spec documents**：
+- **requirements.md**：以简洁、可直接用于实现的方式承接用户的需求文档。保留 scope、constraints、actors、inputs/outputs 和 acceptance expectations。
+- **detailed-design.md**：基于 \`requirements.md\` 生成公司要求的详细设计文档，并严格遵循公司规定结构。
+  - Required structure：
     - \`1. 引言\` → \`1.1 目的\`, \`1.2 统一术语\`
     - \`2. 应用架构详细设计\` → \`2.1 接口设计\`, \`2.2 业务功能的流程设计\`, \`2.3 领域模型设计（可选）\`, \`2.4 持久化模型设计（可选）\`, \`2.5 技术参数变更的流程设计（可选）\`
     - \`3. 系统架构详细设计\` → \`3.1 数据库详细设计\`, \`3.2 云服务落地方案\`
-  - Optional sections must explicitly say \`本次不涉及\` when not applicable.
-  - Unknown details must be marked as \`待确认事项\`.
+  - 可选章节在不适用时必须明确写 \`本次不涉及\`。
+  - 未知细节必须标记为 \`待确认事项\`。
 
-**spec-driven schema** (proposal → specs → design → tasks):
-- **proposal.md**: Base this on \`detailed-design.md\`. Fill in Why, What Changes, Capabilities, Impact.
-  - The Capabilities section is critical - each capability listed will need a spec file.
-- **specs/<capability>/spec.md**: Create one spec per capability listed in the proposal's Capabilities section (use the capability name, not the change name).
-- **design.md**: Create an implementation-oriented technical design that synthesizes \`proposal.md\`, \`specs\`, and \`detailed-design.md\` when present.
-  - MUST read \`detailed-design.md\` before generating \`design.md\` if the file exists.
-  - Preserve implementation-critical detail such as interface contracts, key flows, persistence/database changes, external dependencies, security constraints, and rollout requirements.
-  - Do NOT mechanically copy the company-format headings from \`detailed-design.md\`; reorganize the content into the \`design.md\` template structure.
-- **tasks.md**: Break down implementation into checkboxed tasks.
+**spec-driven schema**（proposal → specs → design → tasks）：
+- **proposal.md**：以 \`detailed-design.md\` 为基础，填写 Why、What Changes、Capabilities、Impact。
+  - Capabilities 章节非常关键，其中列出的每个 capability 都需要对应一个 spec file。
+- **specs/<capability>/spec.md**：为 proposal 的 Capabilities 章节中列出的每个 capability 创建一个 spec（使用 capability 名，而不是 change 名）。
+- **design.md**：创建一个面向实现的技术设计文档，综合 \`proposal.md\`、\`specs\` 以及（如果存在）\`detailed-design.md\`。
+  - 如果 \`detailed-design.md\` 存在，在生成 \`design.md\` 前 MUST 先读取它。
+  - 保留会影响实现的关键细节，例如接口约束、关键流程、持久化/数据库变更、外部依赖、安全限制和 rollout 要求。
+  - 不要机械复制 \`detailed-design.md\` 的公司格式标题；应将内容重组到 \`design.md\` 模板结构中。
+- **tasks.md**：将实现工作拆分为带 checkbox 的任务列表。
 
-For other schemas, follow the \`instruction\` field from the CLI output.
+对于其他 schemas，遵循 CLI 输出中的 \`instruction\` 字段。
 
 **Guardrails**
-- Create ONE artifact per invocation
-- In review, treat \`requirements.md\` and \`detailed-design.md\` as required predecessors before creating \`proposal.md\`
-- Always read dependency artifacts before creating a new one
-- Never skip artifacts or create out of order
-- If context is unclear, ask the user before creating
-- Verify the artifact file exists after writing before marking progress
-- Use the schema's artifact sequence, don't assume specific artifact names
-- **IMPORTANT**: \`context\` and \`rules\` are constraints for YOU, not content for the file
-  - Do NOT copy \`<context>\`, \`<rules>\`, \`<project_context>\` blocks into the artifact
-  - These guide what you write, but should never appear in the output`
+- 每次调用只创建 ONE artifact
+- 在 review 中，\`requirements.md\` 和 \`detailed-design.md\` 必须作为 \`proposal.md\` 之前的前置项
+- 创建新 artifact 前始终先读取 dependency artifacts
+- 不要跳过 artifact，也不要乱序创建
+- 如果上下文不清楚，先向用户确认，再创建
+- 写入后先确认 artifact 文件确实存在，再汇报进度
+- 遵循 schema 定义的 artifact 顺序，不要自行假设固定 artifact 名称
+- **IMPORTANT**：\`context\` 和 \`rules\` 是给你的约束，不是文件内容
+  - 不要把 \`<context>\`、\`<rules>\`、\`<project_context>\` 这些块复制进 artifact
+  - 它们只用于指导你写什么，不应直接出现在输出中`
   };
 }
