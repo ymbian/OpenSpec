@@ -151,8 +151,11 @@ export class InitCommand {
     // Create config.yaml if needed
     const configStatus = await this.createConfig(openspecPath, extendMode);
 
+    // Create a root AGENTS.md only if the project does not already have one
+    const agentsStatus = await this.createAgentsFile(projectPath);
+
     // Display success message
-    this.displaySuccessMessage(projectPath, validatedTools, results, configStatus);
+    this.displaySuccessMessage(projectPath, validatedTools, results, configStatus, agentsStatus);
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -625,6 +628,42 @@ export class InitCommand {
     }
   }
 
+  private async createAgentsFile(projectPath: string): Promise<'created' | 'exists'> {
+    const agentsPath = path.join(projectPath, 'AGENTS.md');
+
+    if (fs.existsSync(agentsPath)) {
+      return 'exists';
+    }
+
+    const content = `# AGENTS.md
+
+This project uses OpenSpec to plan and implement changes.
+
+## OpenSpec Workflow
+
+- Read the relevant files in \`infraspec/changes/<change-name>/\` before making code changes.
+- Use \`proposal.md\`, \`specs/\`, \`design.md\`, and \`tasks.md\` as the source of truth for the active change.
+- Treat \`tasks.md\` checkboxes as the implementation progress tracker.
+- If implementation reveals a mismatch with the plan, update the relevant OpenSpec artifacts before continuing.
+
+## Editing Rules
+
+- Do not copy OpenSpec instructions or templates into user-facing source files.
+- Prefer minimal, scoped changes that satisfy the active task.
+- If this is an empty new project, place all generated application code and project-local configuration under \`src/\` by default unless the toolchain requires a root-level file.
+- Follow any repository-specific conventions already present in the codebase.
+
+## Priority
+
+- Repository code and existing project conventions take precedence.
+- OpenSpec artifacts guide the current change.
+- This file is a starting point and may be edited by the project team.
+`;
+
+    await FileSystemUtils.writeFile(agentsPath, content);
+    return 'created';
+  }
+
   // ═══════════════════════════════════════════════════════════
   // UI & OUTPUT
   // ═══════════════════════════════════════════════════════════
@@ -640,7 +679,8 @@ export class InitCommand {
       removedCommandCount: number;
       removedSkillCount: number;
     },
-    configStatus: 'created' | 'exists' | 'skipped'
+    configStatus: 'created' | 'exists' | 'skipped',
+    agentsStatus: 'created' | 'exists'
   ): void {
     console.log();
     console.log(chalk.bold('InfraSpec Setup Complete'));
@@ -700,6 +740,12 @@ export class InitCommand {
       console.log(`Config: infraspec/${configName} (exists)`);
     } else {
       console.log(chalk.dim(`Config: skipped (non-interactive mode)`));
+    }
+
+    if (agentsStatus === 'created') {
+      console.log('AGENTS.md: created at project root');
+    } else {
+      console.log(chalk.dim('AGENTS.md: exists (skipped)'));
     }
 
     // Getting started (task 7.6: show propose if in profile)
