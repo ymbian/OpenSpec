@@ -11,7 +11,6 @@ export function getOnboardSkillTemplate(): SkillTemplate {
     name: 'infra-onboard',
     description: 'Guided onboarding for InfraSpec - walk through a complete workflow cycle with narration and real codebase work.',
     instructions: getOnboardInstructions(),
-    license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
     metadata: { author: 'bianyongmei', version: '1.0' },
   };

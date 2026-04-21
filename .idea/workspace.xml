@@ -4,9 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="optimize new prompt">
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="add change name">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/apply-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/apply-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/archive-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/archive-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/bulk-archive-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/bulk-archive-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/continue-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/continue-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/explore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/explore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/feedback.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/feedback.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/ff-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/ff-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/onboard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/propose.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/propose.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/review-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/review-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/sync-specs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/sync-specs.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/verify-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/verify-change.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,7 +30,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature_detailDesign" />
+        <entry key="$PROJECT_DIR$" value="feature_refactor" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -29,23 +43,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature__refactor",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/rose/Opensource/OpenSpec",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature__chinese&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/rose/Opensource/OpenSpec&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -64,7 +78,11 @@
       <workItem from="1772200348522" duration="13000" />
       <workItem from="1772200372114" duration="1259000" />
       <workItem from="1772290608449" duration="5318000" />
-      <workItem from="1774056041991" duration="9635000" />
+      <workItem from="1774056041991" duration="13664000" />
+      <workItem from="1774515267275" duration="1249000" />
+      <workItem from="1774879872594" duration="8358000" />
+      <workItem from="1775611889558" duration="1506000" />
+      <workItem from="1776081646574" duration="4803000" />
     </task>
     <task id="LOCAL-00001" summary="folder names prefixed with infra-">
       <option name="closed" value="true" />
@@ -258,7 +276,31 @@
       <option name="project" value="LOCAL" />
       <updated>1774337504943</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="optimize design prompt">
+      <option name="closed" value="true" />
+      <created>1774420516219</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1774420516219</updated>
+    </task>
+    <task id="LOCAL-00026" summary="optimize new and review prompt">
+      <option name="closed" value="true" />
+      <created>1775202722375</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1775202722375</updated>
+    </task>
+    <task id="LOCAL-00027" summary="add change name">
+      <option name="closed" value="true" />
+      <created>1775210457852</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1775210457852</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -270,6 +312,16 @@
         <entry key="Branch">
           <value>
             <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/feature_refactor" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/feature_detailDesign" />
+                </option>
+              </RecentGroup>
               <RecentGroup>
                 <option name="FILTER_VALUES">
                   <option value="origin/featuredoc" />
@@ -289,15 +341,32 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ID_WIDTH">
+                <map>
+                  <entry key="Table.Default.Author.ColumnIdWidth" value="96" />
+                  <entry key="Table.Default.Date.ColumnIdWidth" value="81" />
+                  <entry key="Table.GitHub.CommitStatus.ColumnIdWidth" value="81" />
+                </map>
+              </option>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/feature_refactor" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="folder names prefixed with infra-" />
-    <MESSAGE value="InfraSpec(openspec)" />
     <MESSAGE value="node bin/infraspec.js and init" />
     <MESSAGE value="delete openspec.js add infraspec.js to route '.infraspec init' to index.js" />
     <MESSAGE value="change openspec fold to infraspec" />
@@ -320,6 +389,9 @@
     <MESSAGE value="use doc" />
     <MESSAGE value="optimize review prompt" />
     <MESSAGE value="optimize new prompt" />
-    <option name="LAST_COMMIT_MESSAGE" value="optimize new prompt" />
+    <MESSAGE value="optimize design prompt" />
+    <MESSAGE value="optimize new and review prompt" />
+    <MESSAGE value="add change name" />
+    <option name="LAST_COMMIT_MESSAGE" value="add change name" />
   </component>
 </project>

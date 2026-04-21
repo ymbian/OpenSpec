@@ -245,7 +245,6 @@ No active changes found. Create a new change to get started.
 - Preserve .infraspec.yaml when moving to archive
 - Archive directory target uses current date: YYYY-MM-DD-<name>
 - If archive target exists, fail that change but continue with others`,
-    license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
     metadata: { author: 'bianyongmei', version: '1.0' },
   };

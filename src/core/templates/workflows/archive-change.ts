@@ -113,7 +113,6 @@ All artifacts complete. All tasks complete.
 - Show clear summary of what happened
 - If sync is requested, use infra-sync-specs approach (agent-driven)
 - If delta specs exist, always run the sync assessment and show the combined summary before prompting`,
-    license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
     metadata: { author: 'bianyongmei', version: '1.0' },
   };

@@ -117,7 +117,6 @@ For other schemas, follow the \`instruction\` field from the CLI output.
 - **IMPORTANT**: \`context\` and \`rules\` are constraints for YOU, not content for the file
   - Do NOT copy \`<context>\`, \`<rules>\`, \`<project_context>\` blocks into the artifact
   - These guide what you write, but should never appear in the output`,
-    license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
     metadata: { author: 'bianyongmei', version: '1.0' },
   };

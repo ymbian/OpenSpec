@@ -195,7 +195,6 @@ artifact 的类型和用途取决于 schema。使用 instructions 输出里的 \
 - **IMPORTANT**：\`context\` 和 \`rules\` 是给你的约束，不是文件内容
   - 不要把 \`<context>\`、\`<rules>\`、\`<project_context>\` 这些块复制进 artifact
   - 它们只用于指导你写什么，不应直接出现在输出中`,
-    license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
     metadata: { author: 'bianyongmei', version: '1.0' },
   };

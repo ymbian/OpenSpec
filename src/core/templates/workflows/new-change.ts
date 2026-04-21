@@ -87,7 +87,6 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
 - 如果 name 非法（不是 kebab-case），要求用户提供合法名称
 - 如果同名 change 已存在，建议用户继续该 change，而不是新建
 - 如果使用非默认 workflow，记得传入 \`--schema\``,
-    license: 'MIT',
     compatibility: 'Requires InfraSpec CLI (`infraspec`).',
     metadata: { author: 'bianyongmei', version: '1.0' },
   };
