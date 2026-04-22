@@ -637,27 +637,26 @@ export class InitCommand {
 
     const content = `# AGENTS.md
 
-This project uses OpenSpec to plan and implement changes.
+本项目使用 InfraSpec 来规划和实现变更。
 
-## OpenSpec Workflow
+## InfraSpec 工作流
 
-- Read the relevant files in \`infraspec/changes/<change-name>/\` before making code changes.
-- Use \`proposal.md\`, \`specs/\`, \`design.md\`, and \`tasks.md\` as the source of truth for the active change.
-- Treat \`tasks.md\` checkboxes as the implementation progress tracker.
-- If implementation reveals a mismatch with the plan, update the relevant OpenSpec artifacts before continuing.
+- 在修改代码前，先阅读 \`infraspec/changes/<change-name>/\` 下的相关文件。
+- 将 \`proposal.md\`、\`specs/\`、\`design.md\` 和 \`tasks.md\` 作为当前变更的事实来源。
+- 将 \`tasks.md\` 中的 checkbox 视为实现进度跟踪器。
 
-## Editing Rules
+## 编辑规则
 
-- Do not copy OpenSpec instructions or templates into user-facing source files.
-- Prefer minimal, scoped changes that satisfy the active task.
-- If this is an empty new project, place all generated application code and project-local configuration under \`src/\` by default unless the toolchain requires a root-level file.
-- Follow any repository-specific conventions already present in the codebase.
+- 不要把 InfraSpec 的指令或模板原样复制到面向用户的源码文件中。
+- 优先做最小、聚焦、能满足当前任务的改动。
+- 如果这是一个空的新项目，默认将生成的应用代码和项目内配置放在 \`src/\` 目录下；只有工具链明确要求时，才放在项目根目录。
+- 优先遵循仓库中已有的项目规范。
 
-## Priority
+## 优先级
 
-- Repository code and existing project conventions take precedence.
-- OpenSpec artifacts guide the current change.
-- This file is a starting point and may be edited by the project team.
+- 仓库现有代码和项目约定优先。
+- InfraSpec artifacts 用于指导当前变更。
+- 本文件只是初始模板，项目团队可以按需修改。
 `;
 
     await FileSystemUtils.writeFile(agentsPath, content);
