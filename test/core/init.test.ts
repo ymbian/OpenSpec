@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { promises as fs } from 'fs';
 import path from 'path';
 import os from 'os';
+import { execFileSync } from 'child_process';
 import { InitCommand } from '../../src/core/init.js';
 import { saveGlobalConfig, getGlobalConfig } from '../../src/core/global-config.js';
 
@@ -128,6 +129,21 @@ describe('InitCommand', () => {
       expect(buildCheckContent).toContain('go build ./...');
     });
 
+    it('should auto-initialize git and enable hooks for a near-new project with a supported build command', async () => {
+      await fs.writeFile(path.join(testDir, 'package.json'), JSON.stringify({
+        name: 'sample-project',
+        scripts: { build: 'echo ok' },
+      }, null, 2));
+
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+
+      await initCommand.execute(testDir);
+
+      expect(await fileExists(path.join(testDir, '.git', 'config'))).toBe(true);
+      const gitConfig = await fs.readFile(path.join(testDir, '.git', 'config'), 'utf-8');
+      expect(gitConfig).toContain('hooksPath = .githooks');
+    });
+
     it('should not override an existing core.hooksPath setting', async () => {
       await fs.writeFile(path.join(testDir, 'package.json'), JSON.stringify({
         name: 'sample-project',
@@ -156,6 +172,38 @@ describe('InitCommand', () => {
 
       const gitConfigPath = path.join(testDir, '.git', 'config');
       expect(await fileExists(gitConfigPath)).toBe(false);
+    });
+
+    it('should not auto-initialize git when target is inside a larger git repository', async () => {
+      execFileSync('git', ['init'], { cwd: testDir, stdio: 'ignore' });
+      const nestedDir = path.join(testDir, 'apps', 'child-project');
+      await fs.mkdir(nestedDir, { recursive: true });
+
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+      await initCommand.execute(nestedDir);
+
+      expect(await fileExists(path.join(nestedDir, '.git', 'config'))).toBe(false);
+    });
+
+    it('should not auto-initialize git for a directory that does not look like a near-new project', async () => {
+      await fs.writeFile(path.join(testDir, 'legacy-a.txt'), 'a');
+      await fs.writeFile(path.join(testDir, 'legacy-b.txt'), 'b');
+      await fs.writeFile(path.join(testDir, 'legacy-c.txt'), 'c');
+      await fs.writeFile(path.join(testDir, 'legacy-d.txt'), 'd');
+      await fs.writeFile(path.join(testDir, 'legacy-e.txt'), 'e');
+      await fs.writeFile(path.join(testDir, 'legacy-f.txt'), 'f');
+      await fs.writeFile(path.join(testDir, 'legacy-g.txt'), 'g');
+      await fs.writeFile(path.join(testDir, 'legacy-h.txt'), 'h');
+      await fs.writeFile(path.join(testDir, 'legacy-i.txt'), 'i');
+      await fs.writeFile(path.join(testDir, 'legacy-j.txt'), 'j');
+      await fs.writeFile(path.join(testDir, 'legacy-k.txt'), 'k');
+      await fs.writeFile(path.join(testDir, 'legacy-l.txt'), 'l');
+      await fs.writeFile(path.join(testDir, 'legacy-m.txt'), 'm');
+
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+      await initCommand.execute(testDir);
+
+      expect(await fileExists(path.join(testDir, '.git', 'config'))).toBe(false);
     });
 
     it('should create core profile skills for Claude Code by default', async () => {

@@ -111,7 +111,15 @@ type GitHookInstallStatus =
   | 'skipped-unsupported-build'
   | 'failed';
 
+type GitRepositorySetupStatus =
+  | 'existing'
+  | 'initialized'
+  | 'skipped-not-new'
+  | 'skipped-parent-repo'
+  | 'failed';
+
 type BuildVerificationSetupStatus = {
+  gitRepository: GitRepositorySetupStatus;
   agents: 'created' | 'exists';
   preCommitHook: 'created' | 'exists';
   buildCheck: 'created' | 'exists';
@@ -145,6 +153,9 @@ export class InitCommand {
 
     // Check for legacy artifacts and handle cleanup
     await this.handleLegacyCleanup(projectPath, extendMode);
+
+    // Initialize Git early if the target looks like a brand-new standalone project.
+    const gitRepositoryStatus = await this.ensureGitRepository(projectPath);
 
     // Detect available tools in the project (task 7.1)
     const detectedTools = getAvailableTools(projectPath);
@@ -184,7 +195,7 @@ export class InitCommand {
     const configStatus = await this.createConfig(openspecPath, extendMode);
 
     // Create project-level AI coding guardrails and Git hook files
-    const buildVerificationStatus = await this.setupBuildVerification(projectPath);
+    const buildVerificationStatus = await this.setupBuildVerification(projectPath, gitRepositoryStatus);
 
     // Display success message
     this.displaySuccessMessage(projectPath, validatedTools, results, configStatus, buildVerificationStatus);
@@ -698,13 +709,127 @@ export class InitCommand {
     return 'created';
   }
 
-  private async setupBuildVerification(projectPath: string): Promise<BuildVerificationSetupStatus> {
+  private async setupBuildVerification(
+    projectPath: string,
+    gitRepository: GitRepositorySetupStatus
+  ): Promise<BuildVerificationSetupStatus> {
     const agents = await this.createAgentsFile(projectPath);
     const preCommitHook = await this.createPreCommitHook(projectPath);
     const buildCheck = await this.createBuildCheckScript(projectPath);
     const hookInstall = await this.installProjectGitHook(projectPath);
 
-    return { agents, preCommitHook, buildCheck, hookInstall };
+    return { gitRepository, agents, preCommitHook, buildCheck, hookInstall };
+  }
+
+  private hasGitMetadata(projectPath: string): boolean {
+    return fs.existsSync(path.join(projectPath, '.git'));
+  }
+
+  private async isInsideParentGitRepository(projectPath: string): Promise<boolean> {
+    try {
+      const gitTopLevel = execFileSync('git', ['rev-parse', '--show-toplevel'], {
+        cwd: projectPath,
+        encoding: 'utf-8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim();
+
+      return path.resolve(gitTopLevel) !== projectPath;
+    } catch {
+      return false;
+    }
+  }
+
+  private async isNearNewProject(projectPath: string): Promise<boolean> {
+    if (!fs.existsSync(projectPath)) {
+      return true;
+    }
+
+    const entries = await fs.promises.readdir(projectPath).catch(() => []);
+    const filteredEntries = entries.filter((entry) => entry !== '.DS_Store' && entry !== OPENSPEC_DIR_NAME);
+
+    if (filteredEntries.length === 0) {
+      return true;
+    }
+
+    const allowedEntries = new Set([
+      '.editorconfig',
+      '.env.example',
+      '.gitignore',
+      '.npmrc',
+      '.nvmrc',
+      '.prettierrc',
+      '.prettierrc.json',
+      '.tool-versions',
+      'README',
+      'README.md',
+      'LICENSE',
+      'LICENSE.md',
+      'NOTICE',
+      'app',
+      'build.gradle',
+      'build.gradle.kts',
+      'Cargo.lock',
+      'Cargo.toml',
+      'cmd',
+      'docs',
+      'go.mod',
+      'go.sum',
+      'gradle',
+      'gradle.properties',
+      'gradlew',
+      'gradlew.bat',
+      'internal',
+      'lib',
+      'mvnw',
+      'mvnw.cmd',
+      'package-lock.json',
+      'package.json',
+      'pnpm-lock.yaml',
+      'pom.xml',
+      'settings.gradle',
+      'settings.gradle.kts',
+      'src',
+      'test',
+      'tests',
+      'tsconfig.json',
+      'tsconfig.base.json',
+      'vite.config.ts',
+      'vite.config.js',
+      'yarn.lock',
+      'bun.lock',
+      'bun.lockb',
+    ]);
+
+    if (filteredEntries.length > 12) {
+      return false;
+    }
+
+    return filteredEntries.every((entry) => allowedEntries.has(entry));
+  }
+
+  private async ensureGitRepository(projectPath: string): Promise<GitRepositorySetupStatus> {
+    if (this.hasGitMetadata(projectPath)) {
+      return 'existing';
+    }
+
+    if (await this.isInsideParentGitRepository(projectPath)) {
+      return 'skipped-parent-repo';
+    }
+
+    if (!(await this.isNearNewProject(projectPath))) {
+      return 'skipped-not-new';
+    }
+
+    try {
+      await fs.promises.mkdir(projectPath, { recursive: true });
+      execFileSync('git', ['init'], {
+        cwd: projectPath,
+        stdio: 'ignore',
+      });
+      return 'initialized';
+    } catch {
+      return 'failed';
+    }
   }
 
   private async createPreCommitHook(projectPath: string): Promise<'created' | 'exists'> {
@@ -906,9 +1031,7 @@ exit 1
   }
 
   private async installProjectGitHook(projectPath: string): Promise<GitHookInstallStatus> {
-    const gitMetadataPath = path.join(projectPath, '.git');
-
-    if (!fs.existsSync(gitMetadataPath)) {
+    if (!this.hasGitMetadata(projectPath)) {
       return 'skipped-no-git';
     }
 
@@ -1027,6 +1150,18 @@ exit 1
       console.log('AGENTS.md: created at project root');
     } else {
       console.log(chalk.dim('AGENTS.md: exists (skipped)'));
+    }
+
+    if (buildVerificationStatus.gitRepository === 'initialized') {
+      console.log('Git repository: initialized automatically');
+    } else if (buildVerificationStatus.gitRepository === 'existing') {
+      console.log(chalk.dim('Git repository: existing repository detected'));
+    } else if (buildVerificationStatus.gitRepository === 'skipped-parent-repo') {
+      console.log(chalk.dim('Git repository: not initialized (target is inside a larger Git repository)'));
+    } else if (buildVerificationStatus.gitRepository === 'skipped-not-new') {
+      console.log(chalk.dim('Git repository: not initialized (target does not look like an empty or near-new project)'));
+    } else {
+      console.log(chalk.yellow('Git repository: auto-initialization failed; initialize Git manually if needed.'));
     }
 
     if (buildVerificationStatus.preCommitHook === 'created') {
