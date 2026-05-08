@@ -65,7 +65,7 @@ describe('InitCommand', () => {
       expect(await directoryExists(path.join(infraspecPath, 'changes', 'archive'))).toBe(true);
     });
 
-    it('should create config.yaml with default schema', async () => {
+    it('should create config.yaml with default schema and Chinese artifact rules', async () => {
       const initCommand = new InitCommand({ tools: 'claude', force: true });
 
       await initCommand.execute(testDir);
@@ -75,6 +75,87 @@ describe('InitCommand', () => {
 
       const content = await fs.readFile(configPath, 'utf-8');
       expect(content).toContain('schema: spec-driven');
+      expect(content).toContain('context: |');
+      expect(content).toContain('proposal:');
+      expect(content).toContain('默认使用中文编写 proposal.md。');
+      expect(content).toContain('默认使用中文编写 design.md。');
+      expect(content).toContain('默认使用中文编写 tasks.md。');
+      expect(content).toContain('infraspec/build-check.sh');
+    });
+
+    it('should create AGENTS.md with build verification rules', async () => {
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+
+      await initCommand.execute(testDir);
+
+      const agentsPath = path.join(testDir, 'AGENTS.md');
+      expect(await fileExists(agentsPath)).toBe(true);
+
+      const content = await fs.readFile(agentsPath, 'utf-8');
+      expect(content).toContain('必须执行项目标准的编译/构建校验');
+      expect(content).toContain('infraspec/build-check.sh');
+    });
+
+    it('should include a long-term build verification rule in AGENTS.md', async () => {
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+
+      await initCommand.execute(testDir);
+
+      const agentsPath = path.join(testDir, 'AGENTS.md');
+      const content = await fs.readFile(agentsPath, 'utf-8');
+
+      expect(content).toContain('完成本次变更或本次编码会话的实现后，必须执行项目标准的编译/构建校验');
+      expect(content).toContain('如果编译或构建失败，必须先修复问题并重新验证通过');
+    });
+
+    it('should create build verification scripts for new projects', async () => {
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+
+      await initCommand.execute(testDir);
+
+      const hookPath = path.join(testDir, '.githooks', 'pre-commit');
+      const buildCheckPath = path.join(testDir, 'infraspec', 'build-check.sh');
+
+      expect(await fileExists(hookPath)).toBe(true);
+      expect(await fileExists(buildCheckPath)).toBe(true);
+
+      const hookContent = await fs.readFile(hookPath, 'utf-8');
+      const buildCheckContent = await fs.readFile(buildCheckPath, 'utf-8');
+
+      expect(hookContent).toContain('exec "$PROJECT_ROOT/infraspec/build-check.sh"');
+      expect(buildCheckContent).toContain('pnpm run build');
+      expect(buildCheckContent).toContain('mvn -q -DskipTests compile');
+      expect(buildCheckContent).toContain('go build ./...');
+    });
+
+    it('should not override an existing core.hooksPath setting', async () => {
+      await fs.writeFile(path.join(testDir, 'package.json'), JSON.stringify({
+        name: 'sample-project',
+        scripts: { build: 'echo ok' },
+      }, null, 2));
+
+      await fs.mkdir(path.join(testDir, '.git'), { recursive: true });
+      await fs.writeFile(path.join(testDir, '.git', 'config'), '[core]\n\thooksPath = .husky\n');
+
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+      await initCommand.execute(testDir);
+
+      const gitConfig = await fs.readFile(path.join(testDir, '.git', 'config'), 'utf-8');
+      expect(gitConfig).toContain('hooksPath = .husky');
+    });
+
+    it('should not auto-enable git hooks when no supported build command is detected', async () => {
+      await fs.mkdir(path.join(testDir, '.git'), { recursive: true });
+      await fs.writeFile(path.join(testDir, 'package.json'), JSON.stringify({
+        name: 'sample-project',
+        scripts: {},
+      }, null, 2));
+
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+      await initCommand.execute(testDir);
+
+      const gitConfigPath = path.join(testDir, '.git', 'config');
+      expect(await fileExists(gitConfigPath)).toBe(false);
     });
 
     it('should create core profile skills for Claude Code by default', async () => {

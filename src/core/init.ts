@@ -6,6 +6,7 @@
  */
 
 import path from 'path';
+import { execFileSync } from 'child_process';
 import chalk from 'chalk';
 import ora from 'ora';
 import * as fs from 'fs';
@@ -54,6 +55,22 @@ const { version: OPENSPEC_VERSION } = require('../../package.json');
 // -----------------------------------------------------------------------------
 
 const DEFAULT_SCHEMA = 'spec-driven';
+const DEFAULT_CONFIG_CONTEXT = [
+  '默认使用中文编写 proposal.md、design.md 和 tasks.md。',
+  '当任务需要进行编译或构建校验时，统一使用 `infraspec/build-check.sh` 作为项目标准入口。',
+].join('\n');
+const DEFAULT_CONFIG_RULES: Record<string, string[]> = {
+  proposal: [
+    '默认使用中文编写 proposal.md。',
+  ],
+  design: [
+    '默认使用中文编写 design.md。',
+  ],
+  tasks: [
+    '默认使用中文编写 tasks.md。',
+    '最后的验证任务应显式要求执行 `infraspec/build-check.sh`，修复所有编译/构建错误，并重复执行直到校验通过。',
+  ],
+};
 
 const PROGRESS_SPINNER = {
   interval: 80,
@@ -84,6 +101,21 @@ type InitCommandOptions = {
   force?: boolean;
   interactive?: boolean;
   profile?: string;
+};
+
+type GitHookInstallStatus =
+  | 'configured'
+  | 'already-configured'
+  | 'skipped-no-git'
+  | 'skipped-existing-hooks'
+  | 'skipped-unsupported-build'
+  | 'failed';
+
+type BuildVerificationSetupStatus = {
+  agents: 'created' | 'exists';
+  preCommitHook: 'created' | 'exists';
+  buildCheck: 'created' | 'exists';
+  hookInstall: GitHookInstallStatus;
 };
 
 // -----------------------------------------------------------------------------
@@ -151,11 +183,11 @@ export class InitCommand {
     // Create config.yaml if needed
     const configStatus = await this.createConfig(openspecPath, extendMode);
 
-    // Create a root AGENTS.md only if the project does not already have one
-    const agentsStatus = await this.createAgentsFile(projectPath);
+    // Create project-level AI coding guardrails and Git hook files
+    const buildVerificationStatus = await this.setupBuildVerification(projectPath);
 
     // Display success message
-    this.displaySuccessMessage(projectPath, validatedTools, results, configStatus, agentsStatus);
+    this.displaySuccessMessage(projectPath, validatedTools, results, configStatus, buildVerificationStatus);
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -620,7 +652,11 @@ export class InitCommand {
     }
 
     try {
-      const yamlContent = serializeConfig({ schema: DEFAULT_SCHEMA });
+      const yamlContent = serializeConfig({
+        schema: DEFAULT_SCHEMA,
+        context: DEFAULT_CONFIG_CONTEXT,
+        rules: DEFAULT_CONFIG_RULES,
+      });
       await FileSystemUtils.writeFile(configPath, yamlContent);
       return 'created';
     } catch {
@@ -641,26 +677,272 @@ export class InitCommand {
 
 ## InfraSpec 工作流
 
-- 在修改代码前，先阅读 \`infraspec/changes/<change-name>/\` 下的相关文件。
 - 将 \`proposal.md\`、\`specs/\`、\`design.md\` 和 \`tasks.md\` 作为当前变更的事实来源。
 - 将 \`tasks.md\` 中的 checkbox 视为实现进度跟踪器。
 
 ## 编辑规则
 
-- 不要把 InfraSpec 的指令或模板原样复制到面向用户的源码文件中。
-- 优先做最小、聚焦、能满足当前任务的改动。
 - 如果这是一个空的新项目，默认将生成的应用代码和项目内配置放在 \`src/\` 目录下；只有工具链明确要求时，才放在项目根目录。
+- 完成本次变更或本次编码会话的实现后，必须执行项目标准的编译/构建校验，并确保通过后才能报告实现完成。
+- 如果编译或构建失败，必须先修复问题并重新验证通过，再更新完成状态或提交代码。
+- 本项目默认使用 \`infraspec/build-check.sh\` 作为统一的构建校验入口；如需调整，请在保留“提交前必须通过编译/构建”的前提下修改该脚本。
 - 优先遵循仓库中已有的项目规范。
 
 ## 优先级
 
 - 仓库现有代码和项目约定优先。
-- InfraSpec artifacts 用于指导当前变更。
 - 本文件只是初始模板，项目团队可以按需修改。
 `;
 
     await FileSystemUtils.writeFile(agentsPath, content);
     return 'created';
+  }
+
+  private async setupBuildVerification(projectPath: string): Promise<BuildVerificationSetupStatus> {
+    const agents = await this.createAgentsFile(projectPath);
+    const preCommitHook = await this.createPreCommitHook(projectPath);
+    const buildCheck = await this.createBuildCheckScript(projectPath);
+    const hookInstall = await this.installProjectGitHook(projectPath);
+
+    return { agents, preCommitHook, buildCheck, hookInstall };
+  }
+
+  private async createPreCommitHook(projectPath: string): Promise<'created' | 'exists'> {
+    const hookPath = path.join(projectPath, '.githooks', 'pre-commit');
+
+    if (fs.existsSync(hookPath)) {
+      return 'exists';
+    }
+
+    const content = `#!/usr/bin/env sh
+set -eu
+
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+PROJECT_ROOT="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
+
+exec "$PROJECT_ROOT/${OPENSPEC_DIR_NAME}/build-check.sh"
+`;
+
+    await FileSystemUtils.writeFile(hookPath, content);
+    await fs.promises.chmod(hookPath, 0o755);
+    return 'created';
+  }
+
+  private async createBuildCheckScript(projectPath: string): Promise<'created' | 'exists'> {
+    const scriptPath = path.join(projectPath, OPENSPEC_DIR_NAME, 'build-check.sh');
+
+    if (fs.existsSync(scriptPath)) {
+      return 'exists';
+    }
+
+    const content = `#!/usr/bin/env sh
+set -eu
+
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+PROJECT_ROOT="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
+
+has_command() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+run_cmd() {
+  echo "Running build verification: $*"
+  "$@"
+}
+
+if [ -x "$PROJECT_ROOT/gradlew" ]; then
+  cd "$PROJECT_ROOT"
+  run_cmd ./gradlew classes
+  exit 0
+fi
+
+if [ -f "$PROJECT_ROOT/pom.xml" ]; then
+  cd "$PROJECT_ROOT"
+  if [ -x "$PROJECT_ROOT/mvnw" ]; then
+    run_cmd ./mvnw -q -DskipTests compile
+    exit 0
+  fi
+  if has_command mvn; then
+    run_cmd mvn -q -DskipTests compile
+    exit 0
+  fi
+  echo "Build verification failed: Maven project detected but mvn/mvnw is unavailable." >&2
+  exit 1
+fi
+
+if [ -f "$PROJECT_ROOT/build.gradle" ] || [ -f "$PROJECT_ROOT/build.gradle.kts" ] || [ -f "$PROJECT_ROOT/settings.gradle" ] || [ -f "$PROJECT_ROOT/settings.gradle.kts" ]; then
+  cd "$PROJECT_ROOT"
+  if has_command gradle; then
+    run_cmd gradle classes
+    exit 0
+  fi
+  echo "Build verification failed: Gradle project detected but gradle/gradlew is unavailable." >&2
+  exit 1
+fi
+
+if [ -f "$PROJECT_ROOT/package.json" ]; then
+  cd "$PROJECT_ROOT"
+  if [ -f "$PROJECT_ROOT/pnpm-lock.yaml" ]; then
+    if ! has_command pnpm; then
+      echo "Build verification failed: pnpm-lock.yaml detected but pnpm is unavailable." >&2
+      exit 1
+    fi
+    run_cmd pnpm run build
+    exit 0
+  fi
+  if [ -f "$PROJECT_ROOT/bun.lockb" ] || [ -f "$PROJECT_ROOT/bun.lock" ]; then
+    if ! has_command bun; then
+      echo "Build verification failed: Bun lockfile detected but bun is unavailable." >&2
+      exit 1
+    fi
+    run_cmd bun run build
+    exit 0
+  fi
+  if [ -f "$PROJECT_ROOT/yarn.lock" ]; then
+    if ! has_command yarn; then
+      echo "Build verification failed: yarn.lock detected but yarn is unavailable." >&2
+      exit 1
+    fi
+    run_cmd yarn build
+    exit 0
+  fi
+  if ! has_command npm; then
+    echo "Build verification failed: package.json detected but npm is unavailable." >&2
+    exit 1
+  fi
+  run_cmd npm run build
+  exit 0
+fi
+
+if [ -f "$PROJECT_ROOT/go.mod" ]; then
+  cd "$PROJECT_ROOT"
+  if ! has_command go; then
+    echo "Build verification failed: go.mod detected but Go is unavailable." >&2
+    exit 1
+  fi
+  run_cmd go build ./...
+  exit 0
+fi
+
+if [ -f "$PROJECT_ROOT/Cargo.toml" ]; then
+  cd "$PROJECT_ROOT"
+  if ! has_command cargo; then
+    echo "Build verification failed: Cargo.toml detected but cargo is unavailable." >&2
+    exit 1
+  fi
+  run_cmd cargo check
+  exit 0
+fi
+
+if find "$PROJECT_ROOT" -maxdepth 1 \\( -name '*.sln' -o -name '*.csproj' \\) | grep -q .; then
+  cd "$PROJECT_ROOT"
+  if ! has_command dotnet; then
+    echo "Build verification failed: .NET project detected but dotnet is unavailable." >&2
+    exit 1
+  fi
+  run_cmd dotnet build
+  exit 0
+fi
+
+echo "Build verification failed: unable to detect a supported build command automatically." >&2
+echo "Edit ${OPENSPEC_DIR_NAME}/build-check.sh to match your project's build command, then rerun it." >&2
+exit 1
+`;
+
+    await FileSystemUtils.writeFile(scriptPath, content);
+    await fs.promises.chmod(scriptPath, 0o755);
+    return 'created';
+  }
+
+  private async hasSupportedBuildVerification(projectPath: string): Promise<boolean> {
+    const gradleWrapper = path.join(projectPath, 'gradlew');
+    if (fs.existsSync(gradleWrapper)) {
+      return true;
+    }
+
+    const mavenWrapper = path.join(projectPath, 'mvnw');
+    if (fs.existsSync(mavenWrapper)) {
+      return true;
+    }
+
+    if (fs.existsSync(path.join(projectPath, 'pom.xml'))) {
+      return true;
+    }
+
+    if (
+      fs.existsSync(path.join(projectPath, 'build.gradle')) ||
+      fs.existsSync(path.join(projectPath, 'build.gradle.kts')) ||
+      fs.existsSync(path.join(projectPath, 'settings.gradle')) ||
+      fs.existsSync(path.join(projectPath, 'settings.gradle.kts'))
+    ) {
+      return true;
+    }
+
+    if (fs.existsSync(path.join(projectPath, 'go.mod'))) {
+      return true;
+    }
+
+    if (fs.existsSync(path.join(projectPath, 'Cargo.toml'))) {
+      return true;
+    }
+
+    const rootEntries = await fs.promises.readdir(projectPath).catch(() => []);
+    if (rootEntries.some((entry) => entry.endsWith('.sln') || entry.endsWith('.csproj'))) {
+      return true;
+    }
+
+    const packageJsonPath = path.join(projectPath, 'package.json');
+    if (!fs.existsSync(packageJsonPath)) {
+      return false;
+    }
+
+    try {
+      const packageJsonRaw = await fs.promises.readFile(packageJsonPath, 'utf-8');
+      const packageJson = JSON.parse(packageJsonRaw) as { scripts?: Record<string, string> };
+      return typeof packageJson.scripts?.build === 'string' && packageJson.scripts.build.trim().length > 0;
+    } catch {
+      return false;
+    }
+  }
+
+  private async installProjectGitHook(projectPath: string): Promise<GitHookInstallStatus> {
+    const gitMetadataPath = path.join(projectPath, '.git');
+
+    if (!fs.existsSync(gitMetadataPath)) {
+      return 'skipped-no-git';
+    }
+
+    if (!(await this.hasSupportedBuildVerification(projectPath))) {
+      return 'skipped-unsupported-build';
+    }
+
+    try {
+      const currentHookPath = execFileSync('git', ['config', '--local', '--get', 'core.hooksPath'], {
+        cwd: projectPath,
+        encoding: 'utf-8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim();
+
+      if (currentHookPath === '.githooks') {
+        return 'already-configured';
+      }
+
+      if (currentHookPath.length > 0) {
+        return 'skipped-existing-hooks';
+      }
+    } catch {
+      // Missing config is expected; fall through and configure it.
+    }
+
+    try {
+      execFileSync('git', ['config', '--local', 'core.hooksPath', '.githooks'], {
+        cwd: projectPath,
+        stdio: 'ignore',
+      });
+      return 'configured';
+    } catch {
+      return 'failed';
+    }
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -679,7 +961,7 @@ export class InitCommand {
       removedSkillCount: number;
     },
     configStatus: 'created' | 'exists' | 'skipped',
-    agentsStatus: 'created' | 'exists'
+    buildVerificationStatus: BuildVerificationSetupStatus
   ): void {
     console.log();
     console.log(chalk.bold('InfraSpec Setup Complete'));
@@ -741,10 +1023,36 @@ export class InitCommand {
       console.log(chalk.dim(`Config: skipped (non-interactive mode)`));
     }
 
-    if (agentsStatus === 'created') {
+    if (buildVerificationStatus.agents === 'created') {
       console.log('AGENTS.md: created at project root');
     } else {
       console.log(chalk.dim('AGENTS.md: exists (skipped)'));
+    }
+
+    if (buildVerificationStatus.preCommitHook === 'created') {
+      console.log('Git hook: .githooks/pre-commit created');
+    } else {
+      console.log(chalk.dim('Git hook: .githooks/pre-commit exists (skipped)'));
+    }
+
+    if (buildVerificationStatus.buildCheck === 'created') {
+      console.log(`Build verification: ${OPENSPEC_DIR_NAME}/build-check.sh created`);
+    } else {
+      console.log(chalk.dim(`Build verification: ${OPENSPEC_DIR_NAME}/build-check.sh exists (skipped)`));
+    }
+
+    if (buildVerificationStatus.hookInstall === 'configured') {
+      console.log('Git hooks enabled: core.hooksPath -> .githooks');
+    } else if (buildVerificationStatus.hookInstall === 'already-configured') {
+      console.log(chalk.dim('Git hooks already enabled: core.hooksPath -> .githooks'));
+    } else if (buildVerificationStatus.hookInstall === 'failed') {
+      console.log(chalk.yellow('Git hooks not auto-enabled. Run `git config core.hooksPath .githooks` in this project.'));
+    } else if (buildVerificationStatus.hookInstall === 'skipped-existing-hooks') {
+      console.log(chalk.dim('Git hooks not auto-enabled (project already uses a custom core.hooksPath).'));
+    } else if (buildVerificationStatus.hookInstall === 'skipped-unsupported-build') {
+      console.log(chalk.dim(`Git hooks not auto-enabled (no supported build command detected; customize ${OPENSPEC_DIR_NAME}/build-check.sh first).`));
+    } else {
+      console.log(chalk.dim('Git hooks not auto-enabled (no Git repository detected).'));
     }
 
     // Getting started (task 7.6: show propose if in profile)

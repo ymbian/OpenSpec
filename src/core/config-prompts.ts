@@ -24,6 +24,14 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   lines.push('#     Domain: e-commerce platform');
   lines.push('');
 
+  if (config.context && config.context.trim().length > 0) {
+    lines.push('context: |');
+    for (const line of config.context.trimEnd().split('\n')) {
+      lines.push(`  ${line}`);
+    }
+    lines.push('');
+  }
+
   // Rules section with comments
   lines.push('# Per-artifact rules (optional)');
   lines.push('# Add custom rules for specific artifacts.');
@@ -34,6 +42,17 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   lines.push('#       - Always include a "Non-goals" section');
   lines.push('#     tasks:');
   lines.push('#       - Break tasks into chunks of max 2 hours');
+
+  if (config.rules && Object.keys(config.rules).length > 0) {
+    lines.push('');
+    lines.push('rules:');
+    for (const [artifactId, rules] of Object.entries(config.rules)) {
+      lines.push(`  ${artifactId}:`);
+      for (const rule of rules) {
+        lines.push(`    - ${rule}`);
+      }
+    }
+  }
 
   return lines.join('\n') + '\n';
 }

@@ -165,6 +165,8 @@ artifacts:
       - Data model, persistence, schema, or index changes
       - Infrastructure, configuration, or external dependency integration
       - Testing, validation, migration, and rollout preparation where required
+      - A final build/compile verification step for any change that affects code, build configuration,
+        or runtime configuration used by the application
 
       Do not create standalone tasks for:
       - Background/context descriptions
@@ -178,6 +180,12 @@ artifacts:
       - Organize tasks into logical implementation groups
       - Each task should be specific, actionable, verifiable, and scoped to a meaningful unit of engineering work
       - Order tasks by dependency (what must be done first?)
+      - For changes that touch code or build/runtime configuration, the final task group MUST include
+        an explicit build/compile verification task.
+      - That final verification task MUST require running the project's standard build/compile command,
+        fixing any reported errors, and rerunning the command until it succeeds.
+      - If the project provides `infraspec/build-check.sh`, prefer that script as the explicit verification command in the final task.
+      - Prefer wording that makes the verification task the last step of the checklist, after implementation work.
 
       Example:
       ```
@@ -190,6 +198,10 @@ artifacts:
 
       - [ ] 2.1 Implement data export function
       - [ ] 2.2 Add CSV formatting utilities
+
+      ## 3. Verification
+
+      - [ ] 3.1 Run `infraspec/build-check.sh`, fix any reported build/compile errors, and rerun until it succeeds
       ```
 
       A good tasks.md should make implementation progress easy to track
