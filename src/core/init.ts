@@ -108,7 +108,6 @@ type GitHookInstallStatus =
   | 'already-configured'
   | 'skipped-no-git'
   | 'skipped-existing-hooks'
-  | 'skipped-unsupported-build'
   | 'failed';
 
 type GitRepositorySetupStatus =
@@ -871,7 +870,7 @@ has_command() {
 }
 
 run_cmd() {
-  echo "Running build verification: $*"
+  echo "Running build command: $*"
   "$@"
 }
 
@@ -970,7 +969,8 @@ if find "$PROJECT_ROOT" -maxdepth 1 \\( -name '*.sln' -o -name '*.csproj' \\) | 
 fi
 
 echo "Build verification failed: unable to detect a supported build command automatically." >&2
-echo "Edit ${OPENSPEC_DIR_NAME}/build-check.sh to match your project's build command, then rerun it." >&2
+echo "Build verification command: <not detected automatically>" >&2
+echo "Customize ${OPENSPEC_DIR_NAME}/build-check.sh to match your project's real build/compile command, then rerun it." >&2
 exit 1
 `;
 
@@ -979,64 +979,9 @@ exit 1
     return 'created';
   }
 
-  private async hasSupportedBuildVerification(projectPath: string): Promise<boolean> {
-    const gradleWrapper = path.join(projectPath, 'gradlew');
-    if (fs.existsSync(gradleWrapper)) {
-      return true;
-    }
-
-    const mavenWrapper = path.join(projectPath, 'mvnw');
-    if (fs.existsSync(mavenWrapper)) {
-      return true;
-    }
-
-    if (fs.existsSync(path.join(projectPath, 'pom.xml'))) {
-      return true;
-    }
-
-    if (
-      fs.existsSync(path.join(projectPath, 'build.gradle')) ||
-      fs.existsSync(path.join(projectPath, 'build.gradle.kts')) ||
-      fs.existsSync(path.join(projectPath, 'settings.gradle')) ||
-      fs.existsSync(path.join(projectPath, 'settings.gradle.kts'))
-    ) {
-      return true;
-    }
-
-    if (fs.existsSync(path.join(projectPath, 'go.mod'))) {
-      return true;
-    }
-
-    if (fs.existsSync(path.join(projectPath, 'Cargo.toml'))) {
-      return true;
-    }
-
-    const rootEntries = await fs.promises.readdir(projectPath).catch(() => []);
-    if (rootEntries.some((entry) => entry.endsWith('.sln') || entry.endsWith('.csproj'))) {
-      return true;
-    }
-
-    const packageJsonPath = path.join(projectPath, 'package.json');
-    if (!fs.existsSync(packageJsonPath)) {
-      return false;
-    }
-
-    try {
-      const packageJsonRaw = await fs.promises.readFile(packageJsonPath, 'utf-8');
-      const packageJson = JSON.parse(packageJsonRaw) as { scripts?: Record<string, string> };
-      return typeof packageJson.scripts?.build === 'string' && packageJson.scripts.build.trim().length > 0;
-    } catch {
-      return false;
-    }
-  }
-
   private async installProjectGitHook(projectPath: string): Promise<GitHookInstallStatus> {
     if (!this.hasGitMetadata(projectPath)) {
       return 'skipped-no-git';
-    }
-
-    if (!(await this.hasSupportedBuildVerification(projectPath))) {
-      return 'skipped-unsupported-build';
     }
 
     try {
@@ -1184,8 +1129,6 @@ exit 1
       console.log(chalk.yellow('Git hooks not auto-enabled. Run `git config core.hooksPath .githooks` in this project.'));
     } else if (buildVerificationStatus.hookInstall === 'skipped-existing-hooks') {
       console.log(chalk.dim('Git hooks not auto-enabled (project already uses a custom core.hooksPath).'));
-    } else if (buildVerificationStatus.hookInstall === 'skipped-unsupported-build') {
-      console.log(chalk.dim(`Git hooks not auto-enabled (no supported build command detected; customize ${OPENSPEC_DIR_NAME}/build-check.sh first).`));
     } else {
       console.log(chalk.dim('Git hooks not auto-enabled (no Git repository detected).'));
     }
