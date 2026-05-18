@@ -42,11 +42,39 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
    只有在用户要求特定 workflow 时才附加 \`--schema <name>\`。
    这会在 InfraSpec workspace 的 \`infraspec/changes/<name>/\` 下，用所选 schema 创建一个脚手架化的 change。
 
-4. **创建 \`requirements.md\`**
-   将 requirement 输入保存到：
-   \`infraspec/changes/<name>/requirements.md\`
+4. **保存原始需求描述**
+   将用户提供的原始 requirement 输入保存到：
+   \`infraspec/changes/<name>/requirement-description.md\`
 
-   将用户的 requirement 输入整理成以下精确的公司结构：
+   写作规则：
+   - 尽量保留用户原始表达，不要提前改写成正式需求文档。
+   - 如果用户粘贴的是长文档，也完整保存。
+   - 后续所有分析都以该文件作为需求输入源。
+
+5. **运行代码图谱分析**
+   这是 workflow 的自动尝试步骤，由当前 AI agent 自动运行，不要要求用户手动执行该命令。
+   在创建 \`requirements.md\` 前，必须先尝试运行：
+   \`\`\`bash
+   infraspec code analyze --change "<name>" --json
+   \`\`\`
+
+   该命令会读取 \`requirement-description.md\`，并生成：
+   - \`infraspec/changes/<name>/code-context.md\`：代码上下文摘要
+   - \`infraspec/changes/<name>/.code-context.json\`：结构化代码上下文
+
+   如果命令执行失败、命令不可用，或返回 \`status: "unavailable"\`，不要中断 \`/infra:new\`；降级跳过代码图谱分析并继续创建 \`requirements.md\`，但在代码相关章节中明确说明代码图谱分析不可用。
+
+   **Fallback gate**: 继续前应尽量确认 \`infraspec/changes/<name>/code-context.md\` 已存在。
+   - 如果文件不存在，重新运行一次 \`infraspec code analyze --change "<name>" --json\`。
+   - 如果仍然失败，手动写入一个降级版 \`code-context.md\`，说明代码图谱分析不可用及失败原因，然后继续。
+   - 不允许因为代码图谱分析失败而阻止生成 \`requirements.md\`。
+
+6. **创建 \`requirements.md\`**
+   读取：
+   - \`infraspec/changes/<name>/requirement-description.md\`
+   - \`infraspec/changes/<name>/code-context.md\`
+
+   将用户的 requirement 输入和代码图谱分析结果整理成以下精确的公司结构：
    - \`# 需求文档\`
    - \`## 1. 需求概述\`
    - \`### 1.1 背景、目标及价值（必填）\`
@@ -65,17 +93,20 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
    - 保留用户原始表达的真实含义。
    - 严格使用公司要求的章节顺序。
    - 所有必填章节都要写出有实质内容的内容。
-   - 选填章节如果输入支持则填写；否则明确写 \`本次未明确\`。
+   - \`2.1 现状分析\`、\`2.2 方案设计\`、\`3.1 依赖评估\`、\`3.2 影响评估\` 应优先使用 \`code-context.md\` 中的代码事实、相关模块、入口符号和影响线索。
+   - 选填章节如果 requirement 或 code-context 支持则填写；否则明确写 \`本次未明确\`。
    - 如果关键信息缺失，写 \`待确认事项\`，不要编造事实。
    - 在 \`2.3 功能清单\` 中，使用稳定标识符，例如 \`F1\`、\`F2\`、\`F3\`。
 
-5. **STOP，等待用户下一步指示**
+7. **STOP，等待用户下一步指示**
    在这一步不要创建 proposal.md、specs、design.md 或 tasks.md。
 
 **Output**
 
 完成以上步骤后，输出总结：
 - Change name 和所在位置
+- Requirement description 文件位置
+- Code context 文件位置
 - Requirements 文件位置
 - \`requirements.md\` 中保存了什么
 - Prompt: "Run \`/infra:review <name>\` to generate the lean-process detailed design specification (\`detailed-design.md\`)."
@@ -84,6 +115,8 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
 - 现在还不要创建任何正式的 InfraSpec artifacts
 - 在这一步不要展示第一个 artifact template
 - 不要推进到保存 \`requirements.md\` 之后的阶段
+- 不要让用户手动运行 \`infraspec code analyze\`；这是 workflow 内部自动步骤
+- 如果代码图谱分析失败，必须保留 \`code-context.md\` 中的失败说明，并继续生成 \`requirements.md\`
 - 如果 name 非法（不是 kebab-case），要求用户提供合法名称
 - 如果同名 change 已存在，建议用户继续该 change，而不是新建
 - 如果使用非默认 workflow，记得传入 \`--schema\``,
@@ -130,11 +163,39 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
    只有在用户要求特定 workflow 时才附加 \`--schema <name>\`。
    这会在 InfraSpec workspace 的 \`infraspec/changes/<name>/\` 下，用所选 schema 创建一个脚手架化的 change。
 
-4. **创建 \`requirements.md\`**
-   将 requirement 输入保存到：
-   \`infraspec/changes/<name>/requirements.md\`
+4. **保存原始需求描述**
+   将用户提供的原始 requirement 输入保存到：
+   \`infraspec/changes/<name>/requirement-description.md\`
 
-   将用户的 requirement 输入整理成以下精确的公司结构：
+   写作规则：
+   - 尽量保留用户原始表达，不要提前改写成正式需求文档。
+   - 如果用户粘贴的是长文档，也完整保存。
+   - 后续所有分析都以该文件作为需求输入源。
+
+5. **运行代码图谱分析**
+   这是 workflow 的自动尝试步骤，由当前 AI agent 自动运行，不要要求用户手动执行该命令。
+   在创建 \`requirements.md\` 前，必须先尝试运行：
+   \`\`\`bash
+   infraspec code analyze --change "<name>" --json
+   \`\`\`
+
+   该命令会读取 \`requirement-description.md\`，并生成：
+   - \`infraspec/changes/<name>/code-context.md\`：代码上下文摘要
+   - \`infraspec/changes/<name>/.code-context.json\`：结构化代码上下文
+
+   如果命令执行失败、命令不可用，或返回 \`status: "unavailable"\`，不要中断 \`/infra:new\`；降级跳过代码图谱分析并继续创建 \`requirements.md\`，但在代码相关章节中明确说明代码图谱分析不可用。
+
+   **Fallback gate**: 继续前应尽量确认 \`infraspec/changes/<name>/code-context.md\` 已存在。
+   - 如果文件不存在，重新运行一次 \`infraspec code analyze --change "<name>" --json\`。
+   - 如果仍然失败，手动写入一个降级版 \`code-context.md\`，说明代码图谱分析不可用及失败原因，然后继续。
+   - 不允许因为代码图谱分析失败而阻止生成 \`requirements.md\`。
+
+6. **创建 \`requirements.md\`**
+   读取：
+   - \`infraspec/changes/<name>/requirement-description.md\`
+   - \`infraspec/changes/<name>/code-context.md\`
+
+   将用户的 requirement 输入和代码图谱分析结果整理成以下精确的公司结构：
    - \`# 需求文档\`
    - \`## 1. 需求概述\`
    - \`### 1.1 背景、目标及价值（必填）\`
@@ -153,17 +214,20 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
    - 保留用户原始表达的真实含义。
    - 严格使用公司要求的章节顺序。
    - 所有必填章节都要写出有实质内容的内容。
-   - 选填章节如果输入支持则填写；否则明确写 \`本次未明确\`。
+   - \`2.1 现状分析\`、\`2.2 方案设计\`、\`3.1 依赖评估\`、\`3.2 影响评估\` 应优先使用 \`code-context.md\` 中的代码事实、相关模块、入口符号和影响线索。
+   - 选填章节如果 requirement 或 code-context 支持则填写；否则明确写 \`本次未明确\`。
    - 如果关键信息缺失，写 \`待确认事项\`，不要编造事实。
    - 在 \`2.3 功能清单\` 中，使用稳定标识符，例如 \`F1\`、\`F2\`、\`F3\`。
 
-5. **STOP，等待用户下一步指示**
+7. **STOP，等待用户下一步指示**
    在这一步不要创建 proposal.md、specs、design.md 或 tasks.md。
 
 **Output**
 
 完成以上步骤后，输出总结：
 - Change name 和所在位置
+- Requirement description 文件位置
+- Code context 文件位置
 - Requirements 文件位置
 - \`requirements.md\` 中保存了什么
 - Prompt: "Run \`/infra:review <name>\` to generate the lean-process detailed design specification (\`detailed-design.md\`)."
@@ -172,6 +236,8 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
 - 现在还不要创建任何正式的 InfraSpec artifacts
 - 在这一步不要展示第一个 artifact template
 - 不要推进到保存 \`requirements.md\` 之后的阶段
+- 不要让用户手动运行 \`infraspec code analyze\`；这是 workflow 内部自动步骤
+- 如果代码图谱分析失败，必须保留 \`code-context.md\` 中的失败说明，并继续生成 \`requirements.md\`
 - 如果 name 非法（不是 kebab-case），要求用户提供合法名称
 - 如果同名 change 已存在，建议用户改用 \`/infra:review\`
 - 如果使用非默认 workflow，记得传入 \`--schema\``

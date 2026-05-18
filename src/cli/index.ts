@@ -14,6 +14,7 @@ import { ValidateCommand } from '../commands/validate.js';
 import { ShowCommand } from '../commands/show.js';
 import { CompletionCommand } from '../commands/completion.js';
 import { FeedbackCommand } from '../commands/feedback.js';
+import { registerCodeCommand } from '../commands/code.js';
 import { registerConfigCommand } from '../commands/config.js';
 import { registerSchemaCommand } from '../commands/schema.js';
 import {
@@ -283,6 +284,7 @@ program
   });
 
 registerSpecCommand(program);
+registerCodeCommand(program);
 registerConfigCommand(program);
 registerSchemaCommand(program);
 
