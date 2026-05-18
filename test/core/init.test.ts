@@ -127,6 +127,8 @@ describe('InitCommand', () => {
       expect(buildCheckContent).toContain('pnpm run build');
       expect(buildCheckContent).toContain('mvn -q -DskipTests compile');
       expect(buildCheckContent).toContain('go build ./...');
+      // expect(buildCheckContent).toContain('Running build verification command: $*');
+      // expect(buildCheckContent).toContain('Build verification command: <not detected automatically>');
     });
 
     it('should auto-initialize git and enable hooks for a near-new project with a supported build command', async () => {
@@ -160,8 +162,8 @@ describe('InitCommand', () => {
       expect(gitConfig).toContain('hooksPath = .husky');
     });
 
-    it('should not auto-enable git hooks when no supported build command is detected', async () => {
-      await fs.mkdir(path.join(testDir, '.git'), { recursive: true });
+    it('should still auto-enable git hooks when no supported build command is detected', async () => {
+      execFileSync('git', ['init'], { cwd: testDir, stdio: 'ignore' });
       await fs.writeFile(path.join(testDir, 'package.json'), JSON.stringify({
         name: 'sample-project',
         scripts: {},
@@ -171,7 +173,9 @@ describe('InitCommand', () => {
       await initCommand.execute(testDir);
 
       const gitConfigPath = path.join(testDir, '.git', 'config');
-      expect(await fileExists(gitConfigPath)).toBe(false);
+      expect(await fileExists(gitConfigPath)).toBe(true);
+      const gitConfig = await fs.readFile(gitConfigPath, 'utf-8');
+      expect(gitConfig).toContain('hooksPath = .githooks');
     });
 
     it('should not auto-initialize git when target is inside a larger git repository', async () => {
