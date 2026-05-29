@@ -30,7 +30,25 @@ export function getReviewChangeSkillTemplate(): SkillTemplate {
 
    **IMPORTANT**: 不要猜测，也不要自动替用户选择 change。必须让用户自己选。
 
-2. **检查当前状态**
+2. **刷新并读取代码知识图谱上下文**
+
+   每次 review 创建 artifact 前，必须先刷新当前 change 的代码知识图谱上下文：
+   \`\`\`bash
+   infraspec code analyze --change "<name>" --json
+   \`\`\`
+
+   该命令会读取 \`infraspec/changes/<name>/requirement-description.md\`，并刷新：
+   - \`infraspec/.code-graph/index.json\`
+   - \`infraspec/changes/<name>/code-context.md\`
+   - \`infraspec/changes/<name>/.code-context.json\`
+
+   如果命令失败，不要中止 review；允许降级继续。
+   - 如果 \`code-context.md\` 已存在，继续读取已有内容。
+   - 如果 \`code-context.md\` 不存在，写入一个降级版 \`code-context.md\`，说明代码图谱分析不可用及失败原因，然后继续。
+
+   随后读取 \`infraspec/changes/<name>/code-context.md\`，并把它作为本次 artifact 的代码事实上下文。
+
+3. **检查当前状态**
    在进入 artifact workflow 之前，先检查本 review 流程要求的两个 pre-spec 文档是否已经存在：
    - \`infraspec/changes/<name>/requirements.md\`
    - \`infraspec/changes/<name>/detailed-design.md\`
@@ -41,13 +59,14 @@ export function getReviewChangeSkillTemplate(): SkillTemplate {
    先处理这两个 pre-spec 文档：
 
    - If \`requirements.md\` does not exist:
-     - 根据用户提供的需求文档，或当前对话里最可靠的需求上下文来创建它。
+     - 读取 \`requirement-description.md\` 和 \`code-context.md\`。
+     - 根据用户提供的需求文档、原始需求描述和代码图谱上下文来创建它。
      - 如果需求存在歧义或信息不完整，先向用户确认，再进行写入。
      - 保存到 \`infraspec/changes/<name>/requirements.md\`。
      - 只创建这个文件后就 STOP。
 
    - If \`requirements.md\` exists but \`detailed-design.md\` does not:
-     - 读取 \`requirements.md\`。
+     - 读取 \`requirements.md\` 和 \`code-context.md\`。
      - 按公司要求的详细设计文档格式创建 \`detailed-design.md\`。
      - 使用 Markdown 生成，并严格遵循以下章节顺序：
        - \`# 详细设计文档\`
@@ -78,7 +97,8 @@ export function getReviewChangeSkillTemplate(): SkillTemplate {
        - 如果没有 schema/index 变更，数据库设计 MUST 明确写 \`本次不涉及\`。
        - 如果没有云资源变更，云服务设计 MUST 明确写 \`本次不涉及\`。
      - 生成规则：
-       - 先以 \`requirements.md\` 为基础，再在必要时做合理的工程推断。
+       - 先以 \`requirements.md\` 为基础，并优先使用 \`code-context.md\` 中的现有模块、入口符号、相关文件、调用关系和影响线索。
+       - 接口设计、业务流程、数据库设计和云服务设计中的代码事实必须能追溯到 \`code-context.md\` 或明确标记为 \`待确认事项\`。
        - 将所有占位符替换成具体名称。
        - 不要输出空白大纲。
        - 如果需求信息不足，将缺失部分标记为 \`待确认事项\`，不要编造事实。
@@ -96,7 +116,7 @@ export function getReviewChangeSkillTemplate(): SkillTemplate {
    - \`artifacts\`：artifact 数组，以及每个 artifact 的状态（"done"、"ready"、"blocked"）
    - \`isComplete\`：布尔值，表示所有 artifacts 是否都已完成
 
-3. **根据状态执行相应动作**：
+4. **根据状态执行相应动作**：
 
    ---
 
@@ -122,7 +142,8 @@ export function getReviewChangeSkillTemplate(): SkillTemplate {
      - \`outputPath\`：artifact 的写入路径
      - \`dependencies\`：创建前需要读取的已完成 artifacts
    - **创建 artifact 文件**：
-     - 读取已完成的 dependency 文件作为上下文
+     - 读取 \`code-context.md\` 作为代码事实上下文
+     - 读取已完成的 dependency 文件作为业务和设计上下文
      - 以 \`template\` 作为结构，填写对应章节内容
      - 在写作时应用 \`context\` 和 \`rules\` 作为约束，但不要把它们原样复制进文件
      - 按 instructions 指定的 \`outputPath\` 写入
@@ -135,7 +156,7 @@ export function getReviewChangeSkillTemplate(): SkillTemplate {
    - 这在有效 schema 下通常不应该发生
    - 展示当前状态，并建议检查是否存在异常问题
 
-4. **创建 artifact 后，展示进度**
+5. **创建 artifact 后，展示进度**
    \`\`\`bash
    infraspec status --change "<name>"
    \`\`\`
@@ -160,11 +181,22 @@ export function getReviewChangeSkillTemplate(): SkillTemplate {
 
 artifact 的类型和用途取决于 schema。使用 instructions 输出里的 \`instruction\` 字段来理解当前应该创建什么。
 
+**Code Graph Context Usage**
+
+- 每次创建 artifact 前必须刷新并读取 \`code-context.md\`。
+- \`requirements.md\`：用代码图谱确认需求关联的现有模块、入口符号和影响文件，避免纯需求复述。
+- \`detailed-design.md\`：用代码图谱支撑接口设计、业务流程、数据库/持久化影响、外部依赖和待确认事项。
+- \`proposal.md\`：用代码图谱支撑 Why、What Changes、Capabilities 和 Impact。
+- \`specs/<capability>/spec.md\`：用代码图谱校验 capability 是否对应真实模块或改动边界。
+- \`design.md\`：用代码图谱中的 entry symbols、related symbols、related files、impact files 组织实现方案。
+- \`tasks.md\`：优先围绕 code-context 中的相关文件、符号和影响范围拆分任务。
+- 如果 \`code-context.md\` 不能证明某个代码事实，必须标记为 \`待确认事项\`，不要编造调用链或影响范围。
+
 常见 artifact 模式：
 
 **review pre-spec documents**：
-- **requirements.md**：以简洁、可直接用于实现的方式承接用户的需求文档。保留 scope、constraints、actors、inputs/outputs 和 acceptance expectations。
-- **detailed-design.md**：基于 \`requirements.md\` 生成公司要求的详细设计文档，并严格遵循公司规定结构。
+- **requirements.md**：以简洁、可直接用于实现的方式承接用户的需求文档，并结合 \`code-context.md\` 中的相关模块和影响线索。保留 scope、constraints、actors、inputs/outputs 和 acceptance expectations。
+- **detailed-design.md**：基于 \`requirements.md\` 和 \`code-context.md\` 生成公司要求的详细设计文档，并严格遵循公司规定结构。
   - Required structure：
     - \`1. 引言\` → \`1.1 目的\`, \`1.2 统一术语\`
     - \`2. 应用架构详细设计\` → \`2.1 接口设计\`, \`2.2 业务功能的流程设计\`, \`2.3 领域模型设计（可选）\`, \`2.4 持久化模型设计（可选）\`, \`2.5 技术参数变更的流程设计（可选）\`
@@ -173,19 +205,20 @@ artifact 的类型和用途取决于 schema。使用 instructions 输出里的 \
   - 未知细节必须标记为 \`待确认事项\`。
 
 **spec-driven schema**（proposal → specs → design → tasks）：
-- **proposal.md**：以 \`detailed-design.md\` 为基础，填写 Why、What Changes、Capabilities、Impact。
+- **proposal.md**：以 \`detailed-design.md\` 和 \`code-context.md\` 为基础，填写 Why、What Changes、Capabilities、Impact。
   - Capabilities 章节非常关键，其中列出的每个 capability 都需要对应一个 spec file。
 - **specs/<capability>/spec.md**：为 proposal 的 Capabilities 章节中列出的每个 capability 创建一个 spec（使用 capability 名，而不是 change 名）。
-- **design.md**：创建一个面向实现的技术设计文档，综合 \`proposal.md\`、\`specs\` 以及（如果存在）\`detailed-design.md\`。
+- **design.md**：创建一个面向实现的技术设计文档，综合 \`proposal.md\`、\`specs\`、\`code-context.md\` 以及（如果存在）\`detailed-design.md\`。
   - 如果 \`detailed-design.md\` 存在，在生成 \`design.md\` 前 MUST 先读取它。
   - 保留会影响实现的关键细节，例如接口约束、关键流程、持久化/数据库变更、外部依赖、安全限制和 rollout 要求。
   - 不要机械复制 \`detailed-design.md\` 的公司格式标题；应将内容重组到 \`design.md\` 模板结构中。
-- **tasks.md**：将实现工作拆分为带 checkbox 的任务列表。
+- **tasks.md**：将实现工作拆分为带 checkbox 的任务列表，任务应尽量落到 \`code-context.md\` 指出的相关文件、符号和影响范围。
 
 对于其他 schemas，遵循 CLI 输出中的 \`instruction\` 字段。
 
 **Guardrails**
 - 每次调用只创建 ONE artifact
+- 每次创建 artifact 前必须刷新并读取 \`code-context.md\`
 - 在 review 中，\`requirements.md\` 和 \`detailed-design.md\` 必须作为 \`proposal.md\` 之前的前置项
 - 创建新 artifact 前始终先读取 dependency artifacts
 - 不要跳过 artifact，也不要乱序创建
@@ -226,7 +259,25 @@ export function getOpsxReviewCommandTemplate(): CommandTemplate {
 
    **IMPORTANT**: 不要猜测，也不要自动替用户选择 change。必须让用户自己选。
 
-2. **检查当前状态**
+2. **刷新并读取代码知识图谱上下文**
+
+   每次 review 创建 artifact 前，必须先刷新当前 change 的代码知识图谱上下文：
+   \`\`\`bash
+   infraspec code analyze --change "<name>" --json
+   \`\`\`
+
+   该命令会读取 \`infraspec/changes/<name>/requirement-description.md\`，并刷新：
+   - \`infraspec/.code-graph/index.json\`
+   - \`infraspec/changes/<name>/code-context.md\`
+   - \`infraspec/changes/<name>/.code-context.json\`
+
+   如果命令失败，不要中止 review；允许降级继续。
+   - 如果 \`code-context.md\` 已存在，继续读取已有内容。
+   - 如果 \`code-context.md\` 不存在，写入一个降级版 \`code-context.md\`，说明代码图谱分析不可用及失败原因，然后继续。
+
+   随后读取 \`infraspec/changes/<name>/code-context.md\`，并把它作为本次 artifact 的代码事实上下文。
+
+3. **检查当前状态**
    在进入 artifact workflow 之前，先检查本 review 流程要求的两个 pre-spec 文档是否已经存在：
    - \`infraspec/changes/<name>/requirements.md\`
    - \`infraspec/changes/<name>/detailed-design.md\`
@@ -237,13 +288,14 @@ export function getOpsxReviewCommandTemplate(): CommandTemplate {
    先处理这两个 pre-spec 文档：
 
    - If \`requirements.md\` does not exist:
-     - 根据用户提供的需求文档，或当前对话里最可靠的需求上下文来创建它。
+     - 读取 \`requirement-description.md\` 和 \`code-context.md\`。
+     - 根据用户提供的需求文档、原始需求描述和代码图谱上下文来创建它。
      - 如果需求存在歧义或信息不完整，先向用户确认，再进行写入。
      - 保存到 \`infraspec/changes/<name>/requirements.md\`。
      - 只创建这个文件后就 STOP。
 
    - If \`requirements.md\` exists but \`detailed-design.md\` does not:
-     - 读取 \`requirements.md\`。
+     - 读取 \`requirements.md\` 和 \`code-context.md\`。
      - 按公司要求的详细设计文档格式创建 \`detailed-design.md\`。
      - 使用 Markdown 生成，并严格遵循以下章节顺序：
        - \`# 详细设计文档\`
@@ -274,7 +326,8 @@ export function getOpsxReviewCommandTemplate(): CommandTemplate {
        - 如果没有 schema/index 变更，数据库设计 MUST 明确写 \`本次不涉及\`。
        - 如果没有云资源变更，云服务设计 MUST 明确写 \`本次不涉及\`。
      - 生成规则：
-       - 先以 \`requirements.md\` 为基础，再在必要时做合理的工程推断。
+       - 先以 \`requirements.md\` 为基础，并优先使用 \`code-context.md\` 中的现有模块、入口符号、相关文件、调用关系和影响线索。
+       - 接口设计、业务流程、数据库设计和云服务设计中的代码事实必须能追溯到 \`code-context.md\` 或明确标记为 \`待确认事项\`。
        - 将所有占位符替换成具体名称。
        - 不要输出空白大纲。
        - 如果需求信息不足，将缺失部分标记为 \`待确认事项\`，不要编造事实。
@@ -292,7 +345,7 @@ export function getOpsxReviewCommandTemplate(): CommandTemplate {
    - \`artifacts\`：artifact 数组，以及每个 artifact 的状态（"done"、"ready"、"blocked"）
    - \`isComplete\`：布尔值，表示所有 artifacts 是否都已完成
 
-3. **根据状态执行相应动作**：
+4. **根据状态执行相应动作**：
 
    ---
 
@@ -318,7 +371,8 @@ export function getOpsxReviewCommandTemplate(): CommandTemplate {
      - \`outputPath\`：artifact 的写入路径
      - \`dependencies\`：创建前需要读取的已完成 artifacts
    - **创建 artifact 文件**：
-     - 读取已完成的 dependency 文件作为上下文
+     - 读取 \`code-context.md\` 作为代码事实上下文
+     - 读取已完成的 dependency 文件作为业务和设计上下文
      - 以 \`template\` 作为结构，填写对应章节内容
      - 在写作时应用 \`context\` 和 \`rules\` 作为约束，但不要把它们原样复制进文件
      - 按 instructions 指定的 \`outputPath\` 写入
@@ -331,7 +385,7 @@ export function getOpsxReviewCommandTemplate(): CommandTemplate {
    - 这在有效 schema 下通常不应该发生
    - 展示当前状态，并建议检查是否存在异常问题
 
-4. **创建 artifact 后，展示进度**
+5. **创建 artifact 后，展示进度**
    \`\`\`bash
    infraspec status --change "<name>"
    \`\`\`
@@ -356,11 +410,22 @@ export function getOpsxReviewCommandTemplate(): CommandTemplate {
 
 artifact 的类型和用途取决于 schema。使用 instructions 输出里的 \`instruction\` 字段来理解当前应该创建什么。
 
+**Code Graph Context Usage**
+
+- 每次创建 artifact 前必须刷新并读取 \`code-context.md\`。
+- \`requirements.md\`：用代码图谱确认需求关联的现有模块、入口符号和影响文件，避免纯需求复述。
+- \`detailed-design.md\`：用代码图谱支撑接口设计、业务流程、数据库/持久化影响、外部依赖和待确认事项。
+- \`proposal.md\`：用代码图谱支撑 Why、What Changes、Capabilities 和 Impact。
+- \`specs/<capability>/spec.md\`：用代码图谱校验 capability 是否对应真实模块或改动边界。
+- \`design.md\`：用代码图谱中的 entry symbols、related symbols、related files、impact files 组织实现方案。
+- \`tasks.md\`：优先围绕 code-context 中的相关文件、符号和影响范围拆分任务。
+- 如果 \`code-context.md\` 不能证明某个代码事实，必须标记为 \`待确认事项\`，不要编造调用链或影响范围。
+
 常见 artifact 模式：
 
 **review pre-spec documents**：
-- **requirements.md**：以简洁、可直接用于实现的方式承接用户的需求文档。保留 scope、constraints、actors、inputs/outputs 和 acceptance expectations。
-- **detailed-design.md**：基于 \`requirements.md\` 生成公司要求的详细设计文档，并严格遵循公司规定结构。
+- **requirements.md**：以简洁、可直接用于实现的方式承接用户的需求文档，并结合 \`code-context.md\` 中的相关模块和影响线索。保留 scope、constraints、actors、inputs/outputs 和 acceptance expectations。
+- **detailed-design.md**：基于 \`requirements.md\` 和 \`code-context.md\` 生成公司要求的详细设计文档，并严格遵循公司规定结构。
   - Required structure：
     - \`1. 引言\` → \`1.1 目的\`, \`1.2 统一术语\`
     - \`2. 应用架构详细设计\` → \`2.1 接口设计\`, \`2.2 业务功能的流程设计\`, \`2.3 领域模型设计（可选）\`, \`2.4 持久化模型设计（可选）\`, \`2.5 技术参数变更的流程设计（可选）\`
@@ -369,19 +434,20 @@ artifact 的类型和用途取决于 schema。使用 instructions 输出里的 \
   - 未知细节必须标记为 \`待确认事项\`。
 
 **spec-driven schema**（proposal → specs → design → tasks）：
-- **proposal.md**：以 \`detailed-design.md\` 为基础，填写 Why、What Changes、Capabilities、Impact。
+- **proposal.md**：以 \`detailed-design.md\` 和 \`code-context.md\` 为基础，填写 Why、What Changes、Capabilities、Impact。
   - Capabilities 章节非常关键，其中列出的每个 capability 都需要对应一个 spec file。
 - **specs/<capability>/spec.md**：为 proposal 的 Capabilities 章节中列出的每个 capability 创建一个 spec（使用 capability 名，而不是 change 名）。
-- **design.md**：创建一个面向实现的技术设计文档，综合 \`proposal.md\`、\`specs\` 以及（如果存在）\`detailed-design.md\`。
+- **design.md**：创建一个面向实现的技术设计文档，综合 \`proposal.md\`、\`specs\`、\`code-context.md\` 以及（如果存在）\`detailed-design.md\`。
   - 如果 \`detailed-design.md\` 存在，在生成 \`design.md\` 前 MUST 先读取它。
   - 保留会影响实现的关键细节，例如接口约束、关键流程、持久化/数据库变更、外部依赖、安全限制和 rollout 要求。
   - 不要机械复制 \`detailed-design.md\` 的公司格式标题；应将内容重组到 \`design.md\` 模板结构中。
-- **tasks.md**：将实现工作拆分为带 checkbox 的任务列表。
+- **tasks.md**：将实现工作拆分为带 checkbox 的任务列表，任务应尽量落到 \`code-context.md\` 指出的相关文件、符号和影响范围。
 
 对于其他 schemas，遵循 CLI 输出中的 \`instruction\` 字段。
 
 **Guardrails**
 - 每次调用只创建 ONE artifact
+- 每次创建 artifact 前必须刷新并读取 \`code-context.md\`
 - 在 review 中，\`requirements.md\` 和 \`detailed-design.md\` 必须作为 \`proposal.md\` 之前的前置项
 - 创建新 artifact 前始终先读取 dependency artifacts
 - 不要跳过 artifact，也不要乱序创建

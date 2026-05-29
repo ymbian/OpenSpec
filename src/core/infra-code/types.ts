@@ -5,14 +5,11 @@ export type CodeLanguage =
   | 'javascript'
   | 'python'
   | 'java'
-  | 'go'
-  | 'rust'
-  | 'svelte'
-  | 'vue'
   | 'unknown';
 
 export type CodeSymbolKind =
   | 'function'
+  | 'component'
   | 'class'
   | 'interface'
   | 'type'
@@ -68,6 +65,10 @@ export interface InfraCodeIndex {
     symbolCount: number;
     edgeCount: number;
     skippedLargeFiles: number;
+    parserBackend: 'tree-sitter-wasm' | 'regex' | 'mixed';
+    treeSitterFiles: number;
+    regexFallbackFiles: number;
+    parseErrors: string[];
   };
 }
 
@@ -113,5 +114,8 @@ export interface CodeContext {
     entrySymbolCount: number;
     relevantFileCount: number;
     codeBlockCount: number;
+    parserBackend: 'tree-sitter-wasm' | 'regex' | 'mixed';
+    treeSitterFiles: number;
+    regexFallbackFiles: number;
   };
 }

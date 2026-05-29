@@ -1,6 +1,6 @@
 {
   "name": "@bym-ai/infraspec",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "AI-native system for spec-driven development",
   "keywords": [
     "infraspec",
@@ -72,6 +72,8 @@
     "fast-glob": "^3.3.3",
     "ora": "^8.2.0",
     "posthog-node": "^5.20.0",
+    "tree-sitter-wasms": "^0.1.11",
+    "web-tree-sitter": "^0.25.3",
     "yaml": "^2.8.2",
     "zod": "^4.0.17"
   }

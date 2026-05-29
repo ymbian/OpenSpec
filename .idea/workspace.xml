@@ -4,15 +4,15 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="add pre commit hook">
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="treesitter wasm">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AGENTS.md" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schemas/spec-driven/templates/tasks.md" beforeDir="false" afterPath="$PROJECT_DIR$/schemas/spec-driven/templates/tasks.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cli/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/cli/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/templates/skill-templates-parity.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/templates/skill-templates-parity.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/infra-code/context.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/infra-code/context.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/infra-code/indexer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/infra-code/indexer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/infra-code/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/infra-code/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/review-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/review-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/infra-code/analyze.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/infra-code/analyze.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,7 +23,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature_chinese" />
+        <entry key="$PROJECT_DIR$" value="feature_treesitter" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -49,7 +49,7 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "feature__codegraph",
+    "git-widget-placeholder": "feature__treesitterwasm",
     "go.sdk.automatically.set": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/rose/DevProjects/InfraSpec",
@@ -384,7 +384,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="delete openspec.js add infraspec.js to route '.infraspec init' to index.js" />
     <MESSAGE value="change openspec fold to infraspec" />
     <MESSAGE value="help and init opimize" />
     <MESSAGE value="INFRA optimize" />
@@ -409,6 +408,7 @@
     <MESSAGE value="optimize new and review prompt" />
     <MESSAGE value="add change name" />
     <MESSAGE value="add pre commit hook" />
-    <option name="LAST_COMMIT_MESSAGE" value="add pre commit hook" />
+    <MESSAGE value="treesitter wasm" />
+    <option name="LAST_COMMIT_MESSAGE" value="treesitter wasm" />
   </component>
 </project>

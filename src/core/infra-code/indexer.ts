@@ -12,6 +12,7 @@ import {
   type InfraCodeIndex,
 } from './types.js';
 import { termsFromPath, termsFromSymbol, uniqueTerms } from './text.js';
+import { extractWithTreeSitter, loadTreeSitterGrammarsForFiles } from './tree-sitter.js';
 
 export const INFRA_CODE_DIR = path.join('infraspec', '.code-graph');
 export const INFRA_CODE_INDEX_FILE = 'index.json';
@@ -20,7 +21,7 @@ const MAX_FILE_SIZE_BYTES = 750 * 1024;
 const MAX_CALL_EDGES = 8000;
 
 const SOURCE_PATTERNS = [
-  '**/*.{ts,tsx,js,jsx,mjs,cjs,py,java,go,rs,svelte,vue}',
+  '**/*.{ts,tsx,js,jsx,mjs,cjs,py,java}',
 ];
 
 const IGNORE_PATTERNS = [
@@ -77,14 +78,6 @@ function detectLanguage(filePath: string): CodeLanguage {
       return 'python';
     case '.java':
       return 'java';
-    case '.go':
-      return 'go';
-    case '.rs':
-      return 'rust';
-    case '.svelte':
-      return 'svelte';
-    case '.vue':
-      return 'vue';
     default:
       return 'unknown';
   }
@@ -101,10 +94,6 @@ function extractImports(content: string, language: CodeLanguage): string[] {
   if (language === 'python') {
     patterns.push(/^\s*from\s+([A-Za-z0-9_.]+)\s+import\s+/gm);
     patterns.push(/^\s*import\s+([A-Za-z0-9_.]+)/gm);
-  }
-
-  if (language === 'go') {
-    patterns.push(/^\s*import\s+['"]([^'"]+)['"]/gm);
   }
 
   for (const pattern of patterns) {
@@ -245,22 +234,6 @@ function extractSimpleSymbols(filePath: string, language: CodeLanguage, lines: s
       ['interface', /^\s*(?:public\s+)?interface\s+([A-Za-z_][\w]*)/],
       ['method', /^\s*(?:public|private|protected)\s+(?:static\s+)?[A-Za-z_<>\[\], ?]+\s+([A-Za-z_][\w]*)\s*\(/],
     ],
-    go: [
-      ['function', /^\s*func\s+(?:\([^)]*\)\s*)?([A-Za-z_][\w]*)\s*\(/],
-    ],
-    rust: [
-      ['function', /^\s*(?:pub\s+)?fn\s+([A-Za-z_][\w]*)\s*\(/],
-      ['class', /^\s*(?:pub\s+)?struct\s+([A-Za-z_][\w]*)/],
-      ['enum', /^\s*(?:pub\s+)?enum\s+([A-Za-z_][\w]*)/],
-    ],
-    svelte: [
-      ['function', /^\s*(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/],
-      ['variable', /^\s*(?:export\s+)?(?:const|let)\s+([A-Za-z_$][\w$]*)\s*=/],
-    ],
-    vue: [
-      ['function', /^\s*(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/],
-      ['variable', /^\s*(?:const|let)\s+([A-Za-z_$][\w$]*)\s*=/],
-    ],
     unknown: [],
     typescript: [],
     javascript: [],
@@ -300,8 +273,7 @@ function resolveRelativeImport(sourceFilePath: string, importPath: string, files
     `${base}.jsx`,
     `${base}.mjs`,
     `${base}.cjs`,
-    `${base}.svelte`,
-    `${base}.vue`,
+    `${base}.py`,
     path.posix.join(base, 'index.ts'),
     path.posix.join(base, 'index.tsx'),
     path.posix.join(base, 'index.js'),
@@ -412,14 +384,21 @@ export async function buildInfraCodeIndex(projectRoot: string): Promise<InfraCod
     unique: true,
     ignore: IGNORE_PATTERNS,
   });
+  const sortedEntries = entries.map(toPosix).sort();
+  const detectedFiles = sortedEntries.map((entry) => ({
+    path: entry,
+    language: detectLanguage(entry),
+  }));
+  const parseErrors = await loadTreeSitterGrammarsForFiles(detectedFiles);
 
   const files: CodeFile[] = [];
   const symbols: CodeSymbol[] = [];
   const contentsByPath = new Map<string, string>();
   let skippedLargeFiles = 0;
+  let treeSitterFiles = 0;
+  let regexFallbackFiles = 0;
 
-  for (const entry of entries.sort()) {
-    const relativePath = toPosix(entry);
+  for (const relativePath of sortedEntries) {
     const absolutePath = path.join(projectRoot, relativePath);
     const stat = await fs.stat(absolutePath);
     if (stat.size > MAX_FILE_SIZE_BYTES) {
@@ -429,9 +408,27 @@ export async function buildInfraCodeIndex(projectRoot: string): Promise<InfraCod
 
     const content = await fs.readFile(absolutePath, 'utf-8');
     const language = detectLanguage(relativePath);
-    const imports = extractImports(content, language);
+    const treeSitterExtraction = extractWithTreeSitter(relativePath, language, content);
+    if (treeSitterExtraction?.errors.length) {
+      parseErrors.push(...treeSitterExtraction.errors);
+    }
+
+    const useTreeSitter = treeSitterExtraction
+      && (treeSitterExtraction.symbols.length > 0 || treeSitterExtraction.imports.length > 0);
+    const fileSymbols = useTreeSitter
+      ? treeSitterExtraction.symbols
+      : extractSymbols(relativePath, language, content);
+    if (useTreeSitter) {
+      treeSitterFiles++;
+    } else {
+      regexFallbackFiles++;
+    }
+
+    const imports = [...new Set([
+      ...extractImports(content, language),
+      ...(treeSitterExtraction?.imports ?? []),
+    ])].sort();
     const lineCount = content.split('\n').length;
-    const fileSymbols = extractSymbols(relativePath, language, content);
     const fileTerms = uniqueTerms([
       ...termsFromPath(relativePath),
       ...imports.flatMap((item) => termsFromPath(item)),
@@ -454,6 +451,11 @@ export async function buildInfraCodeIndex(projectRoot: string): Promise<InfraCod
   }
 
   const edges = buildEdges(files, symbols, contentsByPath);
+  const parserBackend = treeSitterFiles > 0 && regexFallbackFiles > 0
+    ? 'mixed'
+    : treeSitterFiles > 0
+      ? 'tree-sitter-wasm'
+      : 'regex';
 
   return {
     version: INFRA_CODE_INDEX_VERSION,
@@ -467,6 +469,10 @@ export async function buildInfraCodeIndex(projectRoot: string): Promise<InfraCod
       symbolCount: symbols.length,
       edgeCount: edges.length,
       skippedLargeFiles,
+      parserBackend,
+      treeSitterFiles,
+      regexFallbackFiles,
+      parseErrors: parseErrors.slice(0, 20),
     },
   };
 }
