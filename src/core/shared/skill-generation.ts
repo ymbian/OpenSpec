@@ -16,6 +16,7 @@ import {
   getBulkArchiveChangeSkillTemplate,
   getVerifyChangeSkillTemplate,
   getOnboardSkillTemplate,
+  getWikiSkillTemplate,
   getOpsxProposeSkillTemplate,
   getOpsxExploreCommandTemplate,
   getOpsxNewCommandTemplate,
@@ -28,6 +29,7 @@ import {
   getOpsxBulkArchiveCommandTemplate,
   getOpsxVerifyCommandTemplate,
   getOpsxOnboardCommandTemplate,
+  getOpsxWikiCommandTemplate,
   getOpsxProposeCommandTemplate,
   type SkillTemplate,
 } from '../templates/skill-templates.js';
@@ -68,6 +70,7 @@ export function getSkillTemplates(workflowFilter?: readonly string[]): SkillTemp
     { template: getBulkArchiveChangeSkillTemplate(), dirName: 'infra-bulk-archive-change', workflowId: 'bulk-archive' },
     { template: getVerifyChangeSkillTemplate(), dirName: 'infra-verify-change', workflowId: 'verify' },
     { template: getOnboardSkillTemplate(), dirName: 'infra-onboard', workflowId: 'onboard' },
+    { template: getWikiSkillTemplate(), dirName: 'infra-wiki', workflowId: 'wiki' },
     { template: getOpsxProposeSkillTemplate(), dirName: 'infra-propose', workflowId: 'propose' },
   ];
 
@@ -95,6 +98,7 @@ export function getCommandTemplates(workflowFilter?: readonly string[]): Command
     { template: getOpsxBulkArchiveCommandTemplate(), id: 'bulk-archive' },
     { template: getOpsxVerifyCommandTemplate(), id: 'verify' },
     { template: getOpsxOnboardCommandTemplate(), id: 'onboard' },
+    { template: getOpsxWikiCommandTemplate(), id: 'wiki' },
     { template: getOpsxProposeCommandTemplate(), id: 'propose' },
   ];
 

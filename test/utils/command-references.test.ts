@@ -63,6 +63,7 @@ Finally /infra-apply to implement`;
   describe('all known commands', () => {
     const commands = [
       'new',
+      'wiki',
       'continue',
       'apply',
       'ff',

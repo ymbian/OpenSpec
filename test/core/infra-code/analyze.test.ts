@@ -3,7 +3,8 @@ import { promises as fs } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { analyzeCodeForChange } from '../../../src/core/infra-code/analyze.js';
+import { analyzeCodeForChange, indexProjectCode } from '../../../src/core/infra-code/analyze.js';
+import { getCodeModuleDetail, listCodeModules } from '../../../src/core/infra-code/query.js';
 
 describe('infra-code analyze', () => {
   let testDir: string;
@@ -92,6 +93,229 @@ describe('infra-code analyze', () => {
     expect(payload.context.stats.parserBackend).toBe('tree-sitter-wasm');
     expect(payload.context.stats.treeSitterFiles).toBeGreaterThan(0);
     expect(payload.context.stats.regexFallbackFiles).toBe(0);
+  });
+
+  it('builds the global code graph index without a change name', async () => {
+    const result = await indexProjectCode({
+      projectRoot: testDir,
+    });
+
+    expect(result.status).toBe('ready');
+    expect(result.backend).toBe('json');
+
+    const indexPath = path.join(testDir, 'infraspec', '.code-graph', 'index.json');
+    expect(result.indexPath).toBe(indexPath);
+    await expect(fs.stat(indexPath)).resolves.toBeTruthy();
+
+    const payload = JSON.parse(await fs.readFile(indexPath, 'utf-8')) as {
+      files: unknown[];
+      symbols: Array<{ name: string }>;
+      modules: unknown[];
+      entryPoints: unknown[];
+      executionFlows: unknown[];
+      stats: {
+        fileCount: number;
+        symbolCount: number;
+        moduleCount: number;
+        entryPointCount: number;
+        executionFlowCount: number;
+      };
+    };
+
+    expect(payload.files.length).toBeGreaterThan(0);
+    expect(payload.stats.fileCount).toBeGreaterThan(0);
+    expect(payload.stats.symbolCount).toBeGreaterThan(0);
+    expect(payload.modules.length).toBe(payload.stats.moduleCount);
+    expect(payload.entryPoints.length).toBe(payload.stats.entryPointCount);
+    expect(payload.executionFlows.length).toBe(payload.stats.executionFlowCount);
+    expect(payload.symbols).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'loginUser' }),
+      expect.objectContaining({ name: 'createSession' }),
+    ]));
+  });
+
+  it('adds GitNexus-style lightweight modules, entry points, and execution flows', async () => {
+    await fs.mkdir(path.join(testDir, 'src', 'controller'), { recursive: true });
+    await fs.mkdir(path.join(testDir, 'src', 'service'), { recursive: true });
+    await fs.mkdir(path.join(testDir, 'src', 'mapper'), { recursive: true });
+
+    await fs.writeFile(
+      path.join(testDir, 'src', 'controller', 'UserController.java'),
+      [
+        'package demo;',
+        '',
+        'public class UserController {',
+        '  public String handleLogin(String username) {',
+        '    return validateUser(username);',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+    await fs.writeFile(
+      path.join(testDir, 'src', 'service', 'UserService.java'),
+      [
+        'package demo;',
+        '',
+        'public class UserService {',
+        '  public String validateUser(String username) {',
+        '    return findUser(username);',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+    await fs.writeFile(
+      path.join(testDir, 'src', 'mapper', 'UserMapper.java'),
+      [
+        'package demo;',
+        '',
+        'public class UserMapper {',
+        '  public String findUser(String username) {',
+        '    return username;',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+
+    const result = await indexProjectCode({ projectRoot: testDir });
+    expect(result.status).toBe('ready');
+
+    const payload = JSON.parse(await fs.readFile(result.indexPath, 'utf-8')) as {
+      modules: Array<{
+        id: string;
+        strategy: string;
+        confidence: string;
+        layers: string[];
+        files: string[];
+      }>;
+      entryPoints: Array<{
+        name: string;
+        kind: string;
+        moduleId?: string;
+        confidence: string;
+      }>;
+      executionFlows: Array<{
+        entryPointId: string;
+        moduleIds: string[];
+        confidence: string;
+        steps: Array<{ name: string }>;
+      }>;
+    };
+
+    const userModule = payload.modules.find((module) => module.id === 'user');
+    expect(userModule).toEqual(expect.objectContaining({
+      strategy: 'hybrid-lightweight',
+      confidence: 'high',
+    }));
+    expect(userModule?.layers).toEqual(expect.arrayContaining(['controller', 'mapper', 'service']));
+    expect(userModule?.files).toEqual(expect.arrayContaining([
+      'src/controller/UserController.java',
+      'src/service/UserService.java',
+      'src/mapper/UserMapper.java',
+    ]));
+
+    expect(payload.entryPoints).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        name: 'handleLogin',
+        kind: 'controller',
+        moduleId: 'user',
+      }),
+    ]));
+    expect(payload.executionFlows).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        moduleIds: expect.arrayContaining(['user']),
+        confidence: expect.stringMatching(/high|medium/),
+        steps: expect.arrayContaining([
+          expect.objectContaining({ name: 'handleLogin' }),
+          expect.objectContaining({ name: 'validateUser' }),
+          expect.objectContaining({ name: 'findUser' }),
+        ]),
+      }),
+    ]));
+  });
+
+  it('returns context-sized module summaries and module detail slices for wiki generation', async () => {
+    await fs.mkdir(path.join(testDir, 'src', 'controller'), { recursive: true });
+    await fs.mkdir(path.join(testDir, 'src', 'service'), { recursive: true });
+    await fs.mkdir(path.join(testDir, 'src', 'mapper'), { recursive: true });
+
+    await fs.writeFile(
+      path.join(testDir, 'src', 'controller', 'UserController.java'),
+      [
+        'package demo;',
+        '',
+        'public class UserController {',
+        '  public String handleLogin(String username) {',
+        '    return validateUser(username);',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+    await fs.writeFile(
+      path.join(testDir, 'src', 'service', 'UserService.java'),
+      [
+        'package demo;',
+        '',
+        'public class UserService {',
+        '  public String validateUser(String username) {',
+        '    return findUser(username);',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+    await fs.writeFile(
+      path.join(testDir, 'src', 'mapper', 'UserMapper.java'),
+      [
+        'package demo;',
+        '',
+        'public class UserMapper {',
+        '  public String findUser(String username) {',
+        '    return username;',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+
+    const modules = await listCodeModules({ projectRoot: testDir, refresh: true });
+    expect(modules.indexGenerated).toBe(true);
+    expect(modules.modules).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: 'user',
+        layers: expect.arrayContaining(['controller', 'mapper', 'service']),
+        entryPointCount: expect.any(Number),
+        executionFlowCount: expect.any(Number),
+      }),
+    ]));
+
+    const detail = await getCodeModuleDetail({
+      projectRoot: testDir,
+      moduleId: 'user',
+      maxFiles: 2,
+      maxSymbols: 3,
+      maxFlows: 1,
+      maxEdges: 2,
+    });
+    expect(detail.module.id).toBe('user');
+    expect(detail.files.length).toBe(2);
+    expect(detail.truncated.files).toBe(true);
+    expect(detail.symbols.length).toBe(3);
+    expect(detail.truncated.symbols).toBe(true);
+    expect(detail.entryPoints).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'handleLogin', moduleId: 'user' }),
+    ]));
+    expect(detail.executionFlows.length).toBeLessThanOrEqual(1);
+    expect(detail.totals.files).toBeGreaterThan(detail.files.length);
   });
 
   it('indexes React, Java, and Python symbols with tree-sitter', async () => {

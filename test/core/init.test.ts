@@ -215,12 +215,13 @@ describe('InitCommand', () => {
 
       await initCommand.execute(testDir);
 
-      // Core profile: propose, explore, new, continue, apply, archive
+      // Core profile: propose, explore, new, wiki, review, apply, archive
       const coreSkillNames = [
         'infra-propose',
         'infra-explore',
         'infra-new-change',
-        'infra-continue-change',
+        'infra-wiki',
+        'infra-review-change',
         'infra-apply-change',
         'infra-archive-change',
       ];
@@ -254,12 +255,13 @@ describe('InitCommand', () => {
 
       await initCommand.execute(testDir);
 
-      // Core profile: propose, explore, new, continue, apply, archive
+      // Core profile: propose, explore, new, wiki, review, apply, archive
       const coreCommandNames = [
         'infra/propose.md',
         'infra/explore.md',
         'infra/new.md',
-        'infra/continue.md',
+        'infra/wiki.md',
+        'infra/review.md',
         'infra/apply.md',
         'infra/archive.md',
       ];
@@ -654,9 +656,12 @@ describe('InitCommand - profile and detection features', () => {
     const proposeSkill = path.join(testDir, '.claude', 'skills', 'infra-propose', 'SKILL.md');
     expect(await fileExists(proposeSkill)).toBe(true);
 
-    // Core profile skills should include the default 6-workflow set
+    // Core profile skills should include the default workflow set
     const newChangeSkill = path.join(testDir, '.claude', 'skills', 'infra-new-change', 'SKILL.md');
     expect(await fileExists(newChangeSkill)).toBe(true);
+
+    const wikiSkill = path.join(testDir, '.claude', 'skills', 'infra-wiki', 'SKILL.md');
+    expect(await fileExists(wikiSkill)).toBe(true);
   });
 
   it('should reject invalid --profile values', async () => {

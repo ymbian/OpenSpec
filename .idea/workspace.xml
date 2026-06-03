@@ -4,15 +4,30 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="treesitter wasm">
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="code graph">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/infra-code/context.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/infra-code/context.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/commands/code.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/code.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/commands/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/infra-code/analyze.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/infra-code/analyze.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/core/infra-code/indexer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/infra-code/indexer.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/core/infra-code/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/infra-code/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/review-change.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/workflows/review-change.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/init.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/init.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/profile-sync-drift.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/profile-sync-drift.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/profiles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/profiles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/shared/tool-detection.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/shared/tool-detection.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/skill-templates.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/skill-templates.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/update.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/update.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/commands/config-profile.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/commands/config-profile.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/commands/config.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/commands/config.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/core/infra-code/analyze.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/infra-code/analyze.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/init.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/init.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/profiles.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/profiles.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/shared/skill-generation.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/shared/skill-generation.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/shared/tool-detection.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/shared/tool-detection.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/templates/skill-templates-parity.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/templates/skill-templates-parity.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/core/update.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/update.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/utils/command-references.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/utils/command-references.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -328,7 +343,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779069700807</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="code graph">
+      <option name="closed" value="true" />
+      <created>1780038259281</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1780038259281</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -384,7 +407,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="change openspec fold to infraspec" />
     <MESSAGE value="help and init opimize" />
     <MESSAGE value="INFRA optimize" />
     <MESSAGE value="delete cursor and divalent folders" />
@@ -409,6 +431,7 @@
     <MESSAGE value="add change name" />
     <MESSAGE value="add pre commit hook" />
     <MESSAGE value="treesitter wasm" />
-    <option name="LAST_COMMIT_MESSAGE" value="treesitter wasm" />
+    <MESSAGE value="code graph" />
+    <option name="LAST_COMMIT_MESSAGE" value="code graph" />
   </component>
 </project>

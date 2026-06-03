@@ -269,6 +269,7 @@ export class UpdateCommand {
       console.log();
       console.log(chalk.bold('Getting started:'));
       console.log('  /infra:new       Start a new change');
+      console.log('  /infra:wiki      Generate a source-backed project wiki');
       console.log('  /infra:review    Review before creating the next artifact');
       console.log('  /infra:apply     Implement tasks');
       console.log();
@@ -488,7 +489,7 @@ export class UpdateCommand {
   }
 
   /**
-   * Detect and handle legacy OpenSpec artifacts.
+   * Detect and handle legacy InfraSpec artifacts.
    * Unlike init, update warns but continues if legacy files found in non-interactive mode.
    * Returns array of tool IDs that were newly configured during legacy upgrade.
    */

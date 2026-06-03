@@ -8,9 +8,9 @@ import {
 
 describe('skill-generation', () => {
   describe('getSkillTemplates', () => {
-    it('should return all 11 skill templates', () => {
+    it('should return all skill templates', () => {
       const templates = getSkillTemplates();
-      expect(templates).toHaveLength(11);
+      expect(templates).toHaveLength(13);
     });
 
     it('should have unique directory names', () => {
@@ -26,7 +26,9 @@ describe('skill-generation', () => {
 
       expect(dirNames).toContain('infra-explore');
       expect(dirNames).toContain('infra-new-change');
+      expect(dirNames).toContain('infra-wiki');
       expect(dirNames).toContain('infra-continue-change');
+      expect(dirNames).toContain('infra-review-change');
       expect(dirNames).toContain('infra-apply-change');
       expect(dirNames).toContain('infra-ff-change');
       expect(dirNames).toContain('infra-sync-specs');
@@ -57,13 +59,14 @@ describe('skill-generation', () => {
     });
 
     it('should filter by workflow IDs when provided', () => {
-      const filtered = getSkillTemplates(['propose', 'explore', 'new', 'continue', 'apply', 'archive']);
-      expect(filtered).toHaveLength(6);
+      const filtered = getSkillTemplates(['propose', 'explore', 'new', 'wiki', 'review', 'apply', 'archive']);
+      expect(filtered).toHaveLength(7);
       const ids = filtered.map(t => t.workflowId);
       expect(ids).toContain('propose');
       expect(ids).toContain('explore');
       expect(ids).toContain('new');
-      expect(ids).toContain('continue');
+      expect(ids).toContain('wiki');
+      expect(ids).toContain('review');
       expect(ids).toContain('apply');
       expect(ids).toContain('archive');
       expect(ids).not.toContain('ff');
@@ -89,9 +92,9 @@ describe('skill-generation', () => {
   });
 
   describe('getCommandTemplates', () => {
-    it('should return all 11 command templates', () => {
+    it('should return all command templates', () => {
       const templates = getCommandTemplates();
-      expect(templates).toHaveLength(11);
+      expect(templates).toHaveLength(13);
     });
 
     it('should have unique IDs', () => {
@@ -107,7 +110,9 @@ describe('skill-generation', () => {
 
       expect(ids).toContain('explore');
       expect(ids).toContain('new');
+      expect(ids).toContain('wiki');
       expect(ids).toContain('continue');
+      expect(ids).toContain('review');
       expect(ids).toContain('apply');
       expect(ids).toContain('ff');
       expect(ids).toContain('sync');
@@ -119,13 +124,14 @@ describe('skill-generation', () => {
     });
 
     it('should filter by workflow IDs when provided', () => {
-      const filtered = getCommandTemplates(['propose', 'explore', 'new', 'continue', 'apply', 'archive']);
-      expect(filtered).toHaveLength(6);
+      const filtered = getCommandTemplates(['propose', 'explore', 'new', 'wiki', 'review', 'apply', 'archive']);
+      expect(filtered).toHaveLength(7);
       const ids = filtered.map(t => t.id);
       expect(ids).toContain('propose');
       expect(ids).toContain('explore');
       expect(ids).toContain('new');
-      expect(ids).toContain('continue');
+      expect(ids).toContain('wiki');
+      expect(ids).toContain('review');
       expect(ids).toContain('apply');
       expect(ids).toContain('archive');
       expect(ids).not.toContain('ff');
@@ -144,9 +150,9 @@ describe('skill-generation', () => {
   });
 
   describe('getCommandContents', () => {
-    it('should return all 11 command contents', () => {
+    it('should return all command contents', () => {
       const contents = getCommandContents();
-      expect(contents).toHaveLength(11);
+      expect(contents).toHaveLength(13);
     });
 
     it('should have valid content structure', () => {
@@ -205,7 +211,6 @@ describe('skill-generation', () => {
       expect(content).toMatch(/^---\n/);
       expect(content).toContain('name: test-skill');
       expect(content).toContain('description: Test description');
-      expect(content).toContain('license: MIT');
       expect(content).toContain('compatibility: Test compatibility');
       expect(content).toContain('author: test-author');
       expect(content).toContain('version: "2.0"');
@@ -222,7 +227,6 @@ describe('skill-generation', () => {
 
       const content = generateSkillContent(template, '0.24.0');
 
-      expect(content).toContain('license: MIT');
       expect(content).toContain('compatibility: Requires infraspec CLI.');
       expect(content).toContain('author: bianyongmei');
       expect(content).toContain('version: "1.0"');

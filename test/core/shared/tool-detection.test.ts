@@ -28,10 +28,12 @@ describe('tool-detection', () => {
 
   describe('SKILL_NAMES', () => {
     it('should contain all skill names matching COMMAND_IDS', () => {
-      expect(SKILL_NAMES).toHaveLength(11);
+      expect(SKILL_NAMES).toHaveLength(13);
       expect(SKILL_NAMES).toContain('infra-explore');
       expect(SKILL_NAMES).toContain('infra-new-change');
+      expect(SKILL_NAMES).toContain('infra-wiki');
       expect(SKILL_NAMES).toContain('infra-continue-change');
+      expect(SKILL_NAMES).toContain('infra-review-change');
       expect(SKILL_NAMES).toContain('infra-apply-change');
       expect(SKILL_NAMES).toContain('infra-ff-change');
       expect(SKILL_NAMES).toContain('infra-sync-specs');

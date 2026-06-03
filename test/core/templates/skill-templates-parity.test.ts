@@ -21,10 +21,12 @@ import {
   getOpsxNewCommandTemplate,
   getOpsxOnboardCommandTemplate,
   getOpsxSyncCommandTemplate,
+  getOpsxWikiCommandTemplate,
   getOpsxProposeCommandTemplate,
   getOpsxProposeSkillTemplate,
   getOpsxVerifyCommandTemplate,
   getSyncSpecsSkillTemplate,
+  getWikiSkillTemplate,
   getVerifyChangeSkillTemplate,
 } from '../../../src/core/templates/skill-templates.js';
 import { generateSkillContent } from '../../../src/core/shared/skill-generation.js';
@@ -52,6 +54,8 @@ const EXPECTED_FUNCTION_HASHES: Record<string, string> = {
   getOpsxVerifyCommandTemplate: '6901da5a61f1a3df31a9c4a80e0c6c8e43616ab452594ac89a2138c738a73e24',
   getOpsxProposeSkillTemplate: '0114b9efcfe525dbbfe344b851f9bc6497be286a6b9f01cdd39c93d9ac2a0e5b',
   getOpsxProposeCommandTemplate: '8a5e080fd386c9d436b07df5b0fb7c5a57724516f637b8e2f5c0a98d2eab42c2',
+  getWikiSkillTemplate: '0032b65a43595eeaa2206a59f057e3042d0a77eb819b572cb8eae6da4c4510bd',
+  getOpsxWikiCommandTemplate: '7e5b22f1584093350bdf1128199ded1b369913afc5db5ba58407704c2cda86bf',
   getFeedbackSkillTemplate: '60edf11efed5d4b57dc54a1d361dda030a9c38125dfb790669492ae31bd5fc75',
 };
 
@@ -67,6 +71,7 @@ const EXPECTED_GENERATED_SKILL_CONTENT_HASHES: Record<string, string> = {
   'infra-verify-change': 'bfdd5810549d7a25107125e55cd1c91ee1fcd6c7eec025584ddf521aae618b69',
   'infra-onboard': 'cf7678748d433f98aef2bc055b223111ad6849c1d7affe73488e7cdbe144b4ad',
   'infra-propose': '71b91a3a5b0826578a4861b0f93ce77799b3042962a9c8fa9e49f4e8a55fea71',
+  'infra-wiki': 'fa9c5c09f8249a937e114db1a6c77152f082eef5a0d76bfd9bea28fdd4eb218b',
 };
 
 function stableStringify(value: unknown): string {
@@ -114,6 +119,8 @@ describe('skill templates split parity', () => {
       getOpsxVerifyCommandTemplate,
       getOpsxProposeSkillTemplate,
       getOpsxProposeCommandTemplate,
+      getWikiSkillTemplate,
+      getOpsxWikiCommandTemplate,
       getFeedbackSkillTemplate,
     };
 
@@ -139,6 +146,7 @@ describe('skill templates split parity', () => {
       ['infra-verify-change', getVerifyChangeSkillTemplate],
       ['infra-onboard', getOnboardSkillTemplate],
       ['infra-propose', getOpsxProposeSkillTemplate],
+      ['infra-wiki', getWikiSkillTemplate],
     ];
 
     const actualHashes = Object.fromEntries(

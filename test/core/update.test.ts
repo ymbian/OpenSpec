@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { UpdateCommand, scanInstalledWorkflows } from '../../src/core/update.js';
 import { InitCommand } from '../../src/core/init.js';
 import { FileSystemUtils } from '../../src/utils/file-system.js';
-import { OPENSPEC_MARKERS } from '../../src/core/config.js';
+import { OPENSPEC_DIR_NAME, OPENSPEC_MARKERS } from '../../src/core/config.js';
 import type { GlobalConfig } from '../../src/core/global-config.js';
 import path from 'path';
 import fs from 'fs/promises';
@@ -47,9 +47,9 @@ describe('UpdateCommand', () => {
     testDir = path.join(os.tmpdir(), `openspec-test-${randomUUID()}`);
     await fs.mkdir(testDir, { recursive: true });
 
-    // Create openspec directory
-    const openspecDir = path.join(testDir, 'openspec');
-    await fs.mkdir(openspecDir, { recursive: true });
+    // Create InfraSpec directory
+    const infraSpecDir = path.join(testDir, OPENSPEC_DIR_NAME);
+    await fs.mkdir(infraSpecDir, { recursive: true });
 
     updateCommand = new UpdateCommand();
 
@@ -70,8 +70,8 @@ describe('UpdateCommand', () => {
 
   describe('basic validation', () => {
     it('should throw error if openspec directory does not exist', async () => {
-      // Remove openspec directory
-      await fs.rm(path.join(testDir, 'openspec'), {
+      // Remove InfraSpec directory
+      await fs.rm(path.join(testDir, OPENSPEC_DIR_NAME), {
         recursive: true,
         force: true,
       });
@@ -155,11 +155,12 @@ Old instructions content
 
       await updateCommand.execute(testDir);
 
-      // Verify core profile skill files were created/updated (propose, explore, new, continue, apply, archive)
+      // Verify core profile skill files were created/updated (propose, explore, new, wiki, review, apply, archive)
       const coreSkillNames = [
         'infra-explore',
         'infra-new-change',
-        'infra-continue-change',
+        'infra-wiki',
+        'infra-review-change',
         'infra-apply-change',
         'infra-archive-change',
         'infra-propose',
@@ -233,8 +234,8 @@ Old instructions content
 
       await updateCommand.execute(testDir);
 
-      // Verify core profile commands were created (propose, explore, new, continue, apply, archive)
-      const coreCommandIds = ['explore', 'new', 'continue', 'apply', 'archive', 'propose'];
+      // Verify core profile commands were created (propose, explore, new, wiki, review, apply, archive)
+      const coreCommandIds = ['explore', 'new', 'wiki', 'review', 'apply', 'archive', 'propose'];
       const commandsDir = path.join(testDir, '.claude', 'commands', 'infra');
       for (const cmdId of coreCommandIds) {
         const cmdFile = path.join(commandsDir, `${cmdId}.md`);
@@ -1323,7 +1324,8 @@ More user content after markers.
         'infra-propose',
         'infra-explore',
         'infra-new-change',
-        'infra-continue-change',
+        'infra-wiki',
+        'infra-review-change',
         'infra-apply-change',
         'infra-archive-change',
       ];
@@ -1570,7 +1572,7 @@ content
     });
 
     it('should remove workflows outside profile during update sync', async () => {
-      // Set core profile (propose, explore, new, continue, apply, archive)
+      // Set core profile (propose, explore, new, wiki, review, apply, archive)
       setMockConfig({
         featureFlags: {},
         profile: 'core',

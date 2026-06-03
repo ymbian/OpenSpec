@@ -28,6 +28,18 @@ export interface AnalyzeCodeResult {
   error?: string;
 }
 
+export interface IndexCodeOptions {
+  projectRoot?: string;
+}
+
+export interface IndexCodeResult {
+  indexPath: string;
+  status: 'ready';
+  backend: 'json';
+  stats: Record<string, unknown>;
+  message: string;
+}
+
 function getChangeDir(projectRoot: string, changeName: string): string {
   return path.join(projectRoot, 'infraspec', 'changes', changeName);
 }
@@ -151,4 +163,18 @@ export async function analyzeCodeForChange(options: AnalyzeCodeOptions): Promise
       ...fallback,
     };
   }
+}
+
+export async function indexProjectCode(options: IndexCodeOptions = {}): Promise<IndexCodeResult> {
+  const projectRoot = path.resolve(options.projectRoot ?? process.cwd());
+  const index = await buildInfraCodeIndex(projectRoot);
+  const indexPath = await writeInfraCodeIndex(projectRoot, index);
+
+  return {
+    indexPath,
+    status: 'ready',
+    backend: 'json',
+    stats: index.stats,
+    message: 'Generated global code graph index from current source code.',
+  };
 }

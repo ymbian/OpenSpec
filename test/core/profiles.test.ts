@@ -8,8 +8,8 @@ import {
 
 describe('profiles', () => {
   describe('CORE_WORKFLOWS', () => {
-    it('should contain the six core workflows', () => {
-      expect(CORE_WORKFLOWS).toEqual(['propose', 'explore', 'new', 'continue', 'apply', 'archive']);
+    it('should contain the core workflows', () => {
+      expect(CORE_WORKFLOWS).toEqual(['propose', 'explore', 'new', 'wiki', 'review', 'apply', 'archive']);
     });
 
     it('should be a subset of ALL_WORKFLOWS', () => {
@@ -20,13 +20,13 @@ describe('profiles', () => {
   });
 
   describe('ALL_WORKFLOWS', () => {
-    it('should contain all 11 workflows', () => {
-      expect(ALL_WORKFLOWS).toHaveLength(11);
+    it('should contain all workflows', () => {
+      expect(ALL_WORKFLOWS).toHaveLength(13);
     });
 
     it('should contain expected workflow IDs', () => {
       const expected = [
-        'propose', 'explore', 'new', 'continue', 'apply',
+        'propose', 'explore', 'new', 'wiki', 'continue', 'review', 'apply',
         'ff', 'sync', 'archive', 'bulk-archive', 'verify', 'onboard',
       ];
       expect([...ALL_WORKFLOWS]).toEqual(expected);

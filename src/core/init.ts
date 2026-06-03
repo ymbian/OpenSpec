@@ -80,6 +80,7 @@ const PROGRESS_SPINNER = {
 const WORKFLOW_TO_SKILL_DIR: Record<string, string> = {
   'explore': 'infra-explore',
   'new': 'infra-new-change',
+  'wiki': 'infra-wiki',
   'continue': 'infra-continue-change',
   'review': 'infra-review-change',
   'apply': 'infra-apply-change',

@@ -14,6 +14,7 @@ import { AI_TOOLS } from '../config.js';
 export const SKILL_NAMES = [
   'infra-explore',
   'infra-new-change',
+  'infra-wiki',
   'infra-continue-change',
   'infra-review-change',
   'infra-apply-change',
@@ -34,6 +35,7 @@ export type SkillName = (typeof SKILL_NAMES)[number];
 export const COMMAND_IDS = [
   'explore',
   'new',
+  'wiki',
   'continue',
   'review',
   'apply',
