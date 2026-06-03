@@ -134,6 +134,72 @@ describe('infra-code analyze', () => {
     ]));
   });
 
+  it('ignores Java test sources and Maven target outputs in the global index', async () => {
+    await fs.mkdir(path.join(testDir, 'src', 'main', 'java', 'com', 'example'), { recursive: true });
+    await fs.mkdir(path.join(testDir, 'src', 'test', 'java', 'com', 'example'), { recursive: true });
+    await fs.mkdir(path.join(testDir, 'target', 'classes', 'com', 'example'), { recursive: true });
+
+    await fs.writeFile(
+      path.join(testDir, 'src', 'main', 'java', 'com', 'example', 'OrderService.java'),
+      [
+        'package com.example;',
+        '',
+        'public class OrderService {',
+        '  public String createOrder(String orderId) {',
+        '    return orderId;',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+    await fs.writeFile(
+      path.join(testDir, 'src', 'test', 'java', 'com', 'example', 'OrderServiceTest.java'),
+      [
+        'package com.example;',
+        '',
+        'public class OrderServiceTest {',
+        '  public void createsOrder() {}',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+    await fs.writeFile(
+      path.join(testDir, 'target', 'classes', 'com', 'example', 'GeneratedOrderService.java'),
+      [
+        'package com.example;',
+        '',
+        'public class GeneratedOrderService {',
+        '  public void generated() {}',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+
+    const result = await indexProjectCode({ projectRoot: testDir });
+    expect(result.status).toBe('ready');
+
+    const payload = JSON.parse(await fs.readFile(result.indexPath, 'utf-8')) as {
+      files: Array<{ path: string }>;
+      symbols: Array<{ name: string; filePath: string }>;
+    };
+    const indexedFiles = payload.files.map((file) => file.path);
+    const indexedSymbols = payload.symbols.map((symbol) => symbol.name);
+
+    expect(indexedFiles).toContain('src/main/java/com/example/OrderService.java');
+    expect(indexedFiles).not.toEqual(expect.arrayContaining([
+      expect.stringContaining('src/test/'),
+      expect.stringContaining('target/'),
+    ]));
+    expect(indexedSymbols).toContain('OrderService');
+    expect(indexedSymbols).not.toEqual(expect.arrayContaining([
+      'OrderServiceTest',
+      'GeneratedOrderService',
+    ]));
+  });
+
   it('adds GitNexus-style lightweight modules, entry points, and execution flows', async () => {
     await fs.mkdir(path.join(testDir, 'src', 'controller'), { recursive: true });
     await fs.mkdir(path.join(testDir, 'src', 'service'), { recursive: true });
