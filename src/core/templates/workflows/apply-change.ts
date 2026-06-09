@@ -50,14 +50,30 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
    - If \`state: "all_done"\`: congratulate, suggest archive
    - Otherwise: proceed to implementation
 
-4. **Read context files**
+4. **Refresh and read code context**
+
+   Before implementation, refresh the change-level code graph context:
+
+   \`\`\`bash
+   infraspec code analyze --change "<name>" --json
+   \`\`\`
+
+   Then read \`infraspec/changes/<name>/code-context.md\` if it exists.
+
+   If code analysis fails, do not block implementation:
+   - If an existing \`code-context.md\` is present, read it and continue.
+   - If \`code-context.md\` is missing, continue with the schema context files and mention that code graph context was unavailable.
+
+   Do not read \`infraspec/.code-graph/index.json\` or \`.code-context.json\` by default; they are larger structured/debug files. Use \`code-context.md\` as the compact implementation context.
+
+5. **Read schema context files**
 
    Read the files listed in \`contextFiles\` from the apply instructions output.
    The files depend on the schema being used:
    - **spec-driven**: proposal, specs, design, tasks
    - Other schemas: follow the contextFiles from CLI output
 
-5. **Show current progress**
+6. **Show current progress**
 
    Display:
    - Schema being used
@@ -65,7 +81,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
    - Remaining tasks overview
    - Dynamic instruction from CLI
 
-6. **Implement tasks (loop until done or blocked)**
+7. **Implement tasks (loop until done or blocked)**
 
    For each pending task:
    - Show which task is being worked on
@@ -80,7 +96,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
    - Error or blocker encountered → report and wait for guidance
    - User interrupts
 
-7. **On completion or pause, show status**
+8. **On completion or pause, show status**
 
    Display:
    - Tasks completed this session
@@ -141,13 +157,14 @@ What would you like to do?
 
 **Guardrails**
 - Keep going through tasks until done or blocked
-- Always read context files before starting (from the apply instructions output)
+- Always refresh/read \`code-context.md\` before implementation when available
+- Always read schema context files before starting (from the apply instructions output)
 - If task is ambiguous, pause and ask before implementing
 - If implementation reveals issues, pause and suggest artifact updates
 - Keep code changes minimal and scoped to each task
 - Update task checkbox immediately after completing each task
 - Pause on errors, blockers, or unclear requirements - don't guess
-- Use contextFiles from CLI output, don't assume specific file names
+- Use contextFiles from CLI output for schema artifacts, and use \`code-context.md\` for compact code graph context
 
 **Fluid Workflow Integration**
 
@@ -206,14 +223,30 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    - If \`state: "all_done"\`: congratulate, suggest archive
    - Otherwise: proceed to implementation
 
-4. **Read context files**
+4. **Refresh and read code context**
+
+   Before implementation, refresh the change-level code graph context:
+
+   \`\`\`bash
+   infraspec code analyze --change "<name>" --json
+   \`\`\`
+
+   Then read \`infraspec/changes/<name>/code-context.md\` if it exists.
+
+   If code analysis fails, do not block implementation:
+   - If an existing \`code-context.md\` is present, read it and continue.
+   - If \`code-context.md\` is missing, continue with the schema context files and mention that code graph context was unavailable.
+
+   Do not read \`infraspec/.code-graph/index.json\` or \`.code-context.json\` by default; they are larger structured/debug files. Use \`code-context.md\` as the compact implementation context.
+
+5. **Read schema context files**
 
    Read the files listed in \`contextFiles\` from the apply instructions output.
    The files depend on the schema being used:
    - **spec-driven**: proposal, specs, design, tasks
    - Other schemas: follow the contextFiles from CLI output
 
-5. **Show current progress**
+6. **Show current progress**
 
    Display:
    - Schema being used
@@ -221,7 +254,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    - Remaining tasks overview
    - Dynamic instruction from CLI
 
-6. **Implement tasks (loop until done or blocked)**
+7. **Implement tasks (loop until done or blocked)**
 
    For each pending task:
    - Show which task is being worked on
@@ -236,7 +269,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    - Error or blocker encountered → report and wait for guidance
    - User interrupts
 
-7. **On completion or pause, show status**
+8. **On completion or pause, show status**
 
    Display:
    - Tasks completed this session
@@ -297,13 +330,14 @@ What would you like to do?
 
 **Guardrails**
 - Keep going through tasks until done or blocked
-- Always read context files before starting (from the apply instructions output)
+- Always refresh/read \`code-context.md\` before implementation when available
+- Always read schema context files before starting (from the apply instructions output)
 - If task is ambiguous, pause and ask before implementing
 - If implementation reveals issues, pause and suggest artifact updates
 - Keep code changes minimal and scoped to each task
 - Update task checkbox immediately after completing each task
 - Pause on errors, blockers, or unclear requirements - don't guess
-- Use contextFiles from CLI output, don't assume specific file names
+- Use contextFiles from CLI output for schema artifacts, and use \`code-context.md\` for compact code graph context
 
 **Fluid Workflow Integration**
 

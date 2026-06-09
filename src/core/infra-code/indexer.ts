@@ -71,6 +71,10 @@ const TECHNICAL_SUFFIXES = new Set([
   'manager', 'processor', 'command', 'commands',
 ]);
 
+const JAVA_PACKAGE_ROOTS = new Set([
+  'com', 'org', 'net', 'io', 'cn', 'edu', 'gov', 'mil', 'java', 'javax',
+]);
+
 const ENTRY_NAME_HINTS = new Set([
   'main', 'run', 'execute', 'exec', 'start', 'handle', 'handler', 'process',
   'register', 'route', 'bootstrap',
@@ -123,6 +127,11 @@ function normalizeLayerToken(value: string): string {
   return singularize(slugify(value).replace(/-/g, ''));
 }
 
+function isTechnicalLayer(value: string): boolean {
+  const normalized = normalizeLayerToken(value);
+  return TECHNICAL_SUFFIXES.has(value.toLowerCase()) || TECHNICAL_SUFFIXES.has(normalized);
+}
+
 function splitNameTokens(value: string): string[] {
   const normalized = value
     .replace(/\.[^.]+$/u, '')
@@ -160,7 +169,65 @@ function stripTechnicalSuffix(tokens: string[], leafDir?: string): { tokens: str
   return { tokens };
 }
 
+function javaPackagePartsFromPath(filePath: string): string[] | undefined {
+  if (path.extname(filePath).toLowerCase() !== '.java') return undefined;
+
+  const directory = path.posix.dirname(filePath);
+  const parts = directory.split('/').filter(Boolean);
+  const srcIndex = parts.findIndex((part) => part === 'src');
+  if (srcIndex < 0) return undefined;
+
+  const afterSrc = parts.slice(srcIndex + 1);
+  if (afterSrc[0] === 'main' && afterSrc[1] === 'java') {
+    return afterSrc.slice(2);
+  }
+
+  if (afterSrc[0] === 'java') {
+    return afterSrc.slice(1);
+  }
+
+  return undefined;
+}
+
+function stripJavaPackageNamespace(parts: string[]): string[] {
+  if (parts.length === 0 || !JAVA_PACKAGE_ROOTS.has(parts[0]?.toLowerCase() ?? '')) {
+    return parts;
+  }
+
+  if (parts.length <= 2) {
+    return [];
+  }
+
+  // Java package roots are organization namespace, not business modules.
+  return parts.slice(2);
+}
+
+function compactJavaPathRoot(filePath: string): string | undefined {
+  const packageParts = javaPackagePartsFromPath(filePath);
+  if (!packageParts) return undefined;
+
+  const basename = path.posix.basename(filePath, path.posix.extname(filePath));
+  if (packageParts.length === 0) {
+    return `src/${basename}`;
+  }
+
+  const layerIndex = packageParts.findIndex((part) => isTechnicalLayer(part));
+  if (layerIndex > 0) {
+    return `src/${packageParts[layerIndex - 1]}`;
+  }
+
+  const businessParts = stripJavaPackageNamespace(packageParts);
+  const businessRoot = businessParts.length > 0
+    ? businessParts[businessParts.length - 1]
+    : basename;
+
+  return `src/${businessRoot}`;
+}
+
 function compactPathRoot(filePath: string): string {
+  const javaRoot = compactJavaPathRoot(filePath);
+  if (javaRoot) return javaRoot;
+
   const directory = path.posix.dirname(filePath);
   if (directory === '.') return path.posix.basename(filePath, path.posix.extname(filePath));
 
@@ -201,11 +268,20 @@ function moduleStemFromFile(file: CodeFile, symbols: CodeSymbol[]): { id: string
   ].filter((candidate): candidate is string => Boolean(candidate));
 
   for (const candidate of candidates) {
-    const stripped = stripTechnicalSuffix(splitNameTokens(candidate), leafDir);
-    if (stripped.tokens.length > 0 && stripped.tokens.length < splitNameTokens(candidate).length) {
+    const tokens = splitNameTokens(candidate);
+    const stripped = stripTechnicalSuffix(tokens, leafDir);
+    if (stripped.tokens.length > 0 && stripped.tokens.length < tokens.length) {
       return {
         id: stripped.tokens.join('-'),
         layer: stripped.layer ?? leafDir,
+        source: 'name',
+      };
+    }
+
+    if (tokens.length > 0 && isTechnicalLayer(leafDir) && !isTechnicalLayer(tokens[tokens.length - 1] ?? '')) {
+      return {
+        id: tokens.join('-'),
+        layer: leafDir,
         source: 'name',
       };
     }

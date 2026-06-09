@@ -378,7 +378,26 @@ function formatScore(score: number): string {
   return Number.isInteger(score) ? String(score) : score.toFixed(1);
 }
 
+function topMatchedTerms(context: CodeContext, limit = 12): string[] {
+  const counts = new Map<string, number>();
+  const addTerms = (terms: string[]) => {
+    for (const term of terms) {
+      counts.set(term, (counts.get(term) ?? 0) + 1);
+    }
+  };
+
+  for (const item of context.entrySymbols) addTerms(item.matchedTerms);
+  for (const item of context.relatedSymbols) addTerms(item.matchedTerms);
+  for (const item of context.relevantFiles) addTerms(item.matchedTerms);
+
+  return [...counts.entries()]
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+    .slice(0, limit)
+    .map(([term]) => term);
+}
+
 export function formatCodeContextMarkdown(context: CodeContext, requirementPath: string, indexPath: string): string {
+  const matchedTerms = topMatchedTerms(context);
   const lines: string[] = [
     '# Code Context',
     '',
@@ -392,9 +411,10 @@ export function formatCodeContextMarkdown(context: CodeContext, requirementPath:
     `Found ${context.entrySymbols.length} entry symbols and ${context.relevantFiles.length} relevant files from ${context.stats.indexedFiles} indexed files.`,
     `Parser backend: \`${context.stats.parserBackend}\` (${context.stats.treeSitterFiles} tree-sitter files, ${context.stats.regexFallbackFiles} regex fallback files).`,
     '',
-    '## Expanded Query Terms',
+    '## Query Match Signals',
     '',
-    context.expandedTerms.length > 0 ? context.expandedTerms.map((term) => `- \`${term}\``).join('\n') : '- None',
+    `- ${context.expandedTerms.length} expanded query terms were used internally for retrieval; full list is kept in \`.code-context.json\`, not repeated here to keep apply context compact.`,
+    matchedTerms.length > 0 ? `- Top matched terms: ${matchedTerms.map((term) => `\`${term}\``).join(', ')}` : '- Top matched terms: none',
     '',
     '## Relevant Files',
     '',
