@@ -121,9 +121,24 @@ type GitRepositorySetupStatus =
 type BuildVerificationSetupStatus = {
   gitRepository: GitRepositorySetupStatus;
   agents: 'created' | 'exists';
+  agentRules: AgentRulesSetupStatus;
   preCommitHook: 'created' | 'exists';
   buildCheck: 'created' | 'exists';
   hookInstall: GitHookInstallStatus;
+};
+
+type AgentRulesSetupStatus = {
+  directory: 'created' | 'exists';
+  index: 'created' | 'exists';
+  sdd: 'created' | 'exists';
+  verification: 'created' | 'exists';
+  javaSonar?: 'created' | 'exists';
+  frontendLint?: 'created' | 'exists';
+};
+
+type ProjectLanguageProfile = {
+  java: boolean;
+  frontend: boolean;
 };
 
 // -----------------------------------------------------------------------------
@@ -684,29 +699,605 @@ export class InitCommand {
 
     const content = `# AGENTS.md
 
-本项目使用 InfraSpec 来规划和实现变更。
+本项目使用 InfraSpec 进行 Spec-Driven Development。
 
-## InfraSpec 工作流
+## Always
 
-- 将 \`proposal.md\`、\`specs/\`、\`design.md\` 和 \`tasks.md\` 作为当前变更的事实来源。
-- 将 \`tasks.md\` 中的 checkbox 视为实现进度跟踪器。
+- 以 \`infraspec/changes/<change>/\` 下的 artifacts 作为当前变更事实来源。
+- 实现前读取当前 change 的 \`requirements.md\`、\`detailed-design.md\`、\`tasks.md\` 和 \`code-context.md\`。
+- 完成实现后运行 \`infraspec/build-check.sh\`，失败必须修复后重跑。
+- 不要把未验证通过的任务标记为完成。
 
-## 编辑规则
+## Load Rules On Demand
 
-- 如果这是一个空的新项目，默认将生成的应用代码和项目内配置放在 \`src/\` 目录下；只有工具链明确要求时，才放在项目根目录。
-- 完成本次变更或本次编码会话的实现后，必须执行项目标准的编译/构建校验，并确保通过后才能报告实现完成。
-- 如果编译或构建失败，必须先修复问题并重新验证通过，再更新完成状态或提交代码。
-- 本项目默认使用 \`infraspec/build-check.sh\` 作为统一的构建校验入口；如需调整，请在保留“提交前必须通过编译/构建”的前提下修改该脚本。
-- 优先遵循仓库中已有的项目规范。
+先根据当前任务、代码图谱召回文件、待修改文件类型判断需要加载哪些规则：
+
+- 涉及 InfraSpec workflow 时，读取 \`infraspec/agent-rules/sdd.md\`。
+- 涉及 Java、Spring、Maven、Gradle、\`.java\` 文件时，读取 \`infraspec/agent-rules/java-sonar.md\`。
+- 涉及 React、Vue、JavaScript、TypeScript、CSS、前端构建时，读取 \`infraspec/agent-rules/frontend-lint.md\`。
+- 执行校验、提交或标记任务完成前，读取 \`infraspec/agent-rules/verification.md\`。
+
+不要默认一次性读取所有规则文件。只加载与当前任务和受影响文件相关的规则。
 
 ## 优先级
 
+- 用户当前指令优先。
+- 更靠近被修改文件的 \`AGENTS.md\` 优先。
 - 仓库现有代码和项目约定优先。
-- 本文件只是初始模板，项目团队可以按需修改。
+- \`infraspec/agent-rules/\` 中的语言规则优先于通用建议。
+- 本文件只做入口和路由，详细规则见 \`infraspec/agent-rules/\`。
 `;
 
     await FileSystemUtils.writeFile(agentsPath, content);
     return 'created';
+  }
+
+  private async createAgentRules(projectPath: string): Promise<AgentRulesSetupStatus> {
+    const rulesDir = path.join(projectPath, OPENSPEC_DIR_NAME, 'agent-rules');
+    const directory: 'created' | 'exists' = fs.existsSync(rulesDir) ? 'exists' : 'created';
+    await FileSystemUtils.createDirectory(rulesDir);
+
+    const languageProfile = await this.detectProjectLanguageProfile(projectPath);
+    const status: AgentRulesSetupStatus = {
+      directory,
+      index: await this.writeAgentRuleFileIfMissing(
+        rulesDir,
+        'index.md',
+        this.getAgentRulesIndexTemplate(languageProfile)
+      ),
+      sdd: await this.writeAgentRuleFileIfMissing(rulesDir, 'sdd.md', this.getSddRuleTemplate()),
+      verification: await this.writeAgentRuleFileIfMissing(
+        rulesDir,
+        'verification.md',
+        this.getVerificationRuleTemplate()
+      ),
+    };
+
+    if (languageProfile.java) {
+      status.javaSonar = await this.writeAgentRuleFileIfMissing(
+        rulesDir,
+        'java-sonar.md',
+        this.getJavaSonarRuleTemplate()
+      );
+    }
+
+    if (languageProfile.frontend) {
+      status.frontendLint = await this.writeAgentRuleFileIfMissing(
+        rulesDir,
+        'frontend-lint.md',
+        this.getFrontendLintRuleTemplate()
+      );
+    }
+
+    return status;
+  }
+
+  private async writeAgentRuleFileIfMissing(
+    rulesDir: string,
+    fileName: string,
+    content: string
+  ): Promise<'created' | 'exists'> {
+    const filePath = path.join(rulesDir, fileName);
+    if (fs.existsSync(filePath)) {
+      return 'exists';
+    }
+    await FileSystemUtils.writeFile(filePath, content);
+    return 'created';
+  }
+
+  private async detectProjectLanguageProfile(projectPath: string): Promise<ProjectLanguageProfile> {
+    const java = await this.detectJavaProject(projectPath);
+    const frontend = await this.detectFrontendProject(projectPath);
+    return { java, frontend };
+  }
+
+  private async detectJavaProject(projectPath: string): Promise<boolean> {
+    const javaMarkers = [
+      'pom.xml',
+      'build.gradle',
+      'build.gradle.kts',
+      'settings.gradle',
+      'settings.gradle.kts',
+      path.join('src', 'main', 'java'),
+    ];
+
+    if (javaMarkers.some((marker) => fs.existsSync(path.join(projectPath, marker)))) {
+      return true;
+    }
+
+    return this.hasFileWithExtensions(projectPath, ['.java']);
+  }
+
+  private async detectFrontendProject(projectPath: string): Promise<boolean> {
+    const frontendMarkers = [
+      'eslint.config.js',
+      'eslint.config.mjs',
+      'eslint.config.cjs',
+      'eslint.config.ts',
+      '.eslintrc',
+      '.eslintrc.js',
+      '.eslintrc.cjs',
+      '.eslintrc.json',
+      'vite.config.js',
+      'vite.config.ts',
+      'next.config.js',
+      'next.config.mjs',
+      'nuxt.config.js',
+      'nuxt.config.ts',
+    ];
+
+    if (frontendMarkers.some((marker) => fs.existsSync(path.join(projectPath, marker)))) {
+      return true;
+    }
+
+    if (await this.packageJsonLooksFrontend(projectPath)) {
+      return true;
+    }
+
+    return this.hasFileWithExtensions(projectPath, ['.tsx', '.jsx', '.vue', '.svelte']);
+  }
+
+  private async packageJsonLooksFrontend(projectPath: string): Promise<boolean> {
+    const packageJsonPath = path.join(projectPath, 'package.json');
+    if (!fs.existsSync(packageJsonPath)) {
+      return false;
+    }
+
+    try {
+      const packageJson = JSON.parse(await fs.promises.readFile(packageJsonPath, 'utf-8')) as {
+        scripts?: Record<string, string>;
+        dependencies?: Record<string, string>;
+        devDependencies?: Record<string, string>;
+      };
+      const deps = {
+        ...packageJson.dependencies,
+        ...packageJson.devDependencies,
+      };
+      const depNames = Object.keys(deps);
+      const frontendDeps = [
+        'react',
+        'react-dom',
+        'vue',
+        '@vue/runtime-dom',
+        '@angular/core',
+        'svelte',
+        'next',
+        'nuxt',
+        'vite',
+        'webpack',
+        'eslint',
+        'typescript',
+      ];
+
+      return frontendDeps.some((dep) => depNames.includes(dep))
+        || Object.keys(packageJson.scripts ?? {}).some((scriptName) => scriptName === 'lint');
+    } catch {
+      return false;
+    }
+  }
+
+  private async hasFileWithExtensions(
+    projectPath: string,
+    extensions: string[],
+    maxFiles = 2000
+  ): Promise<boolean> {
+    const ignoredDirectories = new Set([
+      '.git',
+      '.idea',
+      '.vscode',
+      'node_modules',
+      'target',
+      'dist',
+      'build',
+      'coverage',
+      OPENSPEC_DIR_NAME,
+    ]);
+    let checkedFiles = 0;
+
+    const visit = async (dir: string): Promise<boolean> => {
+      let entries: fs.Dirent[];
+      try {
+        entries = await fs.promises.readdir(dir, { withFileTypes: true });
+      } catch {
+        return false;
+      }
+
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          if (ignoredDirectories.has(entry.name)) {
+            continue;
+          }
+          if (await visit(path.join(dir, entry.name))) {
+            return true;
+          }
+          continue;
+        }
+
+        if (!entry.isFile()) {
+          continue;
+        }
+
+        checkedFiles += 1;
+        if (extensions.includes(path.extname(entry.name))) {
+          return true;
+        }
+        if (checkedFiles >= maxFiles) {
+          return false;
+        }
+      }
+
+      return false;
+    };
+
+    return visit(projectPath);
+  }
+
+  private getAgentRulesIndexTemplate(languageProfile: ProjectLanguageProfile): string {
+    const enabledRules = [
+      '- `sdd.md`: InfraSpec SDD workflow rules.',
+      '- `verification.md`: Build, test, and completion verification rules.',
+      ...(languageProfile.java ? ['- `java-sonar.md`: Java/Spring/Sonar quality rules.'] : []),
+      ...(languageProfile.frontend ? ['- `frontend-lint.md`: Frontend lint and build quality rules.'] : []),
+    ].join('\n');
+
+    return `# Agent Rules Index
+
+本目录保存 InfraSpec 的按需加载规则。根目录 \`AGENTS.md\` 只做入口和路由，不承载完整规范。
+
+## Enabled Rules
+
+${enabledRules}
+
+## Language Detection
+
+如果项目包含以下特征，按需加载对应规则：
+
+- Java: \`pom.xml\`、\`build.gradle\`、\`src/main/java/\`、\`.java\`
+- Frontend: \`package.json\`、\`eslint.config.*\`、\`.eslintrc*\`、\`.tsx\`、\`.jsx\`、\`.vue\`
+- InfraSpec: \`infraspec/changes/\`、\`requirements.md\`、\`design.md\`、\`tasks.md\`
+
+## Rule Loading
+
+- 修改 Java 代码前读取 \`java-sonar.md\`。
+- 修改前端代码前读取 \`frontend-lint.md\`。
+- 生成或执行 SDD artifact 前读取 \`sdd.md\`。
+- 完成任务、提交代码、更新 checkbox 前读取 \`verification.md\`。
+- 不要默认一次性读取所有规则文件。
+`;
+  }
+
+  private getSddRuleTemplate(): string {
+    return `# InfraSpec SDD Rules
+
+适用于 \`infra-new\`、\`infra-review\`、\`infra-apply\`、\`infra-verify\` 等 InfraSpec workflow。
+
+## Core Rules
+
+- 需求、设计、任务和代码上下文必须围绕同一个 change。
+- 生成 artifact 前先读取当前 change 已有文件，避免覆盖人工补充。
+- 生成 \`requirements.md\` 前优先参考 \`code-context.md\`。
+- 生成 \`detailed-design.md\`、\`design.md\`、\`tasks.md\` 前重新确认代码上下文是否存在。
+- \`tasks.md\` 中的 checkbox 是实现进度跟踪器，只有验证通过后才能标记完成。
+
+## Artifact Source Of Truth
+
+- 当前变更事实来源位于 \`infraspec/changes/<change>/\`。
+- 全局稳定规范位于 \`infraspec/specs/\`。
+- 代码知识图谱摘要优先读 \`code-context.md\`，不要默认读取完整 \`index.json\`。
+`;
+  }
+
+  private getVerificationRuleTemplate(): string {
+    return `# Verification Rules
+
+适用于实现完成、更新任务状态、提交代码或向用户报告完成之前。
+
+## Required
+
+- 必须运行 \`infraspec/build-check.sh\`。
+- 如果校验失败，必须修复问题并重新运行，直到通过或明确说明阻塞原因。
+- 不要在编译、构建、测试失败时把任务标记为完成。
+- 优先使用仓库已有的 Maven、Gradle、npm、pnpm、yarn、Go、Cargo 或 dotnet 校验命令。
+
+## Recommended
+
+- Java 项目如配置了 Sonar、Checkstyle、SpotBugs 或 Maven profile，优先运行项目已有质量检查。
+- 前端项目如配置了 lint、typecheck、test，优先运行对应脚本。
+- 报告结果时说明实际执行的命令和是否通过。
+`;
+  }
+
+  private getJavaSonarRuleTemplate(): string {
+    return `# Sonar Java 检查规则精简版（中文）
+
+适用于 Java、Spring、Maven、Gradle 项目。修改 \`.java\`、\`pom.xml\`、\`build.gradle\` 或相关配置时必须参考。
+
+## 阻断
+
+- 使用 \`@SessionAttributes\` 的 \`@Controller\` 类必须在其 \`SessionStatus\` 对象上调用 \`setComplete\`。
+- \`@SpringBootApplication\` 和 \`@ComponentScan\` 不应在默认包中使用。
+- \`PreparedStatement\` 和 \`ResultSet\` 方法应使用有效索引调用。
+- 持有多个锁时不应调用 \`wait\`。
+- 持有锁时应使用 \`wait(...)\`，而不是 \`Thread.sleep(...)\`。
+- 不应使用双重检查锁定。
+- 循环不应是无限循环。
+- 不应在 \`Thread\` 实例上调用 \`wait(...)\`、\`notify()\` 和 \`notifyAll()\` 方法。
+- 方法不应调用同类中 \`@Transactional\` 值不兼容的方法。
+- printf 风格的格式字符串不应在运行时导致意外行为。
+- 资源应被关闭。
+- \`HostnameVerifier.verify\` 不应总是返回 true。
+- 凭据不应硬编码。
+- 加密密钥长度不应过短。
+- 默认 EJB 拦截器应在 \`ejb-jar.xml\` 中声明。
+- 应禁用 LDAP 反序列化。
+- 不应使用 DES（数据加密标准）或 DESede（3DES）。
+- 不应重写 \`clone\`。
+- \`switch\` 语句不应包含非 case 标签。
+- 断言应完整。
+- 子类字段不应遮蔽父类字段。
+- 未来关键字不应用作名称。
+- JUnit 框架方法应正确声明。
+- JUnit 测试用例应调用父类方法。
+- 方法名和字段名不应相同，也不应仅大小写不同。
+- 方法返回值不应保持不变。
+- 布尔上下文中应使用短路逻辑。
+- 不应执行无意义的位运算。
+- \`switch\` 分支应以无条件 \`break\` 语句结束。
+- TestCase 应包含测试。
+
+## 严重
+
+- 不应调用 \`runFinalizersOnExit\`。
+- \`ScheduledThreadPoolExecutor\` 不应有 0 个核心线程。
+- 在 \`Object.finalize()\` 实现的末尾应调用 \`super.finalize()\`。
+- 依赖不应使用 \`system\` 作用域。
+- Getter 和 setter 应访问预期字段。
+- 锁应被释放。
+- \`finalize()\` 的签名应与 \`Object.finalize()\` 匹配。
+- 分母不应可能为零。
+- 不应使用 \`File.createTempFile\` 创建目录。
+- 不应使用 \`HttpServletRequest.getRequestedSessionId()\`。
+- \`SecureRandom\` 的种子不应可预测。
+- AES 加密算法应使用安全模式。
+- 加密 RSA 算法应始终使用 OAEP（最优非对称加密填充）。
+- 已定义的过滤器应被使用。
+- LDAP 连接应进行认证。
+- 持久化实体不应用作 \`@RequestMapping\` 方法的参数。
+- SMTP SSL 连接应校验服务器身份。
+- 应使用 SQL 绑定机制。
+- Web 应用不应包含 \`main\` 方法。
+- XML 转换器应加固安全配置。
+- \`Cloneable\` 类应实现 \`clone\`。
+- \`default\` 子句应位于最后。
+- \`equals\` 方法参数不应标记为 \`@Nonnull\`。
+- \`for\` 循环的增量子句应修改循环计数器。
+- \`indexOf\` 检查不应只判断正数。
+- 重写 \`Object.finalize()\` 时应保持 protected，而不是 public。
+- \`Object.wait(...)\` 和 \`Condition.await(...)\` 应在 \`while\` 循环中调用。
+- \`readResolve\` 方法应可被继承。
+- \`switch\` 语句应包含 \`default\` 子句。
+- 条件执行的单行代码应通过缩进明确表示。
+- 类名不应遮蔽接口或父类。
+- 类在初始化期间不应访问自身子类。
+- 方法的认知复杂度不应过高。
+- 条件语句应另起新行。
+- 常量名应符合命名规范。
+- 不应在接口中定义常量。
+- 不应在 finally 块中抛出异常。
+- 垃圾回收应仅由 JVM 触发。
+- 在 \`@Configuration\` 类中应使用工厂方法注入。
+- \`Serializable\` 类中的字段应为 transient 或可序列化。
+- 泛型通配符类型不应用作返回参数。
+- 不应捕获 \`IllegalMonitorStateException\`。
+- 实例方法不应写入 \`static\` 字段。
+- JUnit 断言不应在 \`run\` 方法中使用。
+- 方法重写不应改变契约。
+- 方法不应为空。
+- \`Boolean\` 方法不应返回 null。
+- 包声明应与源文件目录匹配。
+- 字符串字面量不应重复。
+- 从偏移量查找子字符串时应优先使用基于字符串偏移量的方法。
+- 不应重写 \`Object.finalize()\` 方法。
+- 应使用 try-with-resources。
+
+## 主要
+
+- 不应使用 \`.equals()\` 测试 \`Atomic\` 类的值。
+- 不应使用 \`=+\` 代替 \`+=\`。
+- 不应使用 \`BigDecimal(double)\`。
+- 不应重载 \`compareTo\`。
+- \`DefaultMessageListenerContainer\` 实例不应在重启期间丢弃消息。
+- 不应将 \`Double.longBitsToDouble\` 用于 \`int\`。
+- 重写 \`equals\` 方法时应接收 \`Object\` 参数。
+- \`Externalizable\` 类应有无参构造函数。
+
+## Agent Checklist
+
+- 是否引入资源泄露、SQL 注入、硬编码密钥、弱加密。
+- 是否违反事务、锁、并发、异常处理规则。
+- 是否违反包路径、命名、复杂度、异常处理和测试规则。
+- 是否能通过 \`infraspec/build-check.sh\`。
+- 如果项目配置了 Sonar、Checkstyle、SpotBugs、Maven profile 或 Gradle quality task，优先运行项目已有校验命令。
+`;
+  }
+
+  private getFrontendLintRuleTemplate(): string {
+    return `# Frontend Lint Rules
+
+适用于 React、Vue、JavaScript、TypeScript、CSS 和前端构建相关修改。
+
+## Required
+
+- 优先遵循项目已有 ESLint、Prettier、TypeScript、Stylelint 和组件库规范。
+- 不要绕过 lint 规则，例如随意添加 \`eslint-disable\`、\`ts-ignore\` 或宽泛的 \`any\`。
+- 修改 UI 代码后，优先运行项目已有的 \`lint\`、\`typecheck\`、\`test\`、\`build\` 脚本。
+- React/Vue 组件应保持状态边界清晰，避免把业务副作用散落在渲染逻辑里。
+- 用户可见文案、表单校验、错误状态和加载状态应保持一致。
+
+## ESLint 中文规则
+
+### Possible Errors
+
+- 禁止条件表达式中出现模棱两可的赋值操作符。
+- 禁用 console。
+- 禁止在条件中使用常量表达式。
+- 禁用 debugger。
+- 禁止 function 定义中出现重名参数。
+- 禁止对象字面量中出现重复的 key。
+- 禁止出现重复的 case 标签。
+- 禁止出现空语句块。
+- 禁止对 catch 子句的参数重新赋值。
+- 禁止不必要的布尔转换。
+- 禁止不必要的括号。
+- 禁止不必要的分号。
+- 禁止对 function 声明重新赋值。
+- 禁止在嵌套的块中出现变量声明或 function 声明。
+- 禁止在字符串和注释之外不规则的空白。
+- 禁止把全局对象作为函数调用。
+- 禁用稀疏数组。
+- 禁止直接使用 Object.prototypes 的内置属性。
+- 禁止出现令人困惑的多行表达式。
+- 禁止在 return、throw、continue 和 break 语句之后出现不可达代码。
+- 要求使用 isNaN() 检查 NaN。
+- 强制 typeof 表达式与有效的字符串进行比较。
+
+### Best Practices
+
+- 强制数组方法的回调函数中有 return 语句。
+- 强制把变量的使用限制在其定义的作用域范围内。
+- 指定程序中允许的最大环路复杂度。
+- 要求 return 语句要么总是指定返回的值，要么不指定。
+- 强制所有控制语句使用一致的括号风格。
+- 要求 switch 语句中有 default 分支。
+- 强制在点号之前和之后一致的换行。
+- 强制在任何允许的时候使用点号。
+- 要求使用 === 和 !==。
+- 要求 for-in 循环中有一个 if 语句。
+- 禁用 alert、confirm 和 prompt。
+- 不允许在 case 子句中使用词法声明。
+- 禁止 if 语句中有 return 之后有 else。
+- 禁止出现空函数。
+- 禁止在没有类型检查操作符的情况下与 null 进行比较。
+- 禁用 eval()。
+- 禁止不必要的 .bind() 调用。
+- 禁止 case 语句落空。
+- 禁止数字字面量中使用前导和末尾小数点。
+- 禁止使用短符号进行类型转换。
+- 禁止在全局范围内使用 var 和命名的 function 声明。
+- 禁止 this 关键字出现在类和类对象之外。
+- 禁用不必要的嵌套块。
+- 禁止在循环中出现 function 声明和表达式。
+- 禁用魔术数字。
+- 禁止使用多个空格。
+- 禁止使用多行字符串。
+- 禁止在非赋值或条件语句中使用 new 操作符。
+- 禁止对 Function 对象使用 new 操作符。
+- 禁止对 String、Number 和 Boolean 使用 new 操作符。
+- 不允许对 function 的参数进行重新赋值。
+- 禁止使用 var 多次声明同一变量。
+- 禁止在 return 语句中使用赋值语句。
+- 禁止使用 javascript: url。
+- 禁止自我赋值。
+- 禁止自身比较。
+- 禁用逗号操作符。
+- 禁用一成不变的循环条件。
+- 禁止出现未使用过的表达式。
+- 禁止不必要的 .call() 和 .apply()。
+- 禁止不必要的字符串字面量或模板字面量的连接。
+- 要求所有的 var 声明出现在它们所在的作用域顶部。
+
+### Strict Mode
+
+- 要求或禁止使用严格模式指令。
+
+### Variables
+
+- 要求或禁止 var 声明中的初始化。
+- 不允许 catch 子句的参数与外层作用域中的变量同名。
+- 禁用特定的全局变量。
+- 禁止 var 声明与外层作用域的变量同名。
+- 禁用未声明的变量，除非它们在 global 注释中被提到。
+- 禁止将变量初始化为 undefined。
+- 禁止出现未使用过的变量。
+- 不允许在变量定义之前使用它们。
+
+### Node.js / CommonJS
+
+- 要求 require() 出现在顶层模块作用域中。
+- 要求回调函数中有容错处理。
+- 禁止混合常规 var 声明和 require 调用。
+- 禁止调用 require 时使用 new 操作符。
+- 禁止对 dirname 和 filename 进行字符串连接。
+- 禁用指定的通过 require 加载的模块。
+
+### Style Guide
+
+- 强制数组方括号中使用一致的空格。
+- 强制在单行代码块中使用一致的空格。
+- 强制在代码块中使用一致的大括号风格。
+- 强制使用骆驼拼写法命名约定。
+- 强制在逗号前后使用一致的空格。
+- 强制使用一致的逗号风格。
+- 强制在计算的属性的方括号中使用一致的空格。
+- 强制文件末尾至少保留一行空行。
+- 强制使用命名的 function 表达式。
+- 强制一致地使用函数声明或函数表达式。
+- 强制使用一致的缩进。
+- 强制在 JSX 属性中一致地使用双引号或单引号。
+- 强制在对象字面量的属性中键和值之间使用一致的间距。
+- 强制在关键字前后使用一致的空格。
+- 强制使用一致的换行风格。
+- 要求在注释周围有空行。
+- 强制可嵌套的块的最大深度。
+- 强制一行的最大长度。
+- 强制最大行数。
+- 强制回调函数最大嵌套深度。
+- 强制 function 定义中最多允许的参数数量。
+- 强制 function 块最多允许的语句数量。
+- 强制每一行中所允许的最大语句数量。
+- 要求构造函数首字母大写。
+- 要求调用无参构造函数时有圆括号。
+- 要求或禁止 var 声明语句后有一行空行。
+- 要求 return 语句之前有一空行。
+- 要求方法链中每个调用都有一个换行符。
+- 禁止使用 Array 构造函数。
+- 禁用 continue 语句。
+- 禁止在代码行后使用内联注释。
+- 禁止 if 作为唯一的语句出现在 else 语句中。
+- 不允许空格和 tab 混合缩进。
+- 不允许多个空行。
+- 不允许否定的表达式。
+- 禁止使用一元操作符 ++ 和 --。
+- 禁止 function 标识符和括号之间出现空格。
+- 禁用行尾空格。
+- 禁止属性前有空白。
+- 强制花括号内换行符的一致性。
+- 强制在花括号中使用一致的空格。
+- 强制将对象的属性放在不同的行上。
+- 强制函数中的变量要么一起声明要么分开声明。
+- 要求或禁止在 var 声明周围换行。
+- 要求或禁止在可能的情况下使用简化的赋值操作符。
+- 强制操作符使用一致的换行符。
+- 要求对象字面量属性名称用引号括起来。
+- 强制使用一致的反勾号、双引号或单引号。
+- 要求使用 JSDoc 注释。
+- 要求或禁止使用分号而不是 ASI。
+- 强制分号之前和之后使用一致的空格。
+- 要求同一个声明块中的变量按顺序排列。
+- 强制在块之前使用一致的空格。
+- 强制在 function 的左括号之前使用一致的空格。
+- 强制在圆括号内使用一致的空格。
+- 要求操作符周围有空格。
+- 强制在一元操作符前后使用一致的空格。
+- 强制在注释中 // 或 /* 使用一致的空格。
+
+## Agent Checklist
+
+- 是否符合项目既有组件、路由、状态管理和请求封装模式。
+- 是否引入未处理的异步错误、内存泄漏或重复请求。
+- 是否影响移动端、可访问性、键盘操作或国际化。
+- 是否能通过 \`infraspec/build-check.sh\` 和项目已有前端质量脚本。
+`;
   }
 
   private async setupBuildVerification(
@@ -714,11 +1305,12 @@ export class InitCommand {
     gitRepository: GitRepositorySetupStatus
   ): Promise<BuildVerificationSetupStatus> {
     const agents = await this.createAgentsFile(projectPath);
+    const agentRules = await this.createAgentRules(projectPath);
     const preCommitHook = await this.createPreCommitHook(projectPath);
     const buildCheck = await this.createBuildCheckScript(projectPath);
     const hookInstall = await this.installProjectGitHook(projectPath);
 
-    return { gitRepository, agents, preCommitHook, buildCheck, hookInstall };
+    return { gitRepository, agents, agentRules, preCommitHook, buildCheck, hookInstall };
   }
 
   private hasGitMetadata(projectPath: string): boolean {
@@ -1096,6 +1688,12 @@ exit 1
       console.log('AGENTS.md: created at project root');
     } else {
       console.log(chalk.dim('AGENTS.md: exists (skipped)'));
+    }
+
+    if (buildVerificationStatus.agentRules.directory === 'created') {
+      console.log(`Agent rules: ${OPENSPEC_DIR_NAME}/agent-rules created`);
+    } else {
+      console.log(chalk.dim(`Agent rules: ${OPENSPEC_DIR_NAME}/agent-rules exists`));
     }
 
     if (buildVerificationStatus.gitRepository === 'initialized') {
