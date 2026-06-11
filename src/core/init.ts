@@ -130,6 +130,7 @@ type BuildVerificationSetupStatus = {
 type AgentRulesSetupStatus = {
   directory: 'created' | 'exists';
   index: 'created' | 'exists';
+  codingPrinciples: 'created' | 'exists';
   sdd: 'created' | 'exists';
   verification: 'created' | 'exists';
   javaSonar?: 'created' | 'exists';
@@ -703,8 +704,9 @@ export class InitCommand {
 
 ## Always
 
-- 以 \`infraspec/changes/<change>/\` 下的 artifacts 作为当前变更事实来源。
-- 实现前读取当前 change 的 \`requirements.md\`、\`detailed-design.md\`、\`tasks.md\` 和 \`code-context.md\`。
+- 先理解任务、说清假设、暴露不确定性。
+- 只做当前任务必须的最小修改。
+- 匹配仓库现有风格，不顺手重构无关代码。
 - 完成实现后运行 \`infraspec/build-check.sh\`，失败必须修复后重跑。
 - 不要把未验证通过的任务标记为完成。
 
@@ -712,6 +714,7 @@ export class InitCommand {
 
 先根据当前任务、代码图谱召回文件、待修改文件类型判断需要加载哪些规则：
 
+- 编码、修 bug、重构前，读取 \`infraspec/agent-rules/coding-principles.md\`。
 - 涉及 InfraSpec workflow 时，读取 \`infraspec/agent-rules/sdd.md\`。
 - 涉及 Java、Spring、Maven、Gradle、\`.java\` 文件时，读取 \`infraspec/agent-rules/java-sonar.md\`。
 - 涉及 React、Vue、JavaScript、TypeScript、CSS、前端构建时，读取 \`infraspec/agent-rules/frontend-lint.md\`。
@@ -724,7 +727,7 @@ export class InitCommand {
 - 用户当前指令优先。
 - 更靠近被修改文件的 \`AGENTS.md\` 优先。
 - 仓库现有代码和项目约定优先。
-- \`infraspec/agent-rules/\` 中的语言规则优先于通用建议。
+- \`infraspec/agent-rules/\` 中的专项规则优先于通用建议。
 - 本文件只做入口和路由，详细规则见 \`infraspec/agent-rules/\`。
 `;
 
@@ -744,6 +747,11 @@ export class InitCommand {
         rulesDir,
         'index.md',
         this.getAgentRulesIndexTemplate(languageProfile)
+      ),
+      codingPrinciples: await this.writeAgentRuleFileIfMissing(
+        rulesDir,
+        'coding-principles.md',
+        this.getCodingPrinciplesRuleTemplate()
       ),
       sdd: await this.writeAgentRuleFileIfMissing(rulesDir, 'sdd.md', this.getSddRuleTemplate()),
       verification: await this.writeAgentRuleFileIfMissing(
@@ -934,6 +942,7 @@ export class InitCommand {
 
   private getAgentRulesIndexTemplate(languageProfile: ProjectLanguageProfile): string {
     const enabledRules = [
+      '- `coding-principles.md`: General coding principles for thinking, simplicity, surgical edits, and verification.',
       '- `sdd.md`: InfraSpec SDD workflow rules.',
       '- `verification.md`: Build, test, and completion verification rules.',
       ...(languageProfile.java ? ['- `java-sonar.md`: Java/Spring/Sonar quality rules.'] : []),
@@ -958,11 +967,55 @@ ${enabledRules}
 
 ## Rule Loading
 
+- 编码、修 bug、重构前读取 \`coding-principles.md\`。
 - 修改 Java 代码前读取 \`java-sonar.md\`。
 - 修改前端代码前读取 \`frontend-lint.md\`。
 - 生成或执行 SDD artifact 前读取 \`sdd.md\`。
 - 完成任务、提交代码、更新 checkbox 前读取 \`verification.md\`。
 - 不要默认一次性读取所有规则文件。
+`;
+  }
+
+  private getCodingPrinciplesRuleTemplate(): string {
+    return `# Coding Principles
+
+## 1. 编码前先思考
+
+不要假设。不要隐藏困惑。把权衡摆出来。
+
+实现之前：
+
+- 明确说出你的假设。如果不确定，就问。
+- 如果存在多种理解方式，列出来。
+- 如果有更简单的方案，说出来。
+- 如果有什么不清楚，停下来。说明哪里困惑。
+
+## 2. 简单优先
+
+能解决问题的最少代码。不要投机性功能。
+
+- 不要加没被要求的功能。
+- 单次使用的代码不要搞抽象。
+- 不要加没被要求的“灵活性”。
+- 不要为不可能的场景写错误处理。
+- 如果 200 行能缩成 50 行，就重写。
+
+## 3. 外科手术式修改
+
+只改必须改的。只清理自己弄乱的。
+
+- 不要“改进”相邻的代码或格式。
+- 不要重构没坏的东西。
+- 匹配现有风格，即使你不喜欢。
+- 如果发现死代码，提一句，但别删。
+
+## 4. 目标驱动执行
+
+定义成功标准。循环直到验证通过。
+
+- “加个验证”意味着写测试，然后让测试通过。
+- “修这个 bug”意味着用测试复现，然后修复。
+- “重构 X”意味着确保重构前后测试都通过。
 `;
   }
 
