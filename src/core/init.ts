@@ -1437,7 +1437,7 @@ set -eu
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 PROJECT_ROOT="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
 
-exec "$PROJECT_ROOT/${OPENSPEC_DIR_NAME}/build-check.sh"
+INFRASPEC_BUILD_CHECK_ALLOW_MISSING_TOOLS=1 exec "$PROJECT_ROOT/${OPENSPEC_DIR_NAME}/build-check.sh"
 `;
 
     await FileSystemUtils.writeFile(hookPath, content);
@@ -1462,6 +1462,29 @@ has_command() {
   command -v "$1" >/dev/null 2>&1
 }
 
+allow_missing_tools() {
+  case "\${INFRASPEC_BUILD_CHECK_ALLOW_MISSING_TOOLS:-0}" in
+    1|true|TRUE|yes|YES)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+missing_tool() {
+  reason="$1"
+  if allow_missing_tools; then
+    echo "Build verification skipped: $reason" >&2
+    echo "Install the required build tool or run ${OPENSPEC_DIR_NAME}/build-check.sh from a configured shell before pushing." >&2
+    exit 0
+  fi
+
+  echo "Build verification failed: $reason" >&2
+  exit 1
+}
+
 run_cmd() {
   echo "Running build command: $*"
   "$@"
@@ -1483,8 +1506,7 @@ if [ -f "$PROJECT_ROOT/pom.xml" ]; then
     run_cmd mvn -q -DskipTests compile
     exit 0
   fi
-  echo "Build verification failed: Maven project detected but mvn/mvnw is unavailable." >&2
-  exit 1
+  missing_tool "Maven project detected but mvn/mvnw is unavailable."
 fi
 
 if [ -f "$PROJECT_ROOT/build.gradle" ] || [ -f "$PROJECT_ROOT/build.gradle.kts" ] || [ -f "$PROJECT_ROOT/settings.gradle" ] || [ -f "$PROJECT_ROOT/settings.gradle.kts" ]; then
@@ -1493,39 +1515,34 @@ if [ -f "$PROJECT_ROOT/build.gradle" ] || [ -f "$PROJECT_ROOT/build.gradle.kts" 
     run_cmd gradle classes
     exit 0
   fi
-  echo "Build verification failed: Gradle project detected but gradle/gradlew is unavailable." >&2
-  exit 1
+  missing_tool "Gradle project detected but gradle/gradlew is unavailable."
 fi
 
 if [ -f "$PROJECT_ROOT/package.json" ]; then
   cd "$PROJECT_ROOT"
   if [ -f "$PROJECT_ROOT/pnpm-lock.yaml" ]; then
     if ! has_command pnpm; then
-      echo "Build verification failed: pnpm-lock.yaml detected but pnpm is unavailable." >&2
-      exit 1
+      missing_tool "pnpm-lock.yaml detected but pnpm is unavailable."
     fi
     run_cmd pnpm run build
     exit 0
   fi
   if [ -f "$PROJECT_ROOT/bun.lockb" ] || [ -f "$PROJECT_ROOT/bun.lock" ]; then
     if ! has_command bun; then
-      echo "Build verification failed: Bun lockfile detected but bun is unavailable." >&2
-      exit 1
+      missing_tool "Bun lockfile detected but bun is unavailable."
     fi
     run_cmd bun run build
     exit 0
   fi
   if [ -f "$PROJECT_ROOT/yarn.lock" ]; then
     if ! has_command yarn; then
-      echo "Build verification failed: yarn.lock detected but yarn is unavailable." >&2
-      exit 1
+      missing_tool "yarn.lock detected but yarn is unavailable."
     fi
     run_cmd yarn build
     exit 0
   fi
   if ! has_command npm; then
-    echo "Build verification failed: package.json detected but npm is unavailable." >&2
-    exit 1
+    missing_tool "package.json detected but npm is unavailable."
   fi
   run_cmd npm run build
   exit 0
@@ -1534,8 +1551,7 @@ fi
 if [ -f "$PROJECT_ROOT/go.mod" ]; then
   cd "$PROJECT_ROOT"
   if ! has_command go; then
-    echo "Build verification failed: go.mod detected but Go is unavailable." >&2
-    exit 1
+    missing_tool "go.mod detected but Go is unavailable."
   fi
   run_cmd go build ./...
   exit 0
@@ -1544,8 +1560,7 @@ fi
 if [ -f "$PROJECT_ROOT/Cargo.toml" ]; then
   cd "$PROJECT_ROOT"
   if ! has_command cargo; then
-    echo "Build verification failed: Cargo.toml detected but cargo is unavailable." >&2
-    exit 1
+    missing_tool "Cargo.toml detected but cargo is unavailable."
   fi
   run_cmd cargo check
   exit 0
@@ -1554,10 +1569,15 @@ fi
 if find "$PROJECT_ROOT" -maxdepth 1 \\( -name '*.sln' -o -name '*.csproj' \\) | grep -q .; then
   cd "$PROJECT_ROOT"
   if ! has_command dotnet; then
-    echo "Build verification failed: .NET project detected but dotnet is unavailable." >&2
-    exit 1
+    missing_tool ".NET project detected but dotnet is unavailable."
   fi
   run_cmd dotnet build
+  exit 0
+fi
+
+if allow_missing_tools; then
+  echo "Build verification skipped: unable to detect a supported build command automatically." >&2
+  echo "Customize ${OPENSPEC_DIR_NAME}/build-check.sh to match your project's real build/compile command." >&2
   exit 0
 fi
 
