@@ -32,7 +32,9 @@ When ready to implement, run /infra:apply
 
    From their description, derive a kebab-case name (e.g., "add user authentication" → \`add-user-auth\`).
 
-   **IMPORTANT**: Do NOT proceed without understanding what the user wants to build.
+   If the user provides only a change name and no requirement description can be inferred from the conversation, ask them to describe the change before continuing. A name alone is not sufficient input for code graph analysis.
+
+   **IMPORTANT**: Do NOT proceed without both a change name and enough requirement content to understand what the user wants to build.
 
 2. **Create the change directory**
    \`\`\`bash
@@ -40,7 +42,34 @@ When ready to implement, run /infra:apply
    \`\`\`
    This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\` with \`.infraspec.yaml\`.
 
-3. **Get the artifact build order**
+3. **Save the original requirement description**
+
+   Save the user's original requirement input to:
+   \`infraspec/changes/<name>/requirement-description.md\`
+
+   Preserve the user's original meaning and detail. Do not rewrite it into proposal format yet; this file is the stable query source for code graph analysis and later workflow refreshes.
+
+4. **Generate and read code graph context**
+
+   This is an internal workflow step. Run it automatically; do not ask the user to run it:
+
+   \`\`\`bash
+   infraspec code analyze --change "<name>" --json
+   \`\`\`
+
+   The command reads \`requirement-description.md\` and generates:
+   - \`infraspec/changes/<name>/code-context.md\`: compact code context for people and agents
+   - \`infraspec/changes/<name>/.code-context.json\`: structured analysis details
+
+   Read \`code-context.md\` before creating artifacts. Use it as code-fact context for existing modules, entry symbols, related files, dependencies, and potential impact.
+
+   If code analysis fails, do not block proposal generation:
+   - If an existing \`code-context.md\` is present, read it and continue.
+   - If it is missing, continue with the requirement and artifact dependencies, and clearly mark unsupported code facts as assumptions or items to confirm.
+
+   Do not read \`infraspec/.code-graph/index.json\` or \`.code-context.json\` by default; use the compact \`code-context.md\`.
+
+5. **Get the artifact build order**
    \`\`\`bash
    infraspec status --change "<name>" --json
    \`\`\`
@@ -48,7 +77,7 @@ When ready to implement, run /infra:apply
    - \`applyRequires\`: array of artifact IDs needed before implementation (e.g., \`["tasks"]\`)
    - \`artifacts\`: list of all artifacts with their status and dependencies
 
-4. **Create artifacts in sequence until apply-ready**
+6. **Create artifacts in sequence until apply-ready**
 
    Use the **TodoWrite tool** to track progress through the artifacts.
 
@@ -67,8 +96,10 @@ When ready to implement, run /infra:apply
         - \`outputPath\`: Where to write the artifact
         - \`dependencies\`: Completed artifacts to read for context
       - Read any completed dependency files for context
+      - Read \`code-context.md\` as the code-fact context when it is available
       - Create the artifact file using \`template\` as the structure
       - Apply \`context\` and \`rules\` as constraints - but do NOT copy them into the file
+      - Ground code-related claims in \`code-context.md\`; mark anything it cannot establish as an assumption or item to confirm
       - Show brief progress: "Created <artifact-id>"
 
    b. **Continue until all \`applyRequires\` artifacts are complete**
@@ -80,7 +111,7 @@ When ready to implement, run /infra:apply
       - Use **AskUserQuestion tool** to clarify
       - Then continue with creation
 
-5. **Show final status**
+7. **Show final status**
    \`\`\`bash
    infraspec status --change "<name>"
    \`\`\`
@@ -98,6 +129,8 @@ After completing all artifacts, summarize:
 - Follow the \`instruction\` field from the InfraSpec CLI (\`infraspec instructions\`) for each artifact type
 - The schema defines what each artifact should contain - follow it
 - Read dependency artifacts for context before creating new ones
+- Read \`code-context.md\` before artifact creation and use it as the source for code facts
+- For \`proposal.md\`, use code context to support scope and impact; for \`design.md\`, use entry symbols, related files, and dependencies; for \`tasks.md\`, map work to likely files, symbols, and verification points
 - Use \`template\` as the structure for your output file - fill in its sections
 - **IMPORTANT**: \`context\` and \`rules\` are constraints for YOU, not content for the file
   - Do NOT copy \`<context>\`, \`<rules>\`, \`<project_context>\` blocks into the artifact
@@ -105,6 +138,8 @@ After completing all artifacts, summarize:
 
 **Guardrails**
 - Create ALL artifacts needed for implementation (as defined by schema's \`apply.requires\`)
+- Always preserve the original requirement in \`requirement-description.md\` before running code analysis
+- Attempt code graph analysis before creating artifacts, but do not block the workflow if it is unavailable
 - Always read dependency artifacts before creating a new one
 - If context is critically unclear, ask the user - but prefer making reasonable decisions to keep momentum
 - If a change with that name already exists, ask if user wants to continue it or create a new one
@@ -142,7 +177,9 @@ When ready to implement, run /infra:apply
 
    From their description, derive a kebab-case name (e.g., "add user authentication" → \`add-user-auth\`).
 
-   **IMPORTANT**: Do NOT proceed without understanding what the user wants to build.
+   If the user provides only a change name and no requirement description can be inferred from the conversation, ask them to describe the change before continuing. A name alone is not sufficient input for code graph analysis.
+
+   **IMPORTANT**: Do NOT proceed without both a change name and enough requirement content to understand what the user wants to build.
 
 2. **Create the change directory**
    \`\`\`bash
@@ -150,7 +187,34 @@ When ready to implement, run /infra:apply
    \`\`\`
    This creates a scaffolded change in the InfraSpec workspace at \`infraspec/changes/<name>/\` with \`.infraspec.yaml\`.
 
-3. **Get the artifact build order**
+3. **Save the original requirement description**
+
+   Save the user's original requirement input to:
+   \`infraspec/changes/<name>/requirement-description.md\`
+
+   Preserve the user's original meaning and detail. Do not rewrite it into proposal format yet; this file is the stable query source for code graph analysis and later workflow refreshes.
+
+4. **Generate and read code graph context**
+
+   This is an internal workflow step. Run it automatically; do not ask the user to run it:
+
+   \`\`\`bash
+   infraspec code analyze --change "<name>" --json
+   \`\`\`
+
+   The command reads \`requirement-description.md\` and generates:
+   - \`infraspec/changes/<name>/code-context.md\`: compact code context for people and agents
+   - \`infraspec/changes/<name>/.code-context.json\`: structured analysis details
+
+   Read \`code-context.md\` before creating artifacts. Use it as code-fact context for existing modules, entry symbols, related files, dependencies, and potential impact.
+
+   If code analysis fails, do not block proposal generation:
+   - If an existing \`code-context.md\` is present, read it and continue.
+   - If it is missing, continue with the requirement and artifact dependencies, and clearly mark unsupported code facts as assumptions or items to confirm.
+
+   Do not read \`infraspec/.code-graph/index.json\` or \`.code-context.json\` by default; use the compact \`code-context.md\`.
+
+5. **Get the artifact build order**
    \`\`\`bash
    infraspec status --change "<name>" --json
    \`\`\`
@@ -158,7 +222,7 @@ When ready to implement, run /infra:apply
    - \`applyRequires\`: array of artifact IDs needed before implementation (e.g., \`["tasks"]\`)
    - \`artifacts\`: list of all artifacts with their status and dependencies
 
-4. **Create artifacts in sequence until apply-ready**
+6. **Create artifacts in sequence until apply-ready**
 
    Use the **TodoWrite tool** to track progress through the artifacts.
 
@@ -177,8 +241,10 @@ When ready to implement, run /infra:apply
         - \`outputPath\`: Where to write the artifact
         - \`dependencies\`: Completed artifacts to read for context
       - Read any completed dependency files for context
+      - Read \`code-context.md\` as the code-fact context when it is available
       - Create the artifact file using \`template\` as the structure
       - Apply \`context\` and \`rules\` as constraints - but do NOT copy them into the file
+      - Ground code-related claims in \`code-context.md\`; mark anything it cannot establish as an assumption or item to confirm
       - Show brief progress: "Created <artifact-id>"
 
    b. **Continue until all \`applyRequires\` artifacts are complete**
@@ -190,7 +256,7 @@ When ready to implement, run /infra:apply
       - Use **AskUserQuestion tool** to clarify
       - Then continue with creation
 
-5. **Show final status**
+7. **Show final status**
    \`\`\`bash
    infraspec status --change "<name>"
    \`\`\`
@@ -208,6 +274,8 @@ After completing all artifacts, summarize:
 - Follow the \`instruction\` field from the InfraSpec CLI (\`infraspec instructions\`) for each artifact type
 - The schema defines what each artifact should contain - follow it
 - Read dependency artifacts for context before creating new ones
+- Read \`code-context.md\` before artifact creation and use it as the source for code facts
+- For \`proposal.md\`, use code context to support scope and impact; for \`design.md\`, use entry symbols, related files, and dependencies; for \`tasks.md\`, map work to likely files, symbols, and verification points
 - Use \`template\` as the structure for your output file - fill in its sections
 - **IMPORTANT**: \`context\` and \`rules\` are constraints for YOU, not content for the file
   - Do NOT copy \`<context>\`, \`<rules>\`, \`<project_context>\` blocks into the artifact
@@ -215,6 +283,8 @@ After completing all artifacts, summarize:
 
 **Guardrails**
 - Create ALL artifacts needed for implementation (as defined by schema's \`apply.requires\`)
+- Always preserve the original requirement in \`requirement-description.md\` before running code analysis
+- Attempt code graph analysis before creating artifacts, but do not block the workflow if it is unavailable
 - Always read dependency artifacts before creating a new one
 - If context is critically unclear, ask the user - but prefer making reasonable decisions to keep momentum
 - If a change with that name already exists, ask if user wants to continue it or create a new one
