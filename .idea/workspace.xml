@@ -4,30 +4,14 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="code graph">
+    <list default="true" id="3b912ffe-4d4a-43e1-b2b2-e69bc04922c8" name="Changes" comment="add codegraph to propose.ts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/code.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/code.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/infra-code/analyze.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/infra-code/analyze.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/infra-code/indexer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/infra-code/indexer.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/infra-code/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/infra-code/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/init.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/init.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/profile-sync-drift.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/profile-sync-drift.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/profiles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/profiles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/shared/skill-generation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/shared/tool-detection.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/shared/tool-detection.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/templates/skill-templates.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/templates/skill-templates.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/update.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/update.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/commands/config-profile.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/commands/config-profile.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/commands/config.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/commands/config.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/templates/workflows/new-change.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test/core/infra-code/analyze.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/infra-code/analyze.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/core/init.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/init.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/profiles.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/profiles.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/core/shared/skill-generation.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/shared/skill-generation.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/core/shared/tool-detection.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/shared/tool-detection.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/core/templates/skill-templates-parity.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/templates/skill-templates-parity.test.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/core/update.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/core/update.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/utils/command-references.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/test/utils/command-references.test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,29 +38,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.GoLinterPluginOnboardingV2": "true",
-    "RunOnceActivity.GoLinterPluginStorageMigration": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "feature__treesitterwasm",
-    "go.sdk.automatically.set": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/rose/DevProjects/InfraSpec",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/Users/rose/DevProjects/InfraSpec/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.GoLinterPluginOnboardingV2&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.GoLinterPluginStorageMigration&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature__treesitterwasm&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/rose/DevProjects/InfraSpec&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/rose/DevProjects/InfraSpec/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -102,6 +86,9 @@
       <workItem from="1776081646574" duration="4803000" />
       <workItem from="1778768633304" duration="596000" />
       <workItem from="1779062303513" duration="2649000" />
+      <workItem from="1781223288234" duration="1373000" />
+      <workItem from="1784787093292" duration="7184000" />
+      <workItem from="1785572238691" duration="2694000" />
     </task>
     <task id="LOCAL-00001" summary="folder names prefixed with infra-">
       <option name="closed" value="true" />
@@ -351,7 +338,71 @@
       <option name="project" value="LOCAL" />
       <updated>1780038259281</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="code to wiki">
+      <option name="closed" value="true" />
+      <created>1780466048842</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1780466048842</updated>
+    </task>
+    <task id="LOCAL-00033" summary="code to wiki">
+      <option name="closed" value="true" />
+      <created>1780471179973</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1780471179973</updated>
+    </task>
+    <task id="LOCAL-00034" summary="code to wiki">
+      <option name="closed" value="true" />
+      <created>1780471227774</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1780471227774</updated>
+    </task>
+    <task id="LOCAL-00035" summary="read/refresh code graph before implementation">
+      <option name="closed" value="true" />
+      <created>1780986915023</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1780986915023</updated>
+    </task>
+    <task id="LOCAL-00036" summary="add sonar and eslint rules">
+      <option name="closed" value="true" />
+      <created>1780996837080</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1780996837080</updated>
+    </task>
+    <task id="LOCAL-00037" summary="add downgrade to pre commit hook">
+      <option name="closed" value="true" />
+      <created>1781141615724</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1781141615724</updated>
+    </task>
+    <task id="LOCAL-00038" summary="add karpathy rules">
+      <option name="closed" value="true" />
+      <created>1781147756238</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1781147756238</updated>
+    </task>
+    <task id="LOCAL-00039" summary="add codegraph to propose.ts">
+      <option name="closed" value="true" />
+      <created>1785737300564</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1785737300564</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -407,12 +458,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="help and init opimize" />
-    <MESSAGE value="INFRA optimize" />
-    <MESSAGE value="delete cursor and divalent folders" />
-    <MESSAGE value="delete legency spec tasks" />
-    <MESSAGE value="update docs" />
-    <MESSAGE value="update test" />
     <MESSAGE value="update org" />
     <MESSAGE value="bym-ai" />
     <MESSAGE value="1.0.0" />
@@ -432,6 +477,12 @@
     <MESSAGE value="add pre commit hook" />
     <MESSAGE value="treesitter wasm" />
     <MESSAGE value="code graph" />
-    <option name="LAST_COMMIT_MESSAGE" value="code graph" />
+    <MESSAGE value="code to wiki" />
+    <MESSAGE value="read/refresh code graph before implementation" />
+    <MESSAGE value="add sonar and eslint rules" />
+    <MESSAGE value="add downgrade to pre commit hook" />
+    <MESSAGE value="add karpathy rules" />
+    <MESSAGE value="add codegraph to propose.ts" />
+    <option name="LAST_COMMIT_MESSAGE" value="add codegraph to propose.ts" />
   </component>
 </project>

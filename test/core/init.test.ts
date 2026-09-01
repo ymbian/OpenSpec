@@ -93,8 +93,11 @@ describe('InitCommand', () => {
       expect(await fileExists(agentsPath)).toBe(true);
 
       const content = await fs.readFile(agentsPath, 'utf-8');
-      expect(content).toContain('必须执行项目标准的编译/构建校验');
+      expect(content).toContain('Load Rules On Demand');
       expect(content).toContain('infraspec/build-check.sh');
+      expect(content).toContain('infraspec/agent-rules/coding-principles.md');
+      expect(content).toContain('infraspec/agent-rules/java-sonar.md');
+      expect(content).toContain('不要默认一次性读取所有规则文件');
     });
 
     it('should include a long-term build verification rule in AGENTS.md', async () => {
@@ -105,8 +108,78 @@ describe('InitCommand', () => {
       const agentsPath = path.join(testDir, 'AGENTS.md');
       const content = await fs.readFile(agentsPath, 'utf-8');
 
-      expect(content).toContain('完成本次变更或本次编码会话的实现后，必须执行项目标准的编译/构建校验');
-      expect(content).toContain('如果编译或构建失败，必须先修复问题并重新验证通过');
+      expect(content).toContain('先理解任务、说清假设、暴露不确定性');
+      expect(content).toContain('只做当前任务必须的最小修改');
+      expect(content).toContain('完成实现后运行 `infraspec/build-check.sh`');
+      expect(content).toContain('失败必须修复后重跑');
+      expect(content).toContain('不要把未验证通过的任务标记为完成');
+    });
+
+    it('should create general agent rule files for on-demand loading', async () => {
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+
+      await initCommand.execute(testDir);
+
+      const rulesDir = path.join(testDir, 'infraspec', 'agent-rules');
+      expect(await fileExists(path.join(rulesDir, 'index.md'))).toBe(true);
+      expect(await fileExists(path.join(rulesDir, 'coding-principles.md'))).toBe(true);
+      expect(await fileExists(path.join(rulesDir, 'sdd.md'))).toBe(true);
+      expect(await fileExists(path.join(rulesDir, 'verification.md'))).toBe(true);
+      expect(await fileExists(path.join(rulesDir, 'java-sonar.md'))).toBe(false);
+      expect(await fileExists(path.join(rulesDir, 'frontend-lint.md'))).toBe(false);
+
+      const indexContent = await fs.readFile(path.join(rulesDir, 'index.md'), 'utf-8');
+      expect(indexContent).toContain('coding-principles.md');
+      expect(indexContent).toContain('不要默认一次性读取所有规则文件');
+      expect(indexContent).toContain('Language Detection');
+
+      const codingPrinciplesContent = await fs.readFile(path.join(rulesDir, 'coding-principles.md'), 'utf-8');
+      expect(codingPrinciplesContent).toContain('编码前先思考');
+      expect(codingPrinciplesContent).toContain('简单优先');
+      expect(codingPrinciplesContent).toContain('外科手术式修改');
+      expect(codingPrinciplesContent).toContain('目标驱动执行');
+    });
+
+    it('should create Java Sonar agent rules for Java projects', async () => {
+      await fs.mkdir(path.join(testDir, 'src', 'main', 'java', 'com', 'example'), { recursive: true });
+      await fs.writeFile(path.join(testDir, 'pom.xml'), '<project></project>');
+      await fs.writeFile(
+        path.join(testDir, 'src', 'main', 'java', 'com', 'example', 'OrderService.java'),
+        'package com.example; class OrderService {}'
+      );
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+
+      await initCommand.execute(testDir);
+
+      const javaRulesPath = path.join(testDir, 'infraspec', 'agent-rules', 'java-sonar.md');
+      expect(await fileExists(javaRulesPath)).toBe(true);
+
+      const content = await fs.readFile(javaRulesPath, 'utf-8');
+      expect(content).toContain('Sonar Java 检查规则精简版');
+      expect(content).toContain('应使用 SQL 绑定机制');
+      expect(content).toContain('应使用 try-with-resources');
+    });
+
+    it('should create frontend lint agent rules for frontend projects', async () => {
+      await fs.writeFile(path.join(testDir, 'package.json'), JSON.stringify({
+        scripts: { lint: 'eslint .' },
+        dependencies: { react: '^19.0.0' },
+      }));
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+
+      await initCommand.execute(testDir);
+
+      const frontendRulesPath = path.join(testDir, 'infraspec', 'agent-rules', 'frontend-lint.md');
+      expect(await fileExists(frontendRulesPath)).toBe(true);
+
+      const content = await fs.readFile(frontendRulesPath, 'utf-8');
+      expect(content).toContain('Frontend Lint Rules');
+      expect(content).toContain('ESLint 中文规则');
+      expect(content).toContain('禁止条件表达式中出现模棱两可的赋值操作符');
+      expect(content).toContain('要求使用 === 和 !==');
+      expect(content).toContain('强制在 JSX 属性中一致地使用双引号或单引号');
+      expect(content).toContain('不要绕过 lint 规则');
+      expect(content).toContain('lint');
     });
 
     it('should create build verification scripts for new projects', async () => {
@@ -456,7 +529,6 @@ describe('InitCommand', () => {
       expect(content).toMatch(/^---\n/);
       expect(content).toContain('name: infra-explore');
       expect(content).toContain('description:');
-      expect(content).toContain('license:');
       expect(content).toContain('compatibility:');
       expect(content).toContain('metadata:');
       expect(content).toMatch(/---\n\n/); // End of frontmatter
@@ -481,6 +553,9 @@ describe('InitCommand', () => {
       const content = await fs.readFile(skillFile, 'utf-8');
 
       expect(content).toContain('name: infra-propose');
+      expect(content).toContain('requirement-description.md');
+      expect(content).toContain('infraspec code analyze --change "<name>" --json');
+      expect(content).toContain('code-context.md');
     });
 
     it('should include apply-change skill instructions', async () => {
@@ -491,6 +566,28 @@ describe('InitCommand', () => {
       const content = await fs.readFile(skillFile, 'utf-8');
 
       expect(content).toContain('name: infra-apply-change');
+      expect(content).toContain('infraspec code analyze --change "<name>" --json');
+      expect(content).toContain('code-context.md');
+    });
+
+    it('should include code graph steps in generated propose and apply commands', async () => {
+      const initCommand = new InitCommand({ tools: 'claude', force: true });
+      await initCommand.execute(testDir);
+
+      const proposeCommand = await fs.readFile(
+        path.join(testDir, '.claude', 'commands', 'infra', 'propose.md'),
+        'utf-8'
+      );
+      const applyCommand = await fs.readFile(
+        path.join(testDir, '.claude', 'commands', 'infra', 'apply.md'),
+        'utf-8'
+      );
+
+      expect(proposeCommand).toContain('requirement-description.md');
+      expect(proposeCommand).toContain('infraspec code analyze --change "<name>" --json');
+      expect(proposeCommand).toContain('code-context.md');
+      expect(applyCommand).toContain('infraspec code analyze --change "<name>" --json');
+      expect(applyCommand).toContain('code-context.md');
     });
 
     it('should embed generatedBy version in skill files', async () => {

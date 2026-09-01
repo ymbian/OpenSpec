@@ -130,7 +130,7 @@ Old instructions content
       );
       expect(updatedSkill).toContain('name: infra-explore');
       expect(updatedSkill).not.toContain('Old instructions content');
-      expect(updatedSkill).toContain('license: MIT');
+      expect(updatedSkill).not.toContain('license: MIT');
 
       // Check console output
       expect(consoleSpy).toHaveBeenCalledWith(
@@ -510,7 +510,6 @@ Old instructions content
       expect(skillContent).toMatch(/^---\n/);
       expect(skillContent).toContain('name:');
       expect(skillContent).toContain('description:');
-      expect(skillContent).toContain('license:');
       expect(skillContent).toContain('compatibility:');
       expect(skillContent).toContain('metadata:');
       expect(skillContent).toContain('author:');
@@ -1001,6 +1000,7 @@ ${OPENSPEC_MARKERS.end}
       );
 
       // Create legacy openspec/AGENTS.md
+      await fs.mkdir(path.join(testDir, 'openspec'), { recursive: true });
       await fs.writeFile(
         path.join(testDir, 'openspec', 'AGENTS.md'),
         '# Old AGENTS.md content'

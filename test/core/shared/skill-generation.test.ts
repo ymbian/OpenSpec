@@ -198,7 +198,6 @@ describe('skill-generation', () => {
         name: 'test-skill',
         description: 'Test description',
         instructions: 'Test instructions',
-        license: 'MIT',
         compatibility: 'Test compatibility',
         metadata: {
           author: 'test-author',

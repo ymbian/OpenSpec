@@ -70,6 +70,9 @@ describe('infra-code analyze', () => {
 
     const markdown = await fs.readFile(contextPath, 'utf-8');
     expect(markdown).toContain('built-in tree-sitter code graph');
+    expect(markdown).toContain('## Query Match Signals');
+    expect(markdown).toContain('full list is kept in `.code-context.json`');
+    expect(markdown).not.toContain('## Expanded Query Terms');
     expect(markdown).toMatch(/loginUser|createSession|sendPhoneVerificationCode|verifyOtpLogin/);
 
     const payload = JSON.parse(await fs.readFile(contextJsonPath, 'utf-8')) as {
@@ -198,6 +201,94 @@ describe('infra-code analyze', () => {
       'OrderServiceTest',
       'GeneratedOrderService',
     ]));
+  });
+
+  it('uses Java business modules instead of package prefixes for module ids', async () => {
+    await fs.mkdir(path.join(testDir, 'src', 'main', 'java', 'com', 'acme', 'order', 'controller'), { recursive: true });
+    await fs.mkdir(path.join(testDir, 'src', 'main', 'java', 'com', 'acme', 'order', 'service'), { recursive: true });
+    await fs.mkdir(path.join(testDir, 'src', 'main', 'java', 'com', 'acme', 'payment'), { recursive: true });
+    await fs.mkdir(path.join(testDir, 'src', 'main', 'java', 'com', 'acme'), { recursive: true });
+
+    await fs.writeFile(
+      path.join(testDir, 'src', 'main', 'java', 'com', 'acme', 'order', 'controller', 'OrderController.java'),
+      [
+        'package com.acme.order.controller;',
+        '',
+        'public class OrderController {',
+        '  public String createOrder(String id) {',
+        '    return id;',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+    await fs.writeFile(
+      path.join(testDir, 'src', 'main', 'java', 'com', 'acme', 'order', 'service', 'OrderService.java'),
+      [
+        'package com.acme.order.service;',
+        '',
+        'public class OrderService {',
+        '  public String findOrder(String id) {',
+        '    return id;',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+    await fs.writeFile(
+      path.join(testDir, 'src', 'main', 'java', 'com', 'acme', 'payment', 'PaymentValidator.java'),
+      [
+        'package com.acme.payment;',
+        '',
+        'public class PaymentValidator {',
+        '  public boolean valid() {',
+        '    return true;',
+        '  }',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+    await fs.writeFile(
+      path.join(testDir, 'src', 'main', 'java', 'com', 'acme', 'RootFeature.java'),
+      [
+        'package com.acme;',
+        '',
+        'public class RootFeature {',
+        '  public void run() {}',
+        '}',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+
+    const result = await indexProjectCode({ projectRoot: testDir });
+    expect(result.status).toBe('ready');
+
+    const payload = JSON.parse(await fs.readFile(result.indexPath, 'utf-8')) as {
+      modules: Array<{
+        id: string;
+        layers: string[];
+        files: string[];
+        rootPaths: string[];
+      }>;
+    };
+    const moduleIds = payload.modules.map((module) => module.id);
+
+    expect(moduleIds).toEqual(expect.arrayContaining(['order', 'payment', 'root-feature']));
+    expect(moduleIds).not.toEqual(expect.arrayContaining(['com-acme']));
+
+    const orderModule = payload.modules.find((module) => module.id === 'order');
+    expect(orderModule?.layers).toEqual(expect.arrayContaining(['controller', 'service']));
+    expect(orderModule?.files).toEqual(expect.arrayContaining([
+      'src/main/java/com/acme/order/controller/OrderController.java',
+      'src/main/java/com/acme/order/service/OrderService.java',
+    ]));
+
+    const paymentModule = payload.modules.find((module) => module.id === 'payment');
+    expect(paymentModule?.rootPaths).toContain('src/payment');
   });
 
   it('adds GitNexus-style lightweight modules, entry points, and execution flows', async () => {
