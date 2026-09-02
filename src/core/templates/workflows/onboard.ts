@@ -491,6 +491,7 @@ This same rhythm works for any size change—a small fix or a major feature.
 | \`/infra:review\` | Review an existing change by creating the next artifact |
 | \`/infra:ff\` | Fast-forward: create all artifacts at once |
 | \`/infra:verify\` | Verify implementation matches artifacts |
+| \`/infra:ci-build\` | Trigger a remote CI pipeline build |
 
 ---
 
@@ -543,6 +544,7 @@ If the user says they just want to see the commands or skip the tutorial:
 | \`/infra:review <name>\` | Review the artifact before creating the next one |
 | \`/infra:ff <name>\` | Fast-forward: all artifacts at once |
 | \`/infra:verify <name>\` | Verify implementation |
+| \`/infra:ci-build\` | Trigger a remote CI pipeline build |
 
 Try \`/infra:propose\` to start your first change.
 \`\`\`
