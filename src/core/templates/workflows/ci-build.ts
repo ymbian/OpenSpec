@@ -11,6 +11,18 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
 **Input**: \`/infra:ci-build [changeName]\` may include an optional InfraSpec change name. If \`changeName\` is provided, use \`infraspec/changes/<changeName>/requirements-description.md\` as the primary source for the generated commit comment. If no \`changeName\` is provided, generate the commit comment from the current Git changes.
 
+**User Experience**
+- All user-facing output must be in Chinese.
+- Keep the workflow fast and compact. Do not narrate every internal command or paste raw command output when parsing succeeds.
+- Only show information that needs user action, a one-line progress update for major phases, errors, and the final result.
+- Avoid repeating the same card, branch, pipeline, build number, commit, or URL in multiple places.
+- If there is exactly one eligible Kanban card, auto-select it and show one short line. If multiple eligible Kanban cards exist, recommend the best matching card based on the current code changes before asking the user to confirm or change it.
+- If there is exactly one parsed pipeline, auto-select it and show one short line. Ask the user only when multiple pipelines exist.
+- Combine confirmations whenever possible. Before Git write commands, show one compact confirmation block with the selected card, commit message, branch, files, and commands.
+- During CI polling, poll once per minute for at most 10 minutes, show at most one short progress line, and do not print every polling attempt.
+- For successful builds, keep the final report under 8 lines unless the user asks for details.
+- For failed builds, put the key failure status and first relevant ERROR line in red using \`<span style="color:red">...</span>\`. If the renderer does not show color, also prefix the line with \`【ERROR】\`.
+
 **Important**
 - This workflow triggers a remote CI build. Do not run it unless the user asked for CI, pipeline, or remote build verification.
 - Remote CI builds the code available in the remote repository. Local changes must be committed and pushed before CI can validate them.
@@ -19,15 +31,15 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 - Before committing, show the files that will be staged and the final commit message.
 - Do not use \`git add .\`. Stage only the files the user explicitly selects and confirms.
 - The commit message must use exactly this format: \`<卡片编号> #comment <comment>\`.
-- The card number (\`卡片编号\`) must come from the backend \`body.list[*].taskKey\` field returned by \`devops kanban get-card-by-date\`, unless the command fails and the user manually provides a card number.
-- The card name shown in the commit confirmation must come from the selected card's \`taskName\` returned by \`devops kanban get-card-by-date\`. If the user manually provides a card number, ask for the card name or display \`用户手动提供\`.
+- The card number (\`卡片编号\`) must come from a Kanban card returned by \`devops kanban get-card-by-date\` whose board display is exactly \`开发板 > 开发自测-doing\`.
+- The card name shown in the commit confirmation must come from the selected card's \`taskName\` returned by \`devops kanban get-card-by-date\`. If the selected card has no \`taskName\`, display \`未返回卡片名称\`.
 - Generate the \`<comment>\` automatically, then let the user edit it before committing.
 - The generated \`<comment>\` must be one line, concise, and must not include the card number, \`#comment\`, quotes, or newlines.
 - Only install global packages after the user explicitly confirms the install command.
 - The \`name\` column returned by \`devops pipeline get-detail-by-repourl\` is the pipeline code used by later commands.
 - Treat the optional \`changeName\` input as a change name, not as a pipeline code. Pipeline code is selected from the discovered pipeline list.
 - Trigger pipeline builds with \`devops pipeline build --branch <branch> --pipeline-code <code>\`. Default \`<branch>\` to the current local branch, and let the user edit it before triggering the build.
-- The commit confirmation must be compact and direct. Start it with \`卡片名称\`, \`commit message\`, \`分支名\`, and the exact \`git commit\` command that will run.
+- The commit confirmation must be compact and direct. Start it with \`卡片名称\`, \`分支\`, \`commit message\`, and the exact \`git commit\` command that will run.
 
 **Steps**
 
@@ -107,11 +119,11 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    devops kanban get-card-by-date --start-date "$START_DATE" --end-date "$END_DATE"
    \`\`\`
 
-   Show the fixed 3-day query range to the user before presenting cards.
+   Do not show the raw query output when parsing succeeds. If no eligible card is found, include the fixed 3-day query range in the short failure message.
 
    The command output may be either raw JSON or formatted console text printed by \`console.log\`.
 
-   If the output is valid JSON, parse the JSON response and read \`body.list\`. Extract backend \`taskKey\` as the card number (\`卡片编号\`) and extract \`taskName\` as the card name (\`卡片名称\`) from each card.
+   If the output is valid JSON, parse the JSON response and read \`body.list\`. For each card, extract backend \`taskKey\` as the card number (\`卡片编号\`), \`taskName\` as the card name (\`卡片名称\`), \`description\`, \`taskGroupName\`, \`relatedFeatureKey\`, \`relatedRequirementKey\`, \`relatedFeatureTaskKey\`, \`updatedTime\`, \`boardName\`, and \`columnName\`. Compose the card's board display as \`\${boardName} > \${columnName}\`.
 
    If the output is formatted console text, parse it from the logged lines. Each card may look like:
 
@@ -119,7 +131,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    卡片编号： M10000749-9
    卡片名称： 功能-关联特性
    负责人： 王宇壮
-   看板： 当前迭代板 > 投产-doing
+   看板： 开发板 > 开发自测-doing
    任务组： 长度超长的卡片名称测试
    --------------------------------------------------------------------------------
    \`\`\`
@@ -133,10 +145,37 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    Treat the extracted value as the card number (\`卡片编号\`). Also extract optional display fields when present:
    - \`卡片名称[:：]\` as \`taskName\`
    - \`负责人[:：]\` as \`taskAssigneeName\`
-   - \`看板[:：]\` as board and column display text
+   - \`看板[:：]\` as the full board display text, for example \`开发板 > 开发自测-doing\`
    - \`任务组[:：]\` as \`taskGroupName\`
+   - \`描述[:：]\` as \`description\`
+   - \`更新时间[:：]\` as \`updatedTime\`
 
-   Present all returned cards to the user with user-facing Chinese labels. Include at least:
+   Before presenting cards to the user, filter the parsed cards. Only cards whose board display is exactly \`开发板 > 开发自测-doing\` are eligible for the commit message.
+   - For JSON output, match the composed board display \`\${boardName} > \${columnName}\`.
+   - For formatted console text, match the parsed \`看板\` value.
+   - Trim surrounding whitespace before comparing, but do not treat other columns such as \`开发自测-done\`, \`投产-doing\`, or other boards as eligible.
+
+   If exactly one eligible card remains after filtering, auto-select it and print only:
+   \`已选择开发自测卡片：<卡片编号> <卡片名称>\`
+
+   If multiple eligible cards remain, rank them by how well they match the current code changes before presenting them. Use these change signals:
+   - the optional \`changeName\` and \`infraspec/changes/<changeName>/requirements-description.md\`
+   - selected file paths
+   - \`git diff --stat\`
+   - relevant diff context
+   - the generated commit comment
+   - the current branch name
+
+   Compare those signals with card fields such as \`卡片名称\`, \`description\`, \`任务组\`, \`relatedFeatureKey\`, \`relatedRequirementKey\`, and \`relatedFeatureTaskKey\`. Prefer the eligible card with the strongest business or technical match. Do not select a card only because it appears first in the DevOps CLI output.
+
+   If one card is clearly the best match, recommend it first and show a short Chinese reason, for example:
+
+   \`\`\`text
+   推荐卡片：<卡片编号> <卡片名称>
+   匹配依据：<one short reason from requirement, changed files, diff, or branch>
+   \`\`\`
+
+   Ask the user to confirm the recommended card or choose another card only when there are multiple eligible cards. If there is no clear best match, present the eligible cards sorted by likely relevance with compact Chinese labels. Include at least:
    - 卡片编号
    - 卡片名称
    - 看板
@@ -145,8 +184,9 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    - 更新时间
    - 任务组
 
-   Ask the user to select the card number (\`卡片编号\`) to use in the commit message, and keep the selected card's \`taskName\` for the final commit confirmation display.
-   If no cards are returned or no card number can be extracted from either JSON or console text, explain the issue and ask the user to provide the card number manually.
+   In all user-facing card selection text, call the value \`卡片编号\`; do not call it \`taskKey\` or any other label.
+   Keep the selected card's \`taskName\` for the final commit confirmation display.
+   If no eligible cards are returned after filtering, tell the user: \`没有开发自测-doing中的卡片\`. Stop before generating the commit message and do not run \`git add\`, \`git commit\`, \`git push\`, or any pipeline build command.
 
    Generate the commit comment automatically:
    - If \`changeName\` was provided and \`infraspec/changes/<changeName>/requirements-description.md\` exists, read that file and summarize the original requirement into a concise commit comment.
@@ -168,14 +208,16 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
    \`\`\`markdown
    卡片名称：<taskName>
+   分支：<branch>
    commit message: <卡片编号> #comment <comment>
-   分支名：<branch>
+   待提交文件：<N> 个
 
    将执行的 git commit 命令：
    git commit -m "<卡片编号> #comment <comment>"
+   git push
    \`\`\`
 
-   Then list the exact user-selected files to stage below the block. Do not scatter the card name, commit message, branch, and commit command across separate sections.
+   Then list the exact user-selected files to stage below the block in a compact list. Do not scatter the card name, commit message, branch, and commit command across separate sections.
 
    Ask for explicit confirmation to stage only the selected files, commit, and push.
    If the user confirms, run:
@@ -227,7 +269,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    git remote -v
    \`\`\`
 
-   Ask the user which remote URL to use when multiple plausible repository URLs exist.
+   Ask the user which remote URL to use only when multiple plausible repository URLs exist. If there is a single \`origin\` URL, use it silently and mention it only in the final result or on failure.
 
 6. **Discover pipelines for the repository**
 
@@ -279,7 +321,10 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    - \`分支[:：]\` as \`branch\`
    - \`流水线类型[:：]\` as \`pipelineType\`
 
-   Present all parsed pipelines to the user. Every option label must include both \`name\` and \`env\`, because the same repository may have multiple pipelines for different environments. Include at least:
+   If exactly one pipeline is parsed, auto-select it and print only:
+   \`已选择流水线：<name>（<env>）\`
+
+   If multiple pipelines are parsed, present a compact selection list. Every option label must include both \`name\` and \`env\`, because the same repository may have multiple pipelines for different environments. Include at least:
    - id
    - name
    - pipelineAlias
@@ -287,7 +332,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    - branch
    - pipelineType
 
-   Ask the user to select which \`name\` value should be used as \`<code>\`.
+   Ask the user to select which \`name\` value should be used as \`<code>\` only when multiple pipelines are parsed.
    Use the selected \`name\`, not \`id\` or \`pipelineAlias\`, for later commands.
    If no \`name\` values can be extracted, stop and show the raw output so the user can diagnose the DevOps CLI output format.
 
@@ -295,7 +340,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
    Determine the branch to build:
    - Default to the current local branch recorded from \`git rev-parse --abbrev-ref HEAD\`.
-   - Show the default branch to the user and let them edit or replace it.
+   - Do not ask a separate branch question when the default branch is usable. Include the branch in the compact confirmation and let the user reply with a different branch there.
    - Use the confirmed branch value as \`<branch>\`.
    - If the confirmed build branch differs from the current local branch, explain that CI will build the remote code for the confirmed branch, then ask for explicit confirmation before continuing.
    - If no branch can be determined and the user does not provide one, stop before triggering the pipeline.
@@ -306,7 +351,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    devops pipeline build --branch "<branch>" --pipeline-code "<code>"
    \`\`\`
 
-   Capture and summarize the command output. If the command fails, stop and report the failure.
+   Capture and summarize the command output in one Chinese line. If the command fails, stop and report the failure.
 
    Parse the command output and extract the \`buildNumber\` returned by this build trigger command. Record it as \`triggeredBuildNumber\`.
    The output may be JSON or formatted text. If it is JSON, read the top-level \`buildNumber\` field. If it is formatted text, extract a field named \`buildNumber\`, \`Build Number\`, or \`构建编号\`.
@@ -375,13 +420,15 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    For \`错误信息\`, capture the text after the label and any following lines that belong to the failed stage detail until the next obvious section header or separator.
 
    If the detail response contains a \`buildNumber\` or \`构建版本号\` and it does not equal \`triggeredBuildNumber\`, mark the result as inconclusive and do not analyze it as the current CI result.
-   If the response says the build detail is not available yet, or the status is still running/pending, wait and rerun the same \`build-detail\` command until a terminal status is available or until a reasonable timeout is reached.
+   If the response says the build detail is not available yet, or the status is still running/pending, wait and rerun the same \`build-detail\` command until a terminal status is available or until the 10-minute timeout is reached.
 
    Use a bounded polling loop, for example:
-   - wait 30 seconds between checks
-   - stop after 20 checks or 10 minutes
+   - show one short Chinese progress line before polling starts
+   - wait 1 minute between checks
+   - stop after 10 minutes
+   - do not print each polling attempt
 
-   If the timeout is reached and the triggered build detail is still unavailable or still running, mark the result as running or inconclusive. Tell the user that the triggered build report is not available yet and ask them to check the exact pipeline detail URL:
+   If the 10-minute timeout is reached and the triggered build detail is still unavailable or still running, report the current result immediately as running or inconclusive. Tell the user that the triggered build report is not available yet and ask them to check the exact pipeline detail URL:
    - \`https://pipeline.paas.cmbchina.cn/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber>\`
 
 9. **Classify build status**
@@ -431,59 +478,40 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
 10. **Report the result**
 
-   Use this format:
+   Use this concise Chinese format:
 
    \`\`\`markdown
-   ## CI Build Report
+   ## CI构建结果
 
-   | Field | Value |
-   |-------|-------|
-   | Pipeline | <pipelineName> |
-   | Build | #<buildNumber> |
-   | Environment | <env> |
-   | Branch | <branch from CI result or confirmed build branch> |
-   | Requested Branch | <confirmed build branch> |
-   | Commit | <commitId> |
-   | Triggered Build Number | #<triggeredBuildNumber> |
-   | Pipeline Detail URL | https://pipeline.paas.cmbchina.cn/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber> |
-   | Status | <status> |
+   结论：<通过 / 失败 / 运行中 / 不确定>
+   流水线：<pipelineName or code>（<env>） | 构建：#<triggeredBuildNumber>
+   分支：<branch from CI result or confirmed build branch> | Commit：<short commitId>
+   提交：<卡片编号> <卡片名称> | 文件：<N 个文件 or not pushed by this workflow>
+   详情：https://pipeline.paas.cmbchina.cn/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber>
 
-   ### Assessment
-   <Passed, Failed, Running, or Inconclusive>
+   ### 失败原因
+   <span style="color:red">失败阶段：<first failed or abnormal stage></span>
+   <span style="color:red">【ERROR】<first relevant ERROR line or build-detail error message></span>
+   建议：<specific next check, usually pipeline detail URL or failed stage logs>
 
-   ### Submitted Code
-   - Local branch: <local branch>
-   - Requested build branch: <confirmed build branch>
-   - Pushed commit: <pushed commit id or not pushed by this workflow>
-   - 卡片编号: <卡片编号 or not used>
-   - Commit message: <commit message or not created by this workflow>
-   - Triggered buildNumber: <triggeredBuildNumber>
-
-   ### Stage Summary
-   - <stage name> (<type>): <status or not reported>
-
-   ### Failure Analysis
-   - Failed stage: <first failed or abnormal stage, or not exposed by CLI response>
-   - Failed stage build ID: <stageBuildId or not exposed by CLI response>
-   - Observed reason: <status/cancel/timeout/stage evidence from build-detail plus ERROR log context when available>
-   - Suggested next step: <specific next check, usually pipeline detail URL or failed stage logs>
-
-   ### Failure Log Context
+   ### 错误日志（截取）
    \`\`\`text
    <only the ERROR line and up to 50 lines before and 50 lines after it; omit this section when no ERROR log context is available>
    \`\`\`
 
-   ### Notes
-   - <working tree or commit mismatch notes>
+   备注：<working tree or commit mismatch notes, omit if none>
    \`\`\`
 
 **Output Rules**
-- Be explicit that this is a remote CI result.
-- If the build failed, include \`### Failure Analysis\` and explain the likely failure reason from available pipeline detail fields.
-- If the build failed and \`stageBuildId\` is available, run \`devops pipeline build-log --pipeline-code "<code>" --stage-build-id "<stageBuildId>"\` and include only the \`ERROR\` line with up to 50 surrounding lines before and after it.
-- If logs or exact failure messages are not present in the \`build-detail\` or \`build-log\` response, say so explicitly and link the pipeline detail URL.
-- If the build is still running, tell the user to rerun \`devops pipeline build-detail --pipeline-code "<code>" --pipeline-number "<triggeredBuildNumber>"\` to check again.
-- Do not claim the current local changes passed CI unless the CI commit id matches the pushed commit id and there are no remaining uncommitted changes.`;
+- 输出必须使用中文。
+- 明确这是远程 CI 结果，但不要反复解释远程 CI 的含义。
+- 成功时只输出结论、流水线/构建号、分支/Commit、提交摘要、详情链接，不输出阶段列表。
+- 失败时输出 \`### 失败原因\`，并用红色突出失败阶段和第一条相关 \`ERROR\`。
+- 如果构建失败且存在 \`stageBuildId\`，运行 \`devops pipeline build-log --pipeline-code "<code>" --stage-build-id "<stageBuildId>"\`，并且只展示 \`ERROR\` 行及其前后最多 50 行。
+- 如果 \`build-detail\` 或 \`build-log\` 没有返回日志或明确错误信息，用一句中文说明，并且只放一次流水线详情链接。
+- 如果构建还在运行，提示用户稍后重跑 \`devops pipeline build-detail --pipeline-code "<code>" --pipeline-number "<triggeredBuildNumber>"\` 查看结果。
+- 轮询构建结果时每 1 分钟检查一次，最多等待 10 分钟，不要逐次输出检查结果；超过 10 分钟仍未完成时直接报告当前结果并返回精确流水线详情链接。
+- 只有 CI 返回的 commitId 与本次推送的 commit id 一致，且本地没有剩余未提交改动时，才能说明当前改动通过 CI。`;
 
 export function getCiBuildSkillTemplate(): SkillTemplate {
   return {
@@ -498,7 +526,7 @@ export function getCiBuildSkillTemplate(): SkillTemplate {
 export function getOpsxCiBuildCommandTemplate(): CommandTemplate {
   return {
     name: 'INFRA: CI Build',
-    description: 'Commit and push code when needed, trigger a remote CI pipeline build, and inspect the latest build result',
+    description: 'Commit and push code when needed, trigger a remote CI pipeline build, and inspect the triggered build result',
     category: 'Workflow',
     tags: ['workflow', 'ci', 'pipeline', 'build'],
     content: CI_BUILD_WORKFLOW_INSTRUCTIONS,
