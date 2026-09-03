@@ -15,15 +15,19 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 - This workflow triggers a remote CI build. Do not run it unless the user asked for CI, pipeline, or remote build verification.
 - Remote CI builds the code available in the remote repository. Local changes must be committed and pushed before CI can validate them.
 - Never commit, push, install global packages, or change source files without explicit user confirmation.
+- Before running \`git add\`, list all changed and untracked files and ask the user to select the exact files to include in the CI commit.
 - Before committing, show the files that will be staged and the final commit message.
-- Do not use \`git add .\`. Stage only the files the user confirms.
-- The commit message must use exactly this format: \`<taskKey> #comment <comment>\`.
-- The \`taskKey\` must come from \`body.list[*].taskKey\` returned by \`devops kanban get-card-by-date\`, unless the command fails and the user manually provides a task key.
+- Do not use \`git add .\`. Stage only the files the user explicitly selects and confirms.
+- The commit message must use exactly this format: \`<卡片编号> #comment <comment>\`.
+- The card number (\`卡片编号\`) must come from the backend \`body.list[*].taskKey\` field returned by \`devops kanban get-card-by-date\`, unless the command fails and the user manually provides a card number.
+- The card name shown in the commit confirmation must come from the selected card's \`taskName\` returned by \`devops kanban get-card-by-date\`. If the user manually provides a card number, ask for the card name or display \`用户手动提供\`.
 - Generate the \`<comment>\` automatically, then let the user edit it before committing.
-- The generated \`<comment>\` must be one line, concise, and must not include the task key, \`#comment\`, quotes, or newlines.
+- The generated \`<comment>\` must be one line, concise, and must not include the card number, \`#comment\`, quotes, or newlines.
 - Only install global packages after the user explicitly confirms the install command.
 - The \`name\` column returned by \`devops pipeline get-detail-by-repourl\` is the pipeline code used by later commands.
 - Treat the optional \`changeName\` input as a change name, not as a pipeline code. Pipeline code is selected from the discovered pipeline list.
+- Trigger pipeline builds with \`devops pipeline build --branch <branch> --pipeline-code <code>\`. Default \`<branch>\` to the current local branch, and let the user edit it before triggering the build.
+- The commit confirmation must be compact and direct. Start it with \`卡片名称\`, \`commit message\`, \`分支名\`, and the exact \`git commit\` command that will run.
 
 **Steps**
 
@@ -89,7 +93,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    If there are uncommitted changes:
 
    1. Present the changed files to the user, grouped by status when possible.
-   2. Ask the user which files should be included in the CI commit.
+   2. Ask the user to select the exact files that should be included in the CI commit before running \`git add\`.
    3. If the user selects no files, do not commit. Ask whether to continue with the current remote repository state or stop.
    4. If the user selects files, prepare the required commit message.
 
@@ -107,7 +111,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
    The command output may be either raw JSON or formatted console text printed by \`console.log\`.
 
-   If the output is valid JSON, parse the JSON response and read \`body.list\`. Extract \`taskKey\` from each card.
+   If the output is valid JSON, parse the JSON response and read \`body.list\`. Extract backend \`taskKey\` as the card number (\`卡片编号\`) and extract \`taskName\` as the card name (\`卡片名称\`) from each card.
 
    If the output is formatted console text, parse it from the logged lines. Each card may look like:
 
@@ -126,23 +130,23 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    /卡片编号[:：]\\s*(\\S+)/
    \`\`\`
 
-   Treat the extracted value as \`taskKey\`. Also extract optional display fields when present:
+   Treat the extracted value as the card number (\`卡片编号\`). Also extract optional display fields when present:
    - \`卡片名称[:：]\` as \`taskName\`
    - \`负责人[:：]\` as \`taskAssigneeName\`
    - \`看板[:：]\` as board and column display text
    - \`任务组[:：]\` as \`taskGroupName\`
 
-   Present all returned cards to the user. Include at least:
-   - taskKey
-   - taskName
-   - boardName
-   - columnName
-   - taskAssigneeName
-   - updatedTime
-   - taskGroupName
+   Present all returned cards to the user with user-facing Chinese labels. Include at least:
+   - 卡片编号
+   - 卡片名称
+   - 看板
+   - 所在列
+   - 负责人
+   - 更新时间
+   - 任务组
 
-   Ask the user to select the \`taskKey\` to use in the commit message.
-   If no cards are returned or no \`taskKey\` can be extracted from either JSON or console text, explain the issue and ask the user to provide the task key manually.
+   Ask the user to select the card number (\`卡片编号\`) to use in the commit message, and keep the selected card's \`taskName\` for the final commit confirmation display.
+   If no cards are returned or no card number can be extracted from either JSON or console text, explain the issue and ask the user to provide the card number manually.
 
    Generate the commit comment automatically:
    - If \`changeName\` was provided and \`infraspec/changes/<changeName>/requirements-description.md\` exists, read that file and summarize the original requirement into a concise commit comment.
@@ -154,24 +158,31 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    Compose the commit message exactly as:
 
    \`\`\`text
-   \${taskKey} #comment \${comment}
+   \${cardNumber} #comment \${comment}
    \`\`\`
 
    Show the generated commit comment and full commit message to the user, then ask whether they want to edit the comment.
-   If the user edits the comment, recompose the full commit message with the same selected \`taskKey\`.
+   If the user edits the comment, recompose the full commit message with the same selected card number.
 
-   Before running any Git write command, show:
-   - files to stage
-   - selected taskKey
-   - final commit message
-   - target branch and upstream when known
+   Before running any Git write command, show a single compact commit confirmation block in this exact shape:
 
-   Ask for explicit confirmation to commit and push.
+   \`\`\`markdown
+   卡片名称：<taskName>
+   commit message: <卡片编号> #comment <comment>
+   分支名：<branch>
+
+   将执行的 git commit 命令：
+   git commit -m "<卡片编号> #comment <comment>"
+   \`\`\`
+
+   Then list the exact user-selected files to stage below the block. Do not scatter the card name, commit message, branch, and commit command across separate sections.
+
+   Ask for explicit confirmation to stage only the selected files, commit, and push.
    If the user confirms, run:
 
    \`\`\`bash
    git add -- <confirmed-files>
-   git commit -m "<taskKey> #comment <comment>"
+   git commit -m "<卡片编号> #comment <comment>"
    git push
    \`\`\`
 
@@ -182,6 +193,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    \`\`\`
 
    If \`git add\`, \`git commit\`, or \`git push\` fails, stop and report the failure. Do not trigger CI for code that failed to push.
+   Never add files that were not included in the user's selected file list.
 
    If there are no uncommitted changes, check whether local commits are ahead of the upstream branch. Use \`git status -sb\` and, when an upstream exists:
 
@@ -281,10 +293,17 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
 7. **Trigger the pipeline build**
 
+   Determine the branch to build:
+   - Default to the current local branch recorded from \`git rev-parse --abbrev-ref HEAD\`.
+   - Show the default branch to the user and let them edit or replace it.
+   - Use the confirmed branch value as \`<branch>\`.
+   - If the confirmed build branch differs from the current local branch, explain that CI will build the remote code for the confirmed branch, then ask for explicit confirmation before continuing.
+   - If no branch can be determined and the user does not provide one, stop before triggering the pipeline.
+
    Run:
 
    \`\`\`bash
-   devops pipeline build --pipeline-code "<code>"
+   devops pipeline build --branch "<branch>" --pipeline-code "<code>"
    \`\`\`
 
    Capture and summarize the command output. If the command fails, stop and report the failure.
@@ -294,19 +313,28 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
    If no \`buildNumber\` can be extracted from the build trigger output, stop and report that the workflow cannot safely identify the current CI build report. Do not fall back to the latest completed build, because it may be the previous build.
 
+   After extracting \`triggeredBuildNumber\`, construct the pipeline detail URL from the selected pipeline \`name\` value and the triggered build number:
+
+   \`\`\`text
+   https://pipeline.paas.cmbchina.cn/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber>
+   \`\`\`
+
 8. **Fetch the triggered build detail**
 
-   \`devops pipeline latest-build-detail --pipeline-code "<code>"\` returns the latest completed pipeline report. Immediately after triggering a new build, that command may still return the previous completed build.
+   Fetch the detail for the exact build triggered by this workflow. Do not use \`devops pipeline latest-build-detail\` here, because it can return a previous completed build.
 
    Run:
 
    \`\`\`bash
-   devops pipeline latest-build-detail --pipeline-code "<code>"
+   devops pipeline build-detail --pipeline-code "<code>" --pipeline-number "<triggeredBuildNumber>"
    \`\`\`
 
-   Parse the JSON response. Record:
+   The command output may be raw JSON or formatted console text printed by \`console.log\`.
+
+   If the output is valid JSON, parse the JSON response. Build fields may be in a top-level object, \`body\`, or another obvious detail object. Record:
    - id
    - pipelineName
+   - pipelineAlias
    - buildNumber
    - env
    - branch
@@ -319,18 +347,42 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    - completedTime
    - stages
 
-   If the response is not valid JSON, show the raw output and mark the CI result as unknown.
-   If the response is valid JSON, compare the returned \`buildNumber\` with \`triggeredBuildNumber\`:
-   - If they match, treat this response as the report for the build triggered by this workflow.
-   - If they do not match, do not use this response as the current CI result. Explain that the latest completed report is for a different build number and the triggered build has probably not completed yet.
-   - Wait and rerun \`devops pipeline latest-build-detail --pipeline-code "<code>"\` until the returned \`buildNumber\` equals \`triggeredBuildNumber\`, or until a reasonable timeout is reached.
+   Also parse failed stage detail fields when present. They may appear in fields such as \`failedStages\`, \`failureStage\`, \`stageDetails\`, \`stages\`, or a similar array/object. Extract:
+   - \`stageCode\`
+   - \`stageName\`
+   - \`stageBuildId\`
+   - \`stageBuildNumber\`
+   - \`status\`
+   - \`errorMessage\`
+
+   If the output is formatted console text, parse fields with patterns equivalent to:
+
+   \`\`\`text
+   /流水线名称[:：]\\s*(.+)/
+   /流水线别名[:：]\\s*(.+)/
+   /构建版本号[:：]\\s*(\\S+)/
+   /构建状态[:：]\\s*(\\S+)/
+   /Git\\s*分支[:：]\\s*(\\S+)/
+   /Commit[:：]\\s*(\\S+)/
+   /开始时间[:：]\\s*(.+)/
+   /阶段编码[:：]\\s*(.+)/
+   /阶段名称[:：]\\s*(.+)/
+   /构建步骤\\s*ID[:：]\\s*(\\S+)/
+   /错误信息[:：]\\s*(.*)/
+   \`\`\`
+
+   Treat \`构建步骤 ID\` as \`stageBuildId\`; this is the value required by \`devops pipeline build-log --stage-build-id\`.
+   For \`错误信息\`, capture the text after the label and any following lines that belong to the failed stage detail until the next obvious section header or separator.
+
+   If the detail response contains a \`buildNumber\` or \`构建版本号\` and it does not equal \`triggeredBuildNumber\`, mark the result as inconclusive and do not analyze it as the current CI result.
+   If the response says the build detail is not available yet, or the status is still running/pending, wait and rerun the same \`build-detail\` command until a terminal status is available or until a reasonable timeout is reached.
 
    Use a bounded polling loop, for example:
    - wait 30 seconds between checks
    - stop after 20 checks or 10 minutes
 
-   If the timeout is reached and the returned \`buildNumber\` still does not match \`triggeredBuildNumber\`, mark the result as running or inconclusive. Do not report the previous build result to the user. Tell the user that the triggered build report is not available yet and ask them to check the pipeline platform:
-   - https://pipeline.paas.cmbchina.cn/v2/pipeline/view
+   If the timeout is reached and the triggered build detail is still unavailable or still running, mark the result as running or inconclusive. Tell the user that the triggered build report is not available yet and ask them to check the exact pipeline detail URL:
+   - \`https://pipeline.paas.cmbchina.cn/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber>\`
 
 9. **Classify build status**
 
@@ -357,6 +409,26 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
    If the returned \`commitId\` is present and differs from the pushed commit id, mark the result as inconclusive for the current local checkout and explain the mismatch.
 
+   If the build status is failed, analyze the failure reason before reporting:
+   - Inspect the failed stage details and \`stages\` parsed from \`devops pipeline build-detail\`. Identify failed or abnormal stages, including statuses such as \`FAILED\`, \`FAILURE\`, \`ABORTED\`, \`CANCELED\`, \`CANCELLED\`, \`TIMEOUT\`, and \`TIMED_OUT\`.
+   - Identify the first failed or abnormal stage in pipeline order when possible.
+   - Include each abnormal stage's \`name\`, \`type\`, \`status\`, \`stageBuildId\`, and \`stageBuildNumber\` when available.
+   - If the top-level status is \`ABORTED\` or canceled, include \`abortedBy\`, \`cancelBy\`, \`triggerBy\`, and \`completedTime\` when available.
+   - Extract the failed stage's \`stageBuildId\`. For formatted console text, this comes from \`构建步骤 ID\`.
+   - If a failed \`stageBuildId\` is available, fetch the failed stage log:
+
+     \`\`\`bash
+     devops pipeline build-log --pipeline-code "<code>" --stage-build-id "<stageBuildId>"
+     \`\`\`
+
+   - The \`build-log\` output may be very long. Never show the full log by default.
+   - Split the log into lines and locate lines containing \`ERROR\`. Treat the match as case-sensitive unless the log clearly uses another case consistently.
+   - Show only the first relevant \`ERROR\` context by default: at most 50 lines before the \`ERROR\` line and at most 50 lines after it. Include line numbers when possible.
+   - If multiple \`ERROR\` lines are close together, merge overlapping 50-line windows. If there are many separate \`ERROR\` clusters, show the first cluster and say how many additional ERROR lines or clusters were omitted.
+   - If no \`ERROR\` line is found, do not dump the full log. Say that no \`ERROR\` line was found and fall back to the failed stage metadata and \`错误信息\` from \`build-detail\`.
+   - If the top-level status is failed but no stage carries a failed status, say that the CLI response does not expose the exact failed stage and point the user to the pipeline detail URL for logs.
+   - Do not invent log content or root causes that are not present in the \`build-detail\` or \`build-log\` response. Separate observed facts from inferred likely causes.
+
 10. **Report the result**
 
    Use this format:
@@ -369,23 +441,37 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    | Pipeline | <pipelineName> |
    | Build | #<buildNumber> |
    | Environment | <env> |
-   | Branch | <branch> |
+   | Branch | <branch from CI result or confirmed build branch> |
+   | Requested Branch | <confirmed build branch> |
    | Commit | <commitId> |
    | Triggered Build Number | #<triggeredBuildNumber> |
+   | Pipeline Detail URL | https://pipeline.paas.cmbchina.cn/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber> |
    | Status | <status> |
 
    ### Assessment
    <Passed, Failed, Running, or Inconclusive>
 
    ### Submitted Code
-   - Local branch: <branch>
+   - Local branch: <local branch>
+   - Requested build branch: <confirmed build branch>
    - Pushed commit: <pushed commit id or not pushed by this workflow>
-   - Kanban task: <taskKey or not used>
+   - 卡片编号: <卡片编号 or not used>
    - Commit message: <commit message or not created by this workflow>
    - Triggered buildNumber: <triggeredBuildNumber>
 
    ### Stage Summary
    - <stage name> (<type>): <status or not reported>
+
+   ### Failure Analysis
+   - Failed stage: <first failed or abnormal stage, or not exposed by CLI response>
+   - Failed stage build ID: <stageBuildId or not exposed by CLI response>
+   - Observed reason: <status/cancel/timeout/stage evidence from build-detail plus ERROR log context when available>
+   - Suggested next step: <specific next check, usually pipeline detail URL or failed stage logs>
+
+   ### Failure Log Context
+   \`\`\`text
+   <only the ERROR line and up to 50 lines before and 50 lines after it; omit this section when no ERROR log context is available>
+   \`\`\`
 
    ### Notes
    - <working tree or commit mismatch notes>
@@ -393,8 +479,10 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
 **Output Rules**
 - Be explicit that this is a remote CI result.
-- If the build failed, list failed or abnormal stages when available.
-- If the build is still running, tell the user which command to rerun to check again.
+- If the build failed, include \`### Failure Analysis\` and explain the likely failure reason from available pipeline detail fields.
+- If the build failed and \`stageBuildId\` is available, run \`devops pipeline build-log --pipeline-code "<code>" --stage-build-id "<stageBuildId>"\` and include only the \`ERROR\` line with up to 50 surrounding lines before and after it.
+- If logs or exact failure messages are not present in the \`build-detail\` or \`build-log\` response, say so explicitly and link the pipeline detail URL.
+- If the build is still running, tell the user to rerun \`devops pipeline build-detail --pipeline-code "<code>" --pipeline-number "<triggeredBuildNumber>"\` to check again.
 - Do not claim the current local changes passed CI unless the CI commit id matches the pushed commit id and there are no remaining uncommitted changes.`;
 
 export function getCiBuildSkillTemplate(): SkillTemplate {
