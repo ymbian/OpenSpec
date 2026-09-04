@@ -19,7 +19,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 - If there is exactly one eligible Kanban card, auto-select it and show one short line. If multiple eligible Kanban cards exist, recommend the best matching card based on the current code changes before asking the user to confirm or change it.
 - If there is exactly one parsed pipeline, auto-select it and show one short line. Ask the user only when multiple pipelines exist.
 - Combine confirmations whenever possible. Before Git write commands, show one compact confirmation block with the selected card, commit message, branch, files, and commands.
-- During CI polling, poll once per minute for at most 10 minutes, show at most one short progress line, and do not print every polling attempt.
+- During CI polling, use an exact 60-second cadence: after each non-terminal build-detail result, run \`sleep 60\` before the next build-detail request. Poll for at most 10 minutes, show at most one short progress line, and do not print every polling attempt.
 - For successful builds, keep the final report under 8 lines unless the user asks for details.
 - For failed builds, put the key failure status and first relevant ERROR line in red using \`<span style="color:red">...</span>\`. If the renderer does not show color, also prefix the line with \`【ERROR】\`.
 
@@ -38,7 +38,8 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 - Only install global packages after the user explicitly confirms the install command.
 - The \`name\` column returned by \`devops pipeline get-detail-by-repourl\` is the pipeline code used by later commands.
 - Treat the optional \`changeName\` input as a change name, not as a pipeline code. Pipeline code is selected from the discovered pipeline list.
-- Trigger pipeline builds with \`devops pipeline build --branch <branch> --pipeline-code <code>\`. Default \`<branch>\` to the current local branch, and let the user edit it before triggering the build.
+- Git commit, Git push, and CI build must all use the current local branch recorded from \`git rev-parse --abbrev-ref HEAD\`. Do not ask the user to edit or replace the branch.
+- Trigger pipeline builds with \`devops pipeline build --branch <currentLocalBranch> --pipeline-code <code>\`.
 - The commit confirmation must be compact and direct. Start it with \`卡片名称\`, \`分支\`, \`commit message\`, and the exact \`git commit\` command that will run.
 
 **Steps**
@@ -208,13 +209,13 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
    \`\`\`markdown
    卡片名称：<taskName>
-   分支：<branch>
+   分支：<currentLocalBranch>
    commit message: <卡片编号> #comment <comment>
    待提交文件：<N> 个
 
    将执行的 git commit 命令：
    git commit -m "<卡片编号> #comment <comment>"
-   git push
+   git push origin <currentLocalBranch>
    \`\`\`
 
    Then list the exact user-selected files to stage below the block in a compact list. Do not scatter the card name, commit message, branch, and commit command across separate sections.
@@ -225,13 +226,13 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    \`\`\`bash
    git add -- <confirmed-files>
    git commit -m "<卡片编号> #comment <comment>"
-   git push
+   git push origin <currentLocalBranch>
    \`\`\`
 
    If the branch has no upstream, ask for confirmation before using:
 
    \`\`\`bash
-   git push -u origin <branch>
+   git push -u origin <currentLocalBranch>
    \`\`\`
 
    If \`git add\`, \`git commit\`, or \`git push\` fails, stop and report the failure. Do not trigger CI for code that failed to push.
@@ -243,8 +244,8 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    git log --oneline @{u}..HEAD
    \`\`\`
 
-   If there are unpushed commits, show them to the user and ask for confirmation before running \`git push\`.
-   If the branch has no upstream, ask for confirmation before running \`git push -u origin <branch>\`.
+   If there are unpushed commits, show them to the user and ask for confirmation before running \`git push origin <currentLocalBranch>\`.
+   If the branch has no upstream, ask for confirmation before running \`git push -u origin <currentLocalBranch>\`.
    If there are no local changes and no unpushed commits, continue without committing or pushing.
 
    After any successful commit or push, run:
@@ -339,16 +340,15 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 7. **Trigger the pipeline build**
 
    Determine the branch to build:
-   - Default to the current local branch recorded from \`git rev-parse --abbrev-ref HEAD\`.
-   - Do not ask a separate branch question when the default branch is usable. Include the branch in the compact confirmation and let the user reply with a different branch there.
-   - Use the confirmed branch value as \`<branch>\`.
-   - If the confirmed build branch differs from the current local branch, explain that CI will build the remote code for the confirmed branch, then ask for explicit confirmation before continuing.
-   - If no branch can be determined and the user does not provide one, stop before triggering the pipeline.
+   - Use the current local branch recorded from \`git rev-parse --abbrev-ref HEAD\` as \`<currentLocalBranch>\`.
+   - Do not ask the user to edit, replace, or manually enter the branch.
+   - Use the same \`<currentLocalBranch>\` for \`git commit\`, \`git push\`, and the CI build \`--branch\` parameter.
+   - If no current local branch can be determined, or Git reports a detached HEAD, stop before committing, pushing, or triggering the pipeline.
 
    Run:
 
    \`\`\`bash
-   devops pipeline build --branch "<branch>" --pipeline-code "<code>"
+   devops pipeline build --branch "<currentLocalBranch>" --pipeline-code "<code>"
    \`\`\`
 
    Capture and summarize the command output in one Chinese line. If the command fails, stop and report the failure.
@@ -361,7 +361,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    After extracting \`triggeredBuildNumber\`, construct the pipeline detail URL from the selected pipeline \`name\` value and the triggered build number:
 
    \`\`\`text
-   https://pipeline.paas.cmbchina.cn/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber>
+   https://pipeline.paas.cmbchina.cn/v2/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber>
    \`\`\`
 
 8. **Fetch the triggered build detail**
@@ -420,16 +420,20 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    For \`错误信息\`, capture the text after the label and any following lines that belong to the failed stage detail until the next obvious section header or separator.
 
    If the detail response contains a \`buildNumber\` or \`构建版本号\` and it does not equal \`triggeredBuildNumber\`, mark the result as inconclusive and do not analyze it as the current CI result.
-   If the response says the build detail is not available yet, or the status is still running/pending, wait and rerun the same \`build-detail\` command until a terminal status is available or until the 10-minute timeout is reached.
+   First run \`build-detail\` once immediately after triggering the build. If the response says the build detail is not available yet, or the status is still running/pending, wait exactly 60 seconds before each retry and rerun the same \`build-detail\` command until a terminal status is available or until the 10-minute timeout is reached.
 
-   Use a bounded polling loop, for example:
+   Use this bounded polling cadence:
    - show one short Chinese progress line before polling starts
-   - wait 1 minute between checks
-   - stop after 10 minutes
+   - run the first \`build-detail\` check immediately
+   - if the status is non-terminal, run \`sleep 60\`
+   - after \`sleep 60\`, run the next \`build-detail\` check
+   - repeat the \`sleep 60\` then \`build-detail\` sequence
+   - do not use shorter sleep intervals, exponential backoff, or tight polling
+   - stop after at most 10 minutes of waiting
    - do not print each polling attempt
 
    If the 10-minute timeout is reached and the triggered build detail is still unavailable or still running, report the current result immediately as running or inconclusive. Tell the user that the triggered build report is not available yet and ask them to check the exact pipeline detail URL:
-   - \`https://pipeline.paas.cmbchina.cn/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber>\`
+   - \`https://pipeline.paas.cmbchina.cn/v2/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber>\`
 
 9. **Classify build status**
 
@@ -485,9 +489,9 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
    结论：<通过 / 失败 / 运行中 / 不确定>
    流水线：<pipelineName or code>（<env>） | 构建：#<triggeredBuildNumber>
-   分支：<branch from CI result or confirmed build branch> | Commit：<short commitId>
+   分支：<branch from CI result or current local branch> | Commit：<short commitId>
    提交：<卡片编号> <卡片名称> | 文件：<N 个文件 or not pushed by this workflow>
-   详情：https://pipeline.paas.cmbchina.cn/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber>
+   详情：https://pipeline.paas.cmbchina.cn/v2/pipeline/detail/<code>?buildNumber=<triggeredBuildNumber>
 
    ### 失败原因
    <span style="color:red">失败阶段：<first failed or abnormal stage></span>
@@ -510,7 +514,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 - 如果构建失败且存在 \`stageBuildId\`，运行 \`devops pipeline build-log --pipeline-code "<code>" --stage-build-id "<stageBuildId>"\`，并且只展示 \`ERROR\` 行及其前后最多 50 行。
 - 如果 \`build-detail\` 或 \`build-log\` 没有返回日志或明确错误信息，用一句中文说明，并且只放一次流水线详情链接。
 - 如果构建还在运行，提示用户稍后重跑 \`devops pipeline build-detail --pipeline-code "<code>" --pipeline-number "<triggeredBuildNumber>"\` 查看结果。
-- 轮询构建结果时每 1 分钟检查一次，最多等待 10 分钟，不要逐次输出检查结果；超过 10 分钟仍未完成时直接报告当前结果并返回精确流水线详情链接。
+- 轮询构建结果时必须按固定 60 秒节奏执行：非终态结果后先运行 \`sleep 60\`，再执行下一次 \`build-detail\`；最多等待 10 分钟，不要逐次输出检查结果；超过 10 分钟仍未完成时直接报告当前结果并返回精确流水线详情链接。
 - 只有 CI 返回的 commitId 与本次推送的 commit id 一致，且本地没有剩余未提交改动时，才能说明当前改动通过 CI。`;
 
 export function getCiBuildSkillTemplate(): SkillTemplate {
