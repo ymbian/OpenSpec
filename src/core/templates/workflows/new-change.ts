@@ -14,6 +14,8 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
 
 **Input**: 用户请求中应包含 change name（kebab-case），或者描述其想要构建内容的 requirement 内容。该 requirement 内容也可能是已经从其他格式预处理后的纯文本需求文档。
 
+如果 \`/infra:new\` 后面的输入是一个已存在的 Markdown 文件路径，无论它是普通需求文档路径（例如 \`docs/requirements.md\`）还是头脑风暴结果路径（例如 \`infraspec/explorations/<timestamp>-<slug>/brainstorm-result.md\`），都先读取该文件，并都将文件内容作为需求描述。
+
 **Steps**
 
 1. **如果没有清晰输入，先询问用户要构建什么**
@@ -170,6 +172,8 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
     content: `使用实验性的 artifact-driven 方式启动一个新的 change。
 
 **Input**: \`/infra:new\` 后的参数可以是 change name（kebab-case），或者描述用户想构建内容的 requirement 内容。该 requirement 内容也可能是已经从其他格式预处理后的纯文本需求文档。
+
+如果 \`/infra:new\` 后面的输入是一个文件路径，无论它是普通需求文档路径还是头脑风暴结果路径（例如 \`infraspec/explorations/<timestamp>-<slug>/brainstorm-result.md\`），都先读取该文件，并都将文件内容作为需求描述。
 
 **Steps**
 

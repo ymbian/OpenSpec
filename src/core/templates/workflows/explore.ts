@@ -6,6 +6,116 @@
  */
 import type { SkillTemplate, CommandTemplate } from '../types.js';
 
+const BUSINESS_KNOWLEDGE_BRAINSTORMING = `## Business Knowledge Grounding
+
+When the user uses explore mode for business brainstorming, keep the discussion grounded in business facts before turning it into requirement input.
+
+### Optional knowledge-base lookup
+
+1. First understand the brainstorming topic. If the topic is missing or too vague, ask the user for the problem they want to explore.
+2. Ask whether they want to query the company business knowledge base.
+   - If no, continue normal explore mode.
+   - If yes, read \`infraspec/config.yaml\` and look for:
+
+     \`\`\`yaml
+     businessKnowledge:
+       productId: <productId>
+       botId: <botId>
+     \`\`\`
+
+3. If \`infraspec/config.yaml\` does not exist or either value is missing, ask the user to consult the business owner and provide \`productId\` and \`botId\`.
+4. After the user provides them, create or update \`infraspec/config.yaml\` by adding or replacing only this block. If the file does not exist, create it with \`schema: spec-driven\` plus the \`businessKnowledge\` block. Preserve existing \`schema\`, \`context\`, \`rules\`, comments, and any unknown fields. Do not write these values to \`AGENTS.md\`.
+5. Confirm that both \`productId\` and \`botId\` are available before calling the API.
+6. Query the retrieval API with the brainstorming question:
+
+   \`\`\`bash
+   PRODUCT_ID="<productId>"
+   BOT_ID="<botId>"
+   QUESTION="<user brainstorming question>"
+   URL="http://aidoc.paasuat.cn/AIDocKnowledgeService/api/v1/products/$PRODUCT_ID/bots/$BOT_ID/retrieve"
+
+   node -e '
+   const [url, question] = process.argv.slice(1);
+   fetch(url, {
+     method: "POST",
+     headers: { "Content-Type": "application/json" },
+     body: JSON.stringify({
+       question,
+       userId: "675538",
+       docDataStatusList: [0, 1],
+     }),
+   })
+     .then(async (response) => {
+       const text = await response.text();
+       if (!response.ok) {
+         throw new Error("HTTP " + response.status + ": " + text);
+       }
+       console.log(text);
+     })
+     .catch((error) => {
+       console.error(error.message);
+       process.exit(1);
+     });
+   ' "$URL" "$QUESTION"
+   \`\`\`
+
+   Request body rules:
+   - \`question\`: the user's brainstorming question
+   - \`userId\`: always \`675538\`
+   - \`docDataStatusList\`: always \`[0, 1]\`
+   - Do not send \`invokeChannel\`
+   - Do not send \`datasetIds\`
+
+7. If the HTTP call fails or the response cannot be parsed, explain the failure briefly, continue brainstorming from the user's input, and record the lookup failure in the exploration files.
+
+### Exploration files
+
+If the user is only brainstorming and no formal InfraSpec change exists yet, do not create a directory under \`infraspec/changes/\`. Create:
+
+\`\`\`text
+infraspec/explorations/<timestamp>-<slug>/
+\`\`\`
+
+Rules:
+- \`<timestamp>\` should use local time in \`YYYYMMDD-HHmmss\` format.
+- \`<slug>\` should be a short lowercase ASCII slug derived from the topic; use \`brainstorm\` if no good slug exists.
+- Do not create \`.infraspec.yaml\` in this directory.
+- Do not let exploration directories appear as active changes.
+
+Write these files:
+- \`question.md\`: original user brainstorming question and timestamp.
+- \`business-knowledge.md\`: retrieved business knowledge summary, important source chunks, and lookup metadata. If lookup was skipped or failed, record that clearly.
+- \`brainstorm-result.md\`: the final brainstorm result for downstream requirement creation.
+
+\`brainstorm-result.md\` should be directly usable as input for \`/infra:new\`. Use this structure:
+
+\`\`\`markdown
+# 头脑风暴结果
+
+## 1. 原始问题
+
+## 2. 业务知识依据
+
+## 3. 需求目标
+
+## 4. 功能拆解
+
+## 5. 关键业务规则
+
+## 6. 边界与非目标
+
+## 7. 待确认事项
+
+## 8. 建议给 /infra:new 的需求输入
+\`\`\`
+
+After saving the files, tell the user the output paths and suggest:
+
+\`\`\`text
+/infra:new infraspec/explorations/<timestamp>-<slug>/brainstorm-result.md
+\`\`\`
+`;
+
 export function getExploreSkillTemplate(): SkillTemplate {
   return {
     name: 'infra-explore',
@@ -73,6 +183,10 @@ Depending on what the user brings, you might:
 - Identify what could go wrong
 - Find gaps in understanding
 - Suggest spikes or investigations
+
+---
+
+${BUSINESS_KNOWLEDGE_BRAINSTORMING}
 
 ---
 
@@ -283,7 +397,7 @@ But this summary is optional. Sometimes the thinking IS the value.
 - **Don't fake understanding** - If something is unclear, dig deeper
 - **Don't rush** - Discovery is thinking time, not task time
 - **Don't force structure** - Let patterns emerge naturally
-- **Don't auto-capture** - Offer to save insights, don't just do it
+- **Don't auto-capture formal change artifacts** - Offer before updating proposal, specs, design, or tasks. Exploration files under \`infraspec/explorations/\` are allowed when the user is brainstorming without a formal change.
 - **Do visualize** - A good diagram is worth many paragraphs
 - **Do explore the codebase** - Ground discussions in reality
 - **Do question assumptions** - Including the user's and your own`,
@@ -368,6 +482,10 @@ Depending on what the user brings, you might:
 - Identify what could go wrong
 - Find gaps in understanding
 - Suggest spikes or investigations
+
+---
+
+${BUSINESS_KNOWLEDGE_BRAINSTORMING}
 
 ---
 
@@ -460,7 +578,7 @@ When things crystallize, you might offer a summary - but it's optional. Sometime
 - **Don't fake understanding** - If something is unclear, dig deeper
 - **Don't rush** - Discovery is thinking time, not task time
 - **Don't force structure** - Let patterns emerge naturally
-- **Don't auto-capture** - Offer to save insights, don't just do it
+- **Don't auto-capture formal change artifacts** - Offer before updating proposal, specs, design, or tasks. Exploration files under \`infraspec/explorations/\` are allowed when the user is brainstorming without a formal change.
 - **Do visualize** - A good diagram is worth many paragraphs
 - **Do explore the codebase** - Ground discussions in reality
 - **Do question assumptions** - Including the user's and your own`

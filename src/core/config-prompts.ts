@@ -32,7 +32,23 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
     lines.push('');
   }
 
+  // Business knowledge section with comments
+  lines.push('# Business knowledge base (optional, used by /infra:explore)');
+  lines.push('# Fill this when brainstorming should query the company knowledge base.');
+  lines.push('# Example:');
+  lines.push('#   businessKnowledge:');
+  lines.push('#     productId: S20250528171525987134');
+  lines.push('#     botId: "3467"');
+
+  if (config.businessKnowledge) {
+    lines.push('');
+    lines.push('businessKnowledge:');
+    lines.push(`  productId: ${config.businessKnowledge.productId}`);
+    lines.push(`  botId: "${config.businessKnowledge.botId}"`);
+  }
+
   // Rules section with comments
+  lines.push('');
   lines.push('# Per-artifact rules (optional)');
   lines.push('# Add custom rules for specific artifacts.');
   lines.push('# Example:');

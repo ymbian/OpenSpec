@@ -16,6 +16,15 @@ import { z } from 'zod';
  * - Single source of truth for type and validation
  * - Consistent with other OpenSpec schemas
  */
+const ConfigIdSchema = z
+  .union([z.string().min(1), z.number()])
+  .transform((value) => String(value));
+
+const BusinessKnowledgeConfigSchema = z.object({
+  productId: ConfigIdSchema.describe('Business knowledge product ID'),
+  botId: ConfigIdSchema.describe('Business knowledge bot ID'),
+});
+
 export const ProjectConfigSchema = z.object({
   // Required: which schema to use (e.g., "spec-driven", or project-local schema name)
   schema: z
@@ -38,6 +47,11 @@ export const ProjectConfigSchema = z.object({
     )
     .optional()
     .describe('Per-artifact rules, keyed by artifact ID'),
+
+  // Optional: business knowledge base used by /infra:explore
+  businessKnowledge: BusinessKnowledgeConfigSchema
+    .optional()
+    .describe('Business knowledge base configuration used by /infra:explore'),
 });
 
 export type ProjectConfig = z.infer<typeof ProjectConfigSchema>;
@@ -149,6 +163,26 @@ export function readProjectConfig(projectRoot: string): ProjectConfig | null {
         }
       } else {
         console.warn(`Invalid 'rules' field in config (must be object)`);
+      }
+    }
+
+    // Parse business knowledge config used by /infra:explore.
+    if (raw.businessKnowledge !== undefined) {
+      if (
+        typeof raw.businessKnowledge === 'object' &&
+        raw.businessKnowledge !== null &&
+        !Array.isArray(raw.businessKnowledge)
+      ) {
+        const businessKnowledgeResult = BusinessKnowledgeConfigSchema.safeParse(raw.businessKnowledge);
+        if (businessKnowledgeResult.success) {
+          config.businessKnowledge = businessKnowledgeResult.data;
+        } else {
+          console.warn(
+            `Invalid 'businessKnowledge' field in config (must include non-empty productId and botId)`
+          );
+        }
+      } else {
+        console.warn(`Invalid 'businessKnowledge' field in config (must be object)`);
       }
     }
 
