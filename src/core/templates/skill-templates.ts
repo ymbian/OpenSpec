@@ -16,7 +16,7 @@ export { getSyncSpecsSkillTemplate, getOpsxSyncCommandTemplate } from './workflo
 export { getArchiveChangeSkillTemplate, getOpsxArchiveCommandTemplate } from './workflows/archive-change.js';
 export { getBulkArchiveChangeSkillTemplate, getOpsxBulkArchiveCommandTemplate } from './workflows/bulk-archive-change.js';
 export { getVerifyChangeSkillTemplate, getOpsxVerifyCommandTemplate } from './workflows/verify-change.js';
-export { getCiBuildSkillTemplate, getOpsxCiBuildCommandTemplate } from './workflows/ci-build.js';
+export { getCiBuildSkillTemplate, getOpsxCiBuildCommandTemplate } from './workflows/cicd.js';
 export { getOnboardSkillTemplate, getOpsxOnboardCommandTemplate } from './workflows/onboard.js';
 export { getOpsxProposeSkillTemplate, getOpsxProposeCommandTemplate } from './workflows/propose.js';
 export { getWikiSkillTemplate, getOpsxWikiCommandTemplate } from './workflows/wiki.js';

@@ -23,7 +23,7 @@ export const SKILL_NAMES = [
   'infra-archive-change',
   'infra-bulk-archive-change',
   'infra-verify-change',
-  'infra-ci-build',
+  'infra-cicd',
   'infra-onboard',
   'infra-propose',
 ] as const;
@@ -45,7 +45,7 @@ export const COMMAND_IDS = [
   'archive',
   'bulk-archive',
   'verify',
-  'ci-build',
+  'cicd',
   'onboard',
   'propose',
 ] as const;

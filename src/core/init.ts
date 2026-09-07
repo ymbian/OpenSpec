@@ -89,7 +89,7 @@ const WORKFLOW_TO_SKILL_DIR: Record<string, string> = {
   'archive': 'infra-archive-change',
   'bulk-archive': 'infra-bulk-archive-change',
   'verify': 'infra-verify-change',
-  'ci-build': 'infra-ci-build',
+  'cicd': 'infra-cicd',
   'onboard': 'infra-onboard',
   'propose': 'infra-propose',
 };

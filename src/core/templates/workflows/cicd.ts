@@ -9,7 +9,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
 **Purpose**: Use the company DevOps pipeline through \`devops-cli\` to validate code in the remote Git repository. This workflow is separate from \`/infra:verify\`: \`/infra:verify\` checks local implementation completeness, while this workflow prepares pushed code and checks remote CI build status.
 
-**Input**: \`/infra:ci-build [changeName]\` may include an optional InfraSpec change name. If \`changeName\` is provided, use \`infraspec/changes/<changeName>/requirements-description.md\` as the primary source for the generated commit comment. If no \`changeName\` is provided, generate the commit comment from the current Git changes.
+**Input**: \`/infra:cicd [changeName]\` may include an optional InfraSpec change name. If \`changeName\` is provided, use \`infraspec/changes/<changeName>/requirements-description.md\` as the primary source for the generated commit comment. If no \`changeName\` is provided, generate the commit comment from the current Git changes.
 
 **User Experience**
 - All user-facing output must be in Chinese.
@@ -38,7 +38,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 - Only install global packages after the user explicitly confirms the install command.
 - The \`name\` column returned by \`devops pipeline get-detail-by-repourl\` is the pipeline code used by later commands.
 - Treat the optional \`changeName\` input as a change name, not as a pipeline code. Pipeline code is selected from the discovered pipeline list.
-- Git commit, Git push, and CI build must all use the current local branch recorded from \`git rev-parse --abbrev-ref HEAD\`. Do not ask the user to edit or replace the branch.
+- Git commit, Git push, and CI/CD pipeline build must all use the current local branch recorded from \`git rev-parse --abbrev-ref HEAD\`. Do not ask the user to edit or replace the branch.
 - Trigger pipeline builds with \`devops pipeline build --branch <currentLocalBranch> --pipeline-code <code>\`.
 - The commit confirmation must be compact and direct. Start it with \`卡片名称\`, \`分支\`, \`commit message\`, and the exact \`git commit\` command that will run.
 
@@ -519,7 +519,7 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
 
 export function getCiBuildSkillTemplate(): SkillTemplate {
   return {
-    name: 'infra-ci-build',
+    name: 'infra-cicd',
     description: 'Commit and push code when needed, trigger a remote CI pipeline build with devops-cli, and report whether it passed. Use when the user wants to run company CI/CD pipeline validation.',
     instructions: CI_BUILD_WORKFLOW_INSTRUCTIONS,
     compatibility: 'Requires Git, InfraSpec CLI (`infraspec`), and company DevOps CLI (`devops`).',
@@ -529,8 +529,8 @@ export function getCiBuildSkillTemplate(): SkillTemplate {
 
 export function getOpsxCiBuildCommandTemplate(): CommandTemplate {
   return {
-    name: 'INFRA: CI Build',
-    description: 'Commit and push code when needed, trigger a remote CI pipeline build, and inspect the triggered build result',
+    name: 'INFRA: CICD',
+    description: 'Use the infra-cicd skill to commit and push code when needed, trigger a remote CI pipeline build, and inspect the triggered build result',
     category: 'Workflow',
     tags: ['workflow', 'ci', 'pipeline', 'build'],
     content: CI_BUILD_WORKFLOW_INSTRUCTIONS,

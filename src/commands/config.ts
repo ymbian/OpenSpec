@@ -90,8 +90,8 @@ const WORKFLOW_PROMPT_META: Record<string, WorkflowPromptMeta> = {
     name: 'Verify change',
     description: 'Run verification checks against a change',
   },
-  'ci-build': {
-    name: 'CI build',
+  cicd: {
+    name: 'CI/CD',
     description: 'Trigger and inspect a remote DevOps pipeline build',
   },
   onboard: {
