@@ -110,17 +110,17 @@ const CI_BUILD_WORKFLOW_INSTRUCTIONS = `Commit and push the current code when ne
    3. If the user selects no files, do not commit. Ask whether to continue with the current remote repository state or stop.
    4. If the user selects files, prepare the required commit message.
 
-   To prepare the required commit message, always query Kanban cards from the last 3 local calendar days, including today. Use the current local date as \`END_DATE\` and the date 2 days before the current local date as \`START_DATE\`. Do not ask the user for a Kanban date range.
+   To prepare the required commit message, always query Kanban cards from the last 10 local calendar days, including today. Use the current local date as \`END_DATE\` and the date 9 days before the current local date as \`START_DATE\`. Do not ask the user for a Kanban date range.
 
    Run:
 
    \`\`\`bash
    END_DATE=$(date +%F)
-   START_DATE=$(date -v-2d +%F 2>/dev/null || date -d "2 days ago" +%F)
+   START_DATE=$(date -v-9d +%F 2>/dev/null || date -d "9 days ago" +%F)
    devops kanban get-card-by-date --start-date "$START_DATE" --end-date "$END_DATE"
    \`\`\`
 
-   Do not show the raw query output when parsing succeeds. If no eligible card is found, include the fixed 3-day query range in the short failure message.
+   Do not show the raw query output when parsing succeeds. If no eligible card is found, include the fixed 10-day query range in the short failure message.
 
    The command output may be either raw JSON or formatted console text printed by \`console.log\`.
 
