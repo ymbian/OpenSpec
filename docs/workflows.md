@@ -410,6 +410,7 @@ For full command details and options, see [Commands](commands.md).
 |---------|---------|-------------|
 | `/infra:explore` | Think through ideas | Unclear requirements, investigation |
 | `/infra:new` | Start a change | Beginning any new work |
+| `/infra:biz` | Create business-product Word requirements | Product-manager-facing business requirements |
 | `/infra:continue` | Create next artifact | Step-by-step artifact creation |
 | `/infra:ff` | Create all planning artifacts | Clear scope, ready to build |
 | `/infra:apply` | Implement tasks | Ready to write code |

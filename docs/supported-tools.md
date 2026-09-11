@@ -61,20 +61,25 @@ infraspec init --tools none
 
 ## What Gets Installed
 
-For each tool, OpenSpec generates 10 skill files that power the OPSX workflow:
+For each tool, OpenSpec can generate 15 workflow skill files. The core profile installs the streamlined default set, including `infra-biz` for business/product Word requirements:
 
 | Skill | Purpose |
 |-------|---------|
 | `infra-explore` | Thinking partner for exploring ideas |
 | `infra-new-change` | Start a new change |
+| `infra-biz` | Create business-product Word requirements |
 | `infra-continue-change` | Create the next artifact |
+| `infra-review-change` | Review a change and create the next artifact |
 | `infra-ff-change` | Fast-forward through all planning artifacts |
 | `infra-apply-change` | Implement tasks |
 | `infra-verify-change` | Verify implementation completeness |
+| `infra-cicd` | Commit, push, and trigger a remote CI pipeline build |
 | `infra-sync-specs` | Sync delta specs to main (optional—archive prompts if needed) |
 | `infra-archive-change` | Archive a completed change |
 | `infra-bulk-archive-change` | Archive multiple changes at once |
 | `infra-onboard` | Guided onboarding through a complete workflow cycle |
+| `infra-propose` | Create proposal, design, and tasks in one pass |
+| `infra-wiki` | Generate source-backed project wiki pages |
 
 These skills are invoked via slash commands like `/infra:new`, `/infra:apply`, etc. See [Commands](commands.md) for the full list.
 

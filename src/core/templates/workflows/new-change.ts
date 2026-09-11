@@ -14,7 +14,7 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
 
 **Input**: 用户请求中应包含 change name（kebab-case），或者描述其想要构建内容的 requirement 内容。该 requirement 内容也可能是已经从其他格式预处理后的纯文本需求文档。
 
-如果 \`/infra:new\` 后面的输入是一个已存在的 Markdown 文件路径，无论它是普通需求文档路径（例如 \`docs/requirements.md\`）还是头脑风暴结果路径（例如 \`infraspec/explorations/<timestamp>-<slug>/brainstorm-result.md\`），都先读取该文件，并都将文件内容作为需求描述。
+如果 \`/infra:new\` 后面的输入是一个已存在的 Markdown 文件路径，无论它是普通需求文档路径（例如 \`docs/requirements.md\`）还是头脑风暴结果路径（例如 \`infraspec/explorations/<timestamp>-<slug>/brainstorm-result.md\`），都先读取该文件，并都将文件内容作为需求描述。如果文件名是 \`brainstorm-result.md\`，将其视为头脑风暴结果文档，继续后续 change 创建和需求整理流程。
 
 **Steps**
 
@@ -51,6 +51,9 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
    写作规则：
    - 尽量保留用户原始表达，不要提前改写成正式需求文档。
    - 如果用户粘贴的是长文档，也完整保存。
+   - 如果 requirement 来自 Markdown 文件，记录来源文件路径、来源类型和完整文件内容。
+   - 如果来自 \`brainstorm-result.md\`，来源类型记录为头脑风暴结果文档。
+   - 保存原始需求时必须同时记录来源文件路径、来源类型和完整文件内容。
    - 后续所有分析都以该文件作为需求输入源。
 
 5. **运行代码图谱分析**
@@ -173,7 +176,7 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
 
 **Input**: \`/infra:new\` 后的参数可以是 change name（kebab-case），或者描述用户想构建内容的 requirement 内容。该 requirement 内容也可能是已经从其他格式预处理后的纯文本需求文档。
 
-如果 \`/infra:new\` 后面的输入是一个文件路径，无论它是普通需求文档路径还是头脑风暴结果路径（例如 \`infraspec/explorations/<timestamp>-<slug>/brainstorm-result.md\`），都先读取该文件，并都将文件内容作为需求描述。
+如果 \`/infra:new\` 后面的输入是一个已存在的 Markdown 文件路径，无论它是普通需求文档路径（例如 \`docs/requirements.md\`）还是头脑风暴结果路径（例如 \`infraspec/explorations/<timestamp>-<slug>/brainstorm-result.md\`），都先读取该文件，并都将文件内容作为需求描述。如果文件名是 \`brainstorm-result.md\`，将其视为头脑风暴结果文档，继续后续 change 创建和需求整理流程。
 
 **Steps**
 
@@ -210,6 +213,9 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
    写作规则：
    - 尽量保留用户原始表达，不要提前改写成正式需求文档。
    - 如果用户粘贴的是长文档，也完整保存。
+   - 如果 requirement 来自 Markdown 文件，记录来源文件路径、来源类型和完整文件内容。
+   - 如果来自 \`brainstorm-result.md\`，来源类型记录为头脑风暴结果文档。
+   - 保存原始需求时必须同时记录来源文件路径、来源类型和完整文件内容。
    - 后续所有分析都以该文件作为需求输入源。
 
 5. **运行代码图谱分析**

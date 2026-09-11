@@ -7,6 +7,7 @@
 import {
   getExploreSkillTemplate,
   getNewChangeSkillTemplate,
+  getBizSkillTemplate,
   getContinueChangeSkillTemplate,
   getReviewChangeSkillTemplate,
   getApplyChangeSkillTemplate,
@@ -21,6 +22,7 @@ import {
   getOpsxProposeSkillTemplate,
   getOpsxExploreCommandTemplate,
   getOpsxNewCommandTemplate,
+  getOpsxBizCommandTemplate,
   getOpsxContinueCommandTemplate,
   getOpsxReviewCommandTemplate,
   getOpsxApplyCommandTemplate,
@@ -63,6 +65,7 @@ export function getSkillTemplates(workflowFilter?: readonly string[]): SkillTemp
   const all: SkillTemplateEntry[] = [
     { template: getExploreSkillTemplate(), dirName: 'infra-explore', workflowId: 'explore' },
     { template: getNewChangeSkillTemplate(), dirName: 'infra-new-change', workflowId: 'new' },
+    { template: getBizSkillTemplate(), dirName: 'infra-biz', workflowId: 'biz' },
     { template: getContinueChangeSkillTemplate(), dirName: 'infra-continue-change', workflowId: 'continue' },
     { template: getReviewChangeSkillTemplate(), dirName: 'infra-review-change', workflowId: 'review' },
     { template: getApplyChangeSkillTemplate(), dirName: 'infra-apply-change', workflowId: 'apply' },
@@ -92,6 +95,7 @@ export function getCommandTemplates(workflowFilter?: readonly string[]): Command
   const all: CommandTemplateEntry[] = [
     { template: getOpsxExploreCommandTemplate(), id: 'explore' },
     { template: getOpsxNewCommandTemplate(), id: 'new' },
+    { template: getOpsxBizCommandTemplate(), id: 'biz' },
     { template: getOpsxContinueCommandTemplate(), id: 'continue' },
     { template: getOpsxReviewCommandTemplate(), id: 'review' },
     { template: getOpsxApplyCommandTemplate(), id: 'apply' },

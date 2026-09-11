@@ -54,6 +54,10 @@ const WORKFLOW_PROMPT_META: Record<string, WorkflowPromptMeta> = {
     name: 'New change',
     description: 'Create a new change scaffold quickly',
   },
+  biz: {
+    name: 'Business requirements',
+    description: 'Create product-manager Word requirements',
+  },
   wiki: {
     name: 'Code wiki',
     description: 'Generate source-backed project wiki pages',

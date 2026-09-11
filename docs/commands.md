@@ -10,10 +10,12 @@ For workflow patterns and when to use each command, see [Workflows](workflows.md
 |---------|---------|
 | `/infra:explore` | Think through ideas before committing to a change |
 | `/infra:new` | Start a new change |
+| `/infra:biz` | Create business-product Word requirements |
 | `/infra:continue` | Create the next artifact based on dependencies |
 | `/infra:ff` | Fast-forward: create all planning artifacts at once |
 | `/infra:apply` | Implement tasks from the change |
 | `/infra:verify` | Validate implementation matches artifacts |
+| `/infra:cicd` | Commit, push, and trigger a remote CI pipeline build |
 | `/infra:sync` | Merge delta specs into main specs |
 | `/infra:archive` | Archive a completed change |
 | `/infra:bulk-archive` | Archive multiple changes at once |
@@ -119,6 +121,28 @@ AI:  Created infraspec/changes/add-dark-mode/
 - Use descriptive names: `add-feature`, `fix-bug`, `refactor-module`
 - Avoid generic names like `update`, `changes`, `wip`
 - Schema can also be set in project config (`infraspec/config.yaml`)
+
+---
+
+### `/infra:biz`
+
+Create a business/product requirement change for product managers. This is a peer entry point to `/infra:new`: it produces a Word document for business review and an internal Markdown handoff for `/infra:review`.
+
+**Syntax:**
+```
+/infra:biz [business requirement or markdown-file-path]
+```
+
+**What it creates:**
+- `infraspec/changes/<change-name>/requirements.docx`
+- `infraspec/changes/<change-name>/biz-requirements.json`
+- `infraspec/changes/<change-name>/requirements.md`
+- `infraspec/changes/<change-name>/assets/*.svg`
+
+**Tips:**
+- Use this for product-manager-facing requirements with prototype, flow, and design diagrams.
+- Use `/infra:new` for technical requirement documents.
+- Continue with `/infra:review <change-name>` after the Word requirement is ready.
 
 ---
 

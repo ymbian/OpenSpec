@@ -488,6 +488,7 @@ This same rhythm works for any size change—a small fix or a major feature.
 | Command | What it does |
 |---------|--------------|
 | \`/infra:new\` | Start a new change, step through artifacts one at a time |
+| \`/infra:biz\` | Create business-product Word requirements |
 | \`/infra:review\` | Review an existing change by creating the next artifact |
 | \`/infra:ff\` | Fast-forward: create all artifacts at once |
 | \`/infra:verify\` | Verify implementation matches artifacts |
@@ -541,6 +542,7 @@ If the user says they just want to see the commands or skip the tutorial:
 | Command | What it does |
 |---------|--------------|
 | \`/infra:new <name>\` | Start a new change, step by step |
+| \`/infra:biz\` | Create business-product Word requirements |
 | \`/infra:review <name>\` | Review the artifact before creating the next one |
 | \`/infra:ff <name>\` | Fast-forward: all artifacts at once |
 | \`/infra:verify <name>\` | Verify implementation |

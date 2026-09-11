@@ -14,6 +14,7 @@ type WorkflowId = (typeof ALL_WORKFLOWS)[number];
 export const WORKFLOW_TO_SKILL_DIR: Record<WorkflowId, string> = {
   'explore': 'infra-explore',
   'new': 'infra-new-change',
+  'biz': 'infra-biz',
   'wiki': 'infra-wiki',
   'continue': 'infra-continue-change',
   'review': 'infra-review-change',

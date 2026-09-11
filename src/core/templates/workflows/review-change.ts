@@ -53,6 +53,8 @@ export function getReviewChangeSkillTemplate(): SkillTemplate {
    - \`infraspec/changes/<name>/requirements.md\`
    - \`infraspec/changes/<name>/detailed-design.md\`
 
+   如果存在 \`infraspec/changes/<name>/biz-requirements.json\`，说明该 change 可能来自 \`/infra:biz\` 业务产品类需求入口。随后创建或更新 review 产物时，必须读取它，并把其中的业务目标、功能清单、业务流程、业务规则、验收标准、业务性能需求和安全评估作为重要需求输入；同时可读取 \`assets/*.svg\` 的文件名和语义说明来理解流程图、原型图和设计图。不要把业务 Word 文档中的原型图当作代码实现细节。
+
    固定的 review 流程为：
    \`requirements -> detailed-design -> proposal -> specs/design -> tasks\`
 
@@ -281,6 +283,8 @@ export function getOpsxReviewCommandTemplate(): CommandTemplate {
    在进入 artifact workflow 之前，先检查本 review 流程要求的两个 pre-spec 文档是否已经存在：
    - \`infraspec/changes/<name>/requirements.md\`
    - \`infraspec/changes/<name>/detailed-design.md\`
+
+   如果存在 \`infraspec/changes/<name>/biz-requirements.json\`，说明该 change 可能来自 \`/infra:biz\` 业务产品类需求入口。随后创建或更新 review 产物时，必须读取它，并把其中的业务目标、功能清单、业务流程、业务规则、验收标准、业务性能需求和安全评估作为重要需求输入；同时可读取 \`assets/*.svg\` 的文件名和语义说明来理解流程图、原型图和设计图。不要把业务 Word 文档中的原型图当作代码实现细节。
 
    固定的 review 流程为：
    \`requirements -> detailed-design -> proposal -> specs/design -> tasks\`

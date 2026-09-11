@@ -8,6 +8,7 @@ export type { SkillTemplate, CommandTemplate } from './types.js';
 
 export { getExploreSkillTemplate, getOpsxExploreCommandTemplate } from './workflows/explore.js';
 export { getNewChangeSkillTemplate, getOpsxNewCommandTemplate } from './workflows/new-change.js';
+export { getBizSkillTemplate, getOpsxBizCommandTemplate } from './workflows/biz.js';
 export { getContinueChangeSkillTemplate, getOpsxContinueCommandTemplate } from './workflows/continue-change.js';
 export { getReviewChangeSkillTemplate, getOpsxReviewCommandTemplate } from './workflows/review-change.js';
 export { getApplyChangeSkillTemplate, getOpsxApplyCommandTemplate } from './workflows/apply-change.js';
