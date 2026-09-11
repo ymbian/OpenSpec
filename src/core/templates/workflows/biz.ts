@@ -21,6 +21,7 @@ const BIZ_WORKFLOW_INSTRUCTIONS = `Create a business-product requirement change 
 - If code-derived behavior is uncertain, write \`待业务确认\` instead of presenting it as a confirmed business rule.
 - The required Word output should be \`requirements.docx\`. Do not generate old binary \`.doc\` unless the user explicitly requires a legacy Word-compatible file.
 - Prefer low-dependency diagram generation. Generate SVG diagrams directly from structured definitions; do not require Mermaid, PlantUML, Pandoc, browser screenshots, or globally installed packages by default.
+- Prototype and design SVGs for company App embedded H5 pages must follow LifeUI instead of generic wireframes: 375px design baseline, temporary rem rule \`1rem = 13px\`, LifeUI token colors with fallback hex values, and real mobile H5 component patterns.
 - Keep \`requirements.md\` as an internal downstream input for \`/infra:review <changeName>\`. Product managers use \`requirements.docx\`; AI/engineering review uses \`requirements.md\`.
 
 **Expected change directory**
@@ -202,6 +203,14 @@ infraspec/changes/<changeName>/
        "prototype": {
          "title": "<原型图标题>",
          "type": "wireframe",
+         "uiStyle": {
+           "system": "LifeUI",
+           "surface": "App embedded H5",
+           "baseWidth": "375px",
+           "remBase": "1rem = 13px",
+           "sceneColor": "themeCaptain 或 themeWheat，按业务场景选择",
+           "tokensUsed": ["themePageBackground", "themeSecondary", "themeDark", "<scene color token>"]
+         },
          "elements": []
        }
      },
@@ -213,12 +222,24 @@ infraspec/changes/<changeName>/
          "overview": "<功能概述>",
          "flowDiagram": {
            "title": "<流程图标题>",
+           "visualStyle": {
+             "system": "LifeUI",
+             "tokenPalette": ["themeCaptain", "themeWheat", "themeFunction", "themeBlossom", "themeAchieve", "themePending", "themeNotify"]
+           },
            "nodes": [],
            "edges": []
          },
          "designDiagram": {
            "title": "<设计图标题>",
            "type": "wireframe",
+           "uiStyle": {
+             "system": "LifeUI",
+             "surface": "App embedded H5",
+             "baseWidth": "375px",
+             "remBase": "1rem = 13px",
+             "sceneColor": "themeCaptain 或 themeWheat，按业务场景选择",
+             "tokensUsed": ["themePageBackground", "themeSecondary", "themeDark", "themeIron", "themeFog", "<scene color token>"]
+           },
            "elements": []
          },
          "businessRules": ["<业务规则>"],
@@ -263,9 +284,20 @@ infraspec/changes/<changeName>/
 
    Diagram rules:
    - Use SVG by default.
-   - Keep diagrams low-fidelity and readable.
-   - Flow diagrams should show start, decisions, main steps, exception paths, and end states.
-   - Design diagrams should show page/entry layout, key fields, buttons, states, messages, and visible business information.
+   - Keep diagrams low-fidelity and readable, but do not use generic desktop wireframe boxes for App/H5 screens.
+   - Prototype and design diagrams must satisfy this concise LifeUI SVG contract:
+     1. Canvas: use \`viewBox="0 0 375 <height>"\` for a 375px App embedded H5 baseline; assume \`1rem = 13px\` only when conversion is needed.
+     2. Background and surfaces: page background \`var(--theme-page-background, #F5F5F5)\`; card/container surface \`var(--theme-secondary, #FFFFFF)\`.
+     3. Layout: use 12px horizontal page padding; use label/value rows, cards, form rows, status tags, and bottom action area instead of desktop wireframe boxes.
+     4. Radius: cards 8px, small layers 12px, large layers 16px; primary bottom buttons are 46px high with 23px radius.
+     5. Typography: use only 16px, 14px, and 12px for H5 content unless a marketing submit button needs 18px.
+     6. Scene color: ordinary controls, marketing, application, and submit actions use \`themeCaptain\` / \`var(--theme-captain, #ED5151)\`; financial, bill, repayment, quota, installment, and account scenes use \`themeWheat\` / \`var(--theme-wheat, #CEA171)\`.
+     7. Semantic colors: use \`themeFunction\` / \`var(--theme-function, #3F7BF8)\` for utility links, \`themeBlossom\` / \`var(--theme-blossom, #EB1212)\` for explicit error text, and \`themePending\` / \`themeNotify\` / \`themeAchieve\` for business status.
+     8. Required screen evidence: show the page title/entry, key fields, primary action, at least one state message or status, and visible error/help text when the flow has validation.
+     9. Forbidden: no unapproved colors, no invented gradients, no decorative blobs, no native App tab bars unless explicitly required by the page, and no component shapes that contradict LifeUI.
+     10. Self-check before saving each SVG: confirm the SVG width baseline is 375, the scene color matches the business context, all colors are LifeUI tokens with fallback hex values, and no text overlaps or overflows.
+   - Flow diagrams should show start, decisions, main steps, exception paths, and end states, and should use the LifeUI token palette and H5 typography.
+   - Design diagrams should show page/entry layout, key fields, buttons, states, messages, and visible business information using LifeUI components.
    - Do not rely on external rendering tools unless they are already available.
    - If a diagram cannot be produced, leave a short visible placeholder in the Word document and record the gap in \`biz-requirements.json.assumptions\`.
 
@@ -328,7 +360,7 @@ infraspec/changes/<changeName>/
      | 价值 | 降低操作成本，提升处理效率，增强业务过程可追踪性。 |
    - Section 3.2 prototype diagram example:
      图题：图 3.2-1 统一待办处理原型图
-     内容：插入 \`assets/panorama-prototype.svg\`，图下用 1-2 句话说明页面入口、核心区域、主要按钮和状态信息。
+     内容：插入 \`assets/panorama-prototype.svg\`，图中采用 LifeUI 风格的 375px App 内嵌 H5 页面，图下用 1-2 句话说明页面入口、核心区域、主要按钮和状态信息。
    - Section 3.3 function list example:
      | 类型 | 关联数字产品 | 关联模块 | 功能名称 | 关联实施组 | 负责人 |
      | --- | --- | --- | --- | --- | --- |
@@ -337,7 +369,7 @@ infraspec/changes/<changeName>/
    - Section 4 feature detail examples:
      4.1.1 功能概述：说明该功能服务的业务对象、用户动作、输入输出和完成后的业务状态。
      4.1.2 流程图：插入对应 \`assets/feature-<n>-flow.svg\`，图中必须包含开始、判断、正常处理、异常处理和结束。
-     4.1.3 设计图：插入对应 \`assets/feature-<n>-design.svg\`，图中必须包含关键字段、按钮、状态、提示语和错误信息。
+     4.1.3 设计图：插入对应 \`assets/feature-<n>-design.svg\`，图中必须采用 LifeUI 组件风格，并包含关键字段、按钮、状态、提示语和错误信息。
      4.1.4 业务规则：使用编号列表描述可验证规则，例如“同一任务同一时间只能由一名处理人提交处理结果”。
      4.1.5 验收标准：使用“Given/When/Then”或中文等价表达，覆盖成功路径、异常路径、权限和边界条件。
    - Section 5.1 performance table example:
