@@ -83,9 +83,11 @@ infraspec/changes/<changeName>/
 
    Preserve the user's original wording. If the input came from a file, include the source file path and then the full file content.
 
-4. **Optionally ground with business knowledge**
+4. **Ask whether to ground with business knowledge**
 
-   If business knowledge may help, read \`infraspec/config.yaml\` and look for:
+   Always ask the user whether they want to query the company business knowledge base for this business requirement.
+   - If no, continue without querying and record a short note such as \`业务知识库查询：用户选择跳过\` in \`biz-requirements.json.assumptions\` if useful.
+   - If yes, read \`infraspec/config.yaml\` and look for:
 
    \`\`\`yaml
    businessKnowledge:
@@ -93,7 +95,19 @@ infraspec/changes/<changeName>/
      botId: <botId>
    \`\`\`
 
-   If both values exist, ask whether to query the company business knowledge base. If the user agrees, call the same retrieve API used by \`/infra:explore\`:
+   If \`infraspec/config.yaml\` does not exist or either value is missing, ask the user to consult the business owner and provide \`productId\` and \`botId\`.
+
+   After the user provides them, create or update \`infraspec/config.yaml\` by adding or replacing only this block:
+
+   \`\`\`yaml
+   businessKnowledge:
+     productId: <productId>
+     botId: <botId>
+   \`\`\`
+
+   If the file does not exist, create it with \`schema: spec-driven\` plus the \`businessKnowledge\` block. Preserve existing \`schema\`, \`context\`, \`rules\`, comments, and any unknown fields. Do not write these values to \`AGENTS.md\`.
+
+   Confirm that both \`productId\` and \`botId\` are available before calling the API. Then call the same retrieve API used by \`/infra:explore\`:
 
    \`\`\`bash
    PRODUCT_ID="<productId>"
@@ -126,7 +140,14 @@ infraspec/changes/<changeName>/
    ' "$URL" "$QUESTION"
    \`\`\`
 
-   Do not send \`invokeChannel\`. Do not send \`datasetIds\`. If the lookup fails, continue and record the failure in the working notes or \`biz-requirements.json\` assumptions.
+   Request body rules:
+   - \`question\`: the user's business requirement question
+   - \`userId\`: always \`675538\`
+   - \`docDataStatusList\`: always \`[0, 1]\`
+   - Do not send \`invokeChannel\`
+   - Do not send \`datasetIds\`
+
+   If the HTTP call fails or the response cannot be parsed, explain the failure briefly, continue from the user's input, and record the lookup failure in \`biz-requirements.json.assumptions\`.
 
 5. **Optionally refresh code context**
 

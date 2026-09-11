@@ -33,8 +33,8 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   }
 
   // Business knowledge section with comments
-  lines.push('# Business knowledge base (optional, used by /infra:explore)');
-  lines.push('# Fill this when brainstorming should query the company knowledge base.');
+  lines.push('# Business knowledge base (optional, used by /infra:explore and /infra:biz)');
+  lines.push('# Fill this when brainstorming or business requirement writing should query the company knowledge base.');
   lines.push('# Example:');
   lines.push('#   businessKnowledge:');
   lines.push('#     productId: S20250528171525987134');
